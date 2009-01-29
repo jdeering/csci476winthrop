@@ -69,13 +69,8 @@ The following is the game framework protocol that is used to pass messages to an
       * `sprite` is the reference name for the bitmap object
       * `switch` is boolean (1 = animate, 0 = no animation)
 
-  * set frame count
-    * 308 [`sprite`] [`n`]
-      * `sprite` is the reference name for the bitmap object
-      * `n` is the number of frames
-
   * set frame delay
-    * 309 [`sprite`] [`n`]
+    * 308 [`sprite`] [`n`]
       * `sprite` is the reference name for the bitmap object
       * `n` is the number of milliseconds per frame
 
