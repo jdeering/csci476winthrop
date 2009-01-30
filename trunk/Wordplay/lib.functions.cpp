@@ -10,6 +10,80 @@ int scoreWord(std::string str, int lvl)
 	return str.length() * lvl * 10;
 }
 
+//////////////////////////////////////////
+//	beginning the game					//
+//////////////////////////////////////////
+
+void showSetLevelDialogue()
+{
+	//show the user a choice of levels with explanations of the rules
+
+	//display background dialog box, it blocks out the whole gameplay area
+
+	//display the four buttons for each of the levels
+
+	//display the four text labels below them, and the level descriptions
+
+	//need to think about how to make level descriptions concise and understandable
+	
+
+}
+
+void hideSetLevelDialogue(){
+	//when the user clicks a level, we want to take away the dialogue box
+
+	//and begin the rest of gameplay
+
+	//show instruction screen
+}
+
+
+void setLevel(int level)
+{
+	//this game offers four levels
+
+	//for level one
+	if (level == 1)
+	{
+
+	}
+	
+	//for level two
+	else if (level == 2)
+	{
+
+	}
+
+	//for level three
+	else if (level == 3)
+	{
+
+	}
+
+	//for level four
+	else
+	{
+
+	}
+
+}
+
+void showInstructions(int level){
+	//dependent on level, show text and picture instructions for the game
+
+	//place a button that lets the user begin the game
+}
+
+void hideInstructions(){
+
+	//hide the instruction screen
+
+}
+
+//////////////////////////////////////////
+//	gameplay setup			//
+//////////////////////////////////////////
+
 void setupGame()
 {
 
@@ -21,19 +95,98 @@ void setupGame()
 
 }
 
+//////////////////////////////////////////
+//	click functions			//
+//////////////////////////////////////////
+
 void clickHandler(int x, int y)
 {
 
 	//figure out where we've clicked and send it to an appropriate handler
+	//the clickable items will depend on where we are in gameplay
 
-	//if it's a letter
+	//during choosing a level
+	if()
+	{
+		//if it's a level button
+		if()
+		{
+			//hide the dialogue box
+			hideSetLevelDialogue()
+			//decide which level it is, and select that level
+			setLevel(n);
+			//go ahead and show instructions for that level
+			showInstructions(level);
+		}
 
-	//if it's the submit word button
+	}
+			
+	//during instructions
+	else if ()
+	{	
+		//if it's the begin game button	
+		if()
+		{
+			//hide the instructions and begin gameplay
+			hideInstructions();
+			setupGame();
+		}
+
+	}
+
+	//during gameplay
+	else if ()
+	{
 	
-	//if it's the reset board button
+		//if it's a letter
+		if()
+		{
+			//select it or unselect it
 
-	//if it's the end game button
+			//check to see if the word's valid
+			//if it is
+			if()
+			{
+				//highlight the button
+			}
 
+			//otherwise
+			else
+			{
+				//make sure the button is not highlighted
+			}
+		
+
+		}
+
+		//if it's the submit word button
+		else if()
+		{
+
+			//check to see if the word is valid
+
+			//if it is
+			if()
+			{
+				//submit the word
+			}
+	
+			//otherwise ignore it, we don't need to submit the word
+		}
+		
+		//if it's the reset board button
+		else if()
+		{
+
+		}
+
+		//if it's the end game button
+		else if ()
+		{
+
+		}
+
+	}
 }
 
 void clickLetter(Tile t)
