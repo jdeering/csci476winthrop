@@ -5,6 +5,12 @@
 #include "GFText.h"
 #include "GFAudio.h"
 
+//#include <winalleg.h>
+
+#ifndef GFW_BUFFER_SIZE
+	#define GFW_BUFFER_SIZE 512
+#endif
+
 class /*SINGLETON*/ GameFramework
 {
 	public:
@@ -17,7 +23,7 @@ class /*SINGLETON*/ GameFramework
 		/* SET CALLBACK FUNCTIONS */
 		void kybdFunc(void (*f)(int, int, int, int));
 		void mouseFunc(void (*f)(int, int, int, int));
-		void gameFunc(void (*f)());
+		void gameFunc(bool (*f)());
 
 		/* START LOOP FUNCTION */
 		void gameLoop();
@@ -37,20 +43,25 @@ class /*SINGLETON*/ GameFramework
 		GameFramework();
 		
 	private:
+		/* COMMUNICATION DETAILS */
+		//HANDLE stdinFW, stdoutFW;
+		char _msgBuffer[GFW_BUFFER_SIZE];
+		void _clrBuffer();
+
 		/* OBJECT LIST SIZES */
 		static int const GFS_MAX;
 		static int const GFT_MAX;
 		static int const GFA_MAX;
 
 		/* OBJECT COUNTS AND INDICES */
-		int gfs_count, gfsi;
-		int gft_count, gfti;
-		int gfa_count, gfai;
+		int gfs_count, gfsi, gfs_total;
+		int gft_count, gfti, gft_total;
+		int gfa_count, gfai, gfa_total;
 
 		/* FUNCTION POINTERS */
 		void (*cb_KH)(int, int, int, int);	// CALLBACK - KYBD
 		void (*cb_MH)(int, int, int, int);	// CALLBACK - MOUSE
-		void (*cb_GL)();			// GAME LOOP
+		bool (*cb_GL)();			// GAME LOOP
 
 		/* OBJECT LISTS (FOR DESTRUCTION) */
 		std::list<GFSprite> 	_gfs;
@@ -58,5 +69,3 @@ class /*SINGLETON*/ GameFramework
 		std::list<GFAudio> 	_gfa;
 };
 
-/* DEVELOPERS SHOULD USE THIS AS THEIR DATATYPE */
-typedef GameFramework& GFInstance;

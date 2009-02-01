@@ -15,7 +15,7 @@ class GFText
 
 	protected:
 		/* PROTECTED CONSTRUCTOR */
-		GFText(int, std::string, int, int, int, int);
+		GFText(int, int, int);
 
 	private:
 		/* REFERENCE NUMBER FOR FRAMEWORK */
@@ -25,5 +25,3 @@ class GFText
 		int _x, _y;
 };
 
-/* FOR DEVELOPERS */
-typedef GFText& GFTextRef;
