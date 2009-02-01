@@ -20,12 +20,9 @@ class GFAudio
 
 	protected:
 		/* PROTECTED CONSTRUCTOR */
-		GFAudio(int, std::string);
+		GFAudio(int);
 
 	private:
 		/* REFERENCE NUMBER FOR FRAMEWORK */
 		int _ref;
 };
-
-/* FOR DEVELOPERS */
-typedef GFAudio& GFAudioRef;

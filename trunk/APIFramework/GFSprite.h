@@ -6,6 +6,9 @@ class GFSprite
 	friend class GameFramework;
 
 	public:
+		/* NULL OBJECT */
+		static const GFSprite nul;
+
 		/* PUBLIC DESTRUCTOR */
 		~GFSprite();
 
@@ -23,9 +26,12 @@ class GFSprite
 		void setAnimation(bool);
 		void setSpriteFrameDelay(int);
 
+		/* OVERLOADED OPERATORS */
+		bool operator==(const GFSprite &s){ return _ref == s._ref; };
+
 	protected:
 		/* PROTECTED CONSTRUCTOR */
-		GFSprite(int, std::string, int, int, int, int);
+		GFSprite(int, int, int);
 
 	private:
 		/* REFERENCE NUMBER FOR FRAMEWORK */
@@ -34,6 +40,3 @@ class GFSprite
 		/* SCREEN POSITION */
 		int _x, _y;
 };
-
-/* FOR DEVELOPER USE */
-typedef GFSprite& GFSpriteRef;
