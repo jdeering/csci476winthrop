@@ -74,6 +74,10 @@ The following is the game framework protocol that is used to pass messages to an
       * `sprite` is the reference name for the bitmap object
       * `n` is the number of milliseconds per frame
 
+  * destroy sprite
+    * 309 [`sprite`]
+      * `sprite` is the reference name for the bitmap object
+
 ===Text===
   * create text object (from string)
     * 401 [`text`] [`x`] [`y`] [`size`] [`string`]
@@ -99,6 +103,10 @@ The following is the game framework protocol that is used to pass messages to an
       * `text` is a reference name to a text object
       * `switch` is boolean (1 = show, 0 = hide)
 
+  * destroy text object
+    * 405 [`text`]
+      * `text` is a reference name to a text object
+
 ===Audio===
   * load file
     * 501 [`sound`] [`reference`]
@@ -112,6 +120,10 @@ The following is the game framework protocol that is used to pass messages to an
 
   * stop file
     * 503 [`sound`]
+      * `sound` is a reference name to a sound object
+
+  * destroy audio object
+    * 504 [`sound`]
       * `sound` is a reference name to a sound object
 
 ===Score===
