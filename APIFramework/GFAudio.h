@@ -6,6 +6,9 @@ class GFAudio
 	friend class GameFramework;
 
 	public:
+		/* NULL OBJECT */
+		static const GFAudio null;
+
 		/* PUBLIC DESTRUCTOR */
 		~GFAudio();
 
@@ -17,6 +20,12 @@ class GFAudio
 		/* PLAYBACK FUNCTIONS */
 		void setPlayback(int);
 		void stop();
+
+		/* OVERLOADED OPERATORS */
+		bool operator==(const GFAudio&);
+
+		/* PRINT FUNCTION (FOR DEBUG) */
+		friend std::ostream& operator<<(std::ostream&, GFAudio&);
 
 	protected:
 		/* PROTECTED CONSTRUCTOR */
