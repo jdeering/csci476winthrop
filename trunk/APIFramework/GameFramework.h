@@ -23,7 +23,7 @@ class /*SINGLETON*/ GameFramework
 		static GameFramework& Instance();
 		
 		/* SET CALLBACK FUNCTIONS */
-		void kybdFunc(void (*f)(int, int, int, int));
+		void kybdFunc(void (*f)(int, int));
 		void mouseFunc(void (*f)(int, int, int, int));
 		void gameFunc(bool (*f)());
 
@@ -42,6 +42,9 @@ class /*SINGLETON*/ GameFramework
 		/* AUDIO FUNCTIONS */
 		GFAudio& createAudio(std::string);
 		void removeAudio(GFAudio&);
+
+		/* MOUSE POSITION */
+		int mouseX, mouseY;
 		
 	protected:
 		/* PROTECTED CONSTRUCTORS */
@@ -52,6 +55,7 @@ class /*SINGLETON*/ GameFramework
 		//HANDLE stdinFW, stdoutFW;
 		char _msgBuffer[GFW_BUFFER_SIZE];
 		void _clrBuffer();
+		void _getMessages();
 
 		/* OBJECT LIST SIZES */
 		static int const GFS_MAX, GFSL, GFSU;
@@ -69,7 +73,7 @@ class /*SINGLETON*/ GameFramework
 		static int const INDEX_AVAIL;
 
 		/* FUNCTION POINTERS */
-		void (*cb_KH)(int, int, int, int);	// CALLBACK - KYBD
+		void (*cb_KH)(int, int);		// CALLBACK - KYBD
 		void (*cb_MH)(int, int, int, int);	// CALLBACK - MOUSE
 		bool (*cb_GL)();			// GAME LOOP
 

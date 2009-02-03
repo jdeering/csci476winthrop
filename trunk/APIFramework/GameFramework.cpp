@@ -1,4 +1,6 @@
 #include <iostream>
+//#include <winalleg.h>
+
 #include "GameFramework.h"
 
 GameFramework& GameFramework::Instance()
@@ -26,12 +28,18 @@ GameFramework::~GameFramework()
 {
 	/* EMPTY THE BUFFER */
 	_clrBuffer();
+
+	/* DESTROY ALL OBJECTS FROM MEMORY */
+	sprintf(_msgBuffer, "602");
+
+	/* SEND THE MESSAGE TO THE FRAMEWORK */
+	std::cout << _msgBuffer << std::endl;
 }
 
 void GameFramework::_clrBuffer()
 { memset(_msgBuffer, 0, GFW_BUFFER_SIZE); };
 
-void GameFramework::kybdFunc(void (*f)(int, int, int, int))
+void GameFramework::kybdFunc(void (*f)(int, int))
 { cb_KH = f; };
 
 void GameFramework::mouseFunc(void (*f)(int, int, int, int))
@@ -41,7 +49,35 @@ void GameFramework::gameFunc(bool (*f)())
 { cb_GL = f; };
 
 void GameFramework::gameLoop()
-{ while (cb_GL()); }
+{ do { _getMessages(); } while(cb_GL()); }
+
+void GameFramework::_getMessages()
+{
+	/* SIZE OF BUFFER DATA READ */
+	int readSize;
+
+	/* CHECK TO SEE IF THERE ARE MESSAGES REMAINING IN THE BUFFER */
+	//while (ReadFile(stdinFW, _msgBuffer, GFW_BUFFER_SIZE, &readSize, NULL))
+	{
+		/* MESSAGE OPCODE */
+		int opcode;
+
+		/* SCAN FOR THE OPCODE */
+		sscanf(_msgBuffer, "%d", &opcode);
+
+		switch(opcode)
+		{
+			case 101:
+				
+
+			case 102:
+				
+
+			case 201:
+				
+		}
+	}
+}
 
 GFSprite& GameFramework::createSprite(std::string aname, int x, int y, int w, int h)
 {
@@ -93,7 +129,7 @@ void GameFramework::removeSprite(GFSprite &s)
 		/* REMOVE THE OFFENDING OBJECT */
 		_gfs.remove(s);
 	}
-	else /* WHERE IS YOUR GOD NOW? */;
+	/* else WHERE IS YOUR GOD NOW? */
 };
 
 GFText& GameFramework::createTextFromAsset(std::string aname, int size, int x, int y)
@@ -175,7 +211,7 @@ void GameFramework::removeText(GFText &t)
 		/* REMOVE THE OFFENDING OBJECT */
 		_gft.remove(t);
 	}
-	else /* WHERE IS YOUR GOD NOW? */;
+	/* else WHERE IS YOUR GOD NOW? */
 };
 
 GFAudio& GameFramework::createAudio(std::string aname)
@@ -228,20 +264,24 @@ void GameFramework::removeAudio(GFAudio &a)
 		/* REMOVE THE OFFENDING OBJECT */
 		_gfa.remove(a);
 	}
-	else /* WHERE IS YOUR GOD NOW? */;
+	/* else WHERE IS YOUR GOD NOW? */
 };
 
+/* MAXIMUM NUMBER OF OBJECTS */
 int const GameFramework::GFT_MAX =  50;
 int const GameFramework::GFA_MAX =  50;
 int const GameFramework::GFS_MAX = 500;
 
+/* LOWER BOUND FOR OBJECT INDEXES */
 int const GameFramework::GFTL =   0;
 int const GameFramework::GFAL = 100;
 int const GameFramework::GFSL = 200;
 
+/* UPPER BOUND FOR OBJECT INDEXES */
 int const GameFramework::GFTU = GameFramework::GFTL + GameFramework::GFT_MAX;
 int const GameFramework::GFAU = GameFramework::GFAL + GameFramework::GFA_MAX;
 int const GameFramework::GFSU = GameFramework::GFSL + GameFramework::GFS_MAX;
 
-int const GameFramework::INDEX_TAKEN = 1;
+/* VALUES FOR THE INDEX TABLE */
 int const GameFramework::INDEX_AVAIL = 0;
+int const GameFramework::INDEX_TAKEN = 1;
