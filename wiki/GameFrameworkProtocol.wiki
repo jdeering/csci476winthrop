@@ -126,7 +126,10 @@ The following is the game framework protocol that is used to pass messages to an
     * 504 [`sound`]
       * `sound` is a reference name to a sound object
 
-===Score===
+===Miscellaneous===
   * send score
     * 601 [`score`]
       * `score` is an integer value representing the score
+
+  * destroy all objects (graphics, audio, and text)
+    * 602
