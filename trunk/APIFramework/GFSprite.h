@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 
 class GFSprite
 {
@@ -7,7 +8,7 @@ class GFSprite
 
 	public:
 		/* NULL OBJECT */
-		static const GFSprite nul;
+		static const GFSprite null;
 
 		/* PUBLIC DESTRUCTOR */
 		~GFSprite();
@@ -27,7 +28,10 @@ class GFSprite
 		void setSpriteFrameDelay(int);
 
 		/* OVERLOADED OPERATORS */
-		bool operator==(const GFSprite &s){ return _ref == s._ref; };
+		bool operator==(const GFSprite &s);
+
+		/* PRINT FUNCTION (FOR DEBUG) */
+		friend std::ostream& operator<<(std::ostream&, GFSprite&);
 
 	protected:
 		/* PROTECTED CONSTRUCTOR */

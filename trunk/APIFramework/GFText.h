@@ -6,12 +6,21 @@ class GFText
 	friend class GameFramework;
 
 	public:
+		/* NULL OBJECT */
+		static const GFText null;
+
 		/* PUBLIC DESTRUCTOR */
 		~GFText();
 
 		/* FRAMEWORK CALLS */
 		void setTextPosition(int, int);
 		void setVisible(bool);
+
+		/* OVERLOADED OPERATORS */
+		bool operator==(const GFText&);
+
+		/* PRINT FUNCTION (FOR DEBUG) */
+		friend std::ostream& operator<<(std::ostream&, GFText&);
 
 	protected:
 		/* PROTECTED CONSTRUCTOR */
