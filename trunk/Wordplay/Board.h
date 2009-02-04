@@ -1,5 +1,6 @@
 #include <string>
-#include <vector>#include "Tile.h"
+#include <vector>
+#include "Tile.h"
 
 class Board
 {
@@ -13,11 +14,6 @@ class Board
 		//dealing with the selected word
 		string returnWord();		
 		bool isWord();
-		void addLetter();
-		void removeLetter();
-
-		//visually change the word when it is submittable
-		void showValid();
 
 		//submit the current word
 		void submitWord();
@@ -33,4 +29,14 @@ class Board
 
 		//keep a vector of the tiles for the current word
 		vector <Tile> currentWord;
+
+		void generateBoard();
+		void displayBoard();
+
+		void addLetter(Tile);
+		void removeLetter(Tile);
+
+		//visually change the word when it is submittable or unsubmittable
+		void changeAppearance();
+
 };
