@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include "Dictionary.h"
 #include "Tile.h"
 
 class Board
@@ -12,11 +13,12 @@ class Board
 		void clickHandler(int, int);
 		
 		//dealing with the selected word
-		string returnWord();		
+		std::string returnWord();		
+		void checkWord(Dictionary);
 		bool isWord();
 
 		//submit the current word
-		void submitWord();
+		int submitWord();
 		
 		
 		
@@ -28,7 +30,9 @@ class Board
 		Tile boardset[9][9];
 
 		//keep a vector of the tiles for the current word
-		vector <Tile> currentWord;
+		std::vector<Tile *> currentWord;
+
+		bool validWord;
 
 		void generateBoard();
 		void displayBoard();
