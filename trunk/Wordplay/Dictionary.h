@@ -5,7 +5,7 @@ class Dictionary
 {
 	public:
 		Dictionary(std::string);
-		int isWord(std::string);
+		bool search(std::string);
 		
 	private:
 		std::vector <std::string> words;

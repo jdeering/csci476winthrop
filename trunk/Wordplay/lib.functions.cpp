@@ -2,6 +2,12 @@
 
 #include "Tile.h"
 
+const int CHOOSE_LEVEL = 0;
+const int INSTRUCTIONS = 1;
+const int IN_GAME = 2;
+
+int gameStatus = 0;
+
 //////////////////////////////////////////
 //	scoring				//
 //////////////////////////////////////////
@@ -109,14 +115,16 @@ void clickHandler(int x, int y)
 	//figure out where we've clicked and send it to an appropriate handler
 	//the clickable items will depend on where we are in gameplay
 
+
 	//during choosing a level
-	if()
+	if(gameStatus == CHOOSE_LEVEL)
 	{
 		//if it's a level button
 		if()
 		{
 			//hide the dialogue box
 			hideSetLevelDialogue()
+
 			//decide which level it is, and select that level
 			setLevel(n);
 			//go ahead and show instructions for that level
@@ -126,7 +134,7 @@ void clickHandler(int x, int y)
 	}
 			
 	//during instructions
-	else if ()
+	else if (gameStatus == INSTRUCTIONS)
 	{	
 		//if it's the begin game button	
 		if()
@@ -139,7 +147,7 @@ void clickHandler(int x, int y)
 	}
 
 	//during gameplay
-	else if ()
+	else if (gameStatus == IN_GAME)
 	{
 	
 		//if it's anywhere in the board, let it be handled there
@@ -155,7 +163,7 @@ void clickHandler(int x, int y)
 			//check to see if the word is valid
 
 			//if it is
-			if(gameboard.isWord())
+			if(gameBoard.isWord())
 			{
 				//submit the word
 				

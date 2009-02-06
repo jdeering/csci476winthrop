@@ -23,7 +23,7 @@ Dictionary::Dictionary(std::string filename = "dictionary.dat")
 }
 
 
-int Dictionary::isWord(std::string s)
+bool Dictionary::search(std::string s)
 {
 	// binary search through the vector to find out if there's a match using the STL algorithm for binary search
 	return binary_search(words.begin(), words.end(), s);
