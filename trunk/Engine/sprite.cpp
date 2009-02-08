@@ -14,6 +14,7 @@ Sprite::Sprite()
 	moving = false;
 	animating = false;
 	active = true;
+	rest = 0;
 }
 
 /******************************************************
@@ -25,9 +26,9 @@ Sprite::Sprite()
 	@param w The initial width of the sprite in pixels
 	@param h The initial height of the sprite in pixels
 ******************************************************/
-Sprite::Sprite(BITMAP* image, int x = 0, int y = 0, int w = 0, int h = 0)
+Sprite::Sprite(std::string imageRef, int x = 0, int y = 0, int w = 0, int h = 0)
 {
-	img = image;
+	fileRefName = imageRef;
 	frameColumns = 1;
 	frameRows = 1;
 	numFrames = 1;
@@ -37,6 +38,7 @@ Sprite::Sprite(BITMAP* image, int x = 0, int y = 0, int w = 0, int h = 0)
 	moving = false;
 	animating = false;
 	active = true;
+	rest = 0;
 }
 
 /******************************************************
@@ -44,24 +46,6 @@ Sprite::Sprite(BITMAP* image, int x = 0, int y = 0, int w = 0, int h = 0)
 ******************************************************/
 Sprite::~Sprite()
 {
-}
-
-/******************************************************
-	Sets the sprite's name.
-
-	@param n The desired sprite name.
-******************************************************/
-void Sprite::SetName(char* n)
-{
-	fileName = n;
-}
-
-/******************************************************
-	@return The <code>Sprite</code>'s name.
-******************************************************/
-std::string Sprite::GetName()
-{
-	return fileName;
 }
 
 /******************************************************
@@ -179,7 +163,6 @@ void Sprite::Update()
 	{
 		NextFrame();
 		MovePosition();
-		Draw();
 	}
 }
 
@@ -212,12 +195,9 @@ void Sprite::NextFrame()
 	@param image The sprite image being drawn
 	@param dest The screen bitmap on which to draw the sprite
 ******************************************************/
-void Sprite::Draw()
+void Sprite::Draw(BITMAP *frame, BITMAP *buffer)
 {
-	int s_x, s_y;
-	s_x = (currFrame % frameColumns) * box.GetWidth();
-	s_y = (currFrame / frameColumns) * box.GetHeight();
-	blit(img, screen, s_x, s_y, box.GetPositionX(), box.GetPositionY(),
+	blit(frame, buffer, 0, 0, box.GetPositionX(), box.GetPositionY(),
 		box.GetWidth(), box.GetHeight());
 }
 
@@ -227,8 +207,9 @@ void Sprite::Draw()
 ******************************************************/
 void Sprite::MovePosition()
 {
-	if(moving)
+	if(moving && rest == 0)
 	{
+		rest = speed;
 		if(new_x > box.GetPositionX())
 		{
 			box.SetPosition(box.GetPositionX()+speed, box.GetPositionY());
@@ -243,7 +224,7 @@ void Sprite::MovePosition()
 		if(new_y > box.GetPositionY())
 		{
 			box.SetPosition(box.GetPositionX(), box.GetPositionY()+speed);
-			if(new_y >= box.GetPositionY()) box.SetPosition(box.GetPositionX(), new_y); // Prevents wobbling
+			if(new_y <= box.GetPositionY()) box.SetPosition(box.GetPositionX(), new_y); // Prevents wobbling
 		}
 		if(new_y < box.GetPositionY())
 		{
@@ -257,4 +238,35 @@ void Sprite::MovePosition()
 			speed = 0;
 		}
 	}
+	if(moving && rest > 0)
+	{
+		rest--;
+	}
+}
+
+
+int Sprite::GetFrameNum()
+{
+	return currFrame;
+}
+
+void Sprite::SetFrameCount(int fCount)
+{
+	numFrames = fCount;
+}
+
+void Sprite::SetColumnCount(int cCount)
+{
+	frameColumns = cCount;
+}
+
+
+int Sprite::GetWidth()
+{
+	return box.GetWidth();
+}
+
+int Sprite::GetHeight()
+{
+	return box.GetHeight();
 }

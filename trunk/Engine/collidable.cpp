@@ -42,10 +42,10 @@ BoundingBox::BoundingBox(const BoundingBox &box)
 	@param x The x coordinate of the new position
 	@param y The y coordinate of the new position
 *********************************************/
-void BoundingBox::SetPosition(int x, int y)
+void BoundingBox::SetPosition(int new_x, int new_y)
 {
-	x = x;
-	y = y;
+	x = new_x;
+	y = new_y;
 }
 
 /*********************************************

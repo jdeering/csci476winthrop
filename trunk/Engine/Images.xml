@@ -1,0 +1,3 @@
+﻿<IMAGES>
+  <image file="images/mainMenu.bmp" ref="mainMenu" numFrames="1" numFrameCol="1" frameWidth="800" frameHeight="600"></image>
+</IMAGES>
