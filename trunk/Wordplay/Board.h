@@ -5,6 +5,12 @@
 
 class Board
 {
+	typedef struct {
+		Tile * tileObj;
+		int xpos;
+		int ypos;
+	} TileItem;
+
 	public:
 		//construct 
 		Board(int);
@@ -30,7 +36,7 @@ class Board
 		Tile boardset[9][9];
 
 		//keep a vector of the tiles for the current word
-		std::vector<Tile *> currentWord;
+		std::vector<TileItem> currentWord;
 
 		bool validWord;
 
@@ -42,5 +48,9 @@ class Board
 
 		//visually change the word when it is submittable or unsubmittable
 		void changeAppearance();
+	
+		void replaceLetters();
+	
+
 
 };
