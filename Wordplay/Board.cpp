@@ -209,7 +209,8 @@ void Board::checkWord(Dictionary d)
 	validWord = d.search(returnWord());
 }
 
-int Board::submitWord(){
+int Board::submitWord()
+{
 
 	int wordScore = 0;
 
@@ -282,4 +283,9 @@ void Board::replaceLetters()
 			}
 		break;
 	}
+}
+
+int Board::returnLevel()
+{
+	return level;
 }

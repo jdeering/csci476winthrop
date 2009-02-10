@@ -1,6 +1,8 @@
 #include <string>
 
+#include "Board.h"
 #include "Tile.h"
+#include "Dictionary.h"
 
 const int CHOOSE_LEVEL = 0;
 const int INSTRUCTIONS = 1;
@@ -9,19 +11,7 @@ const int IN_GAME = 2;
 int gameStatus = 0;
 
 //////////////////////////////////////////
-//	scoring				//
-//////////////////////////////////////////
-
-int scoreWord(std::string str, int lvl)
-{
-	//arbitrary scoring algorithm:
-	//give one point for every letter in the string, and multiply by 10, 20, 30, or 40
-	//depending on what level the user is on
-	return str.length() * lvl * 10;
-}
-
-//////////////////////////////////////////
-//	beginning the game		//
+//	beginning the game					//
 //////////////////////////////////////////
 
 void showSetLevelDialogue()
@@ -47,38 +37,7 @@ void hideSetLevelDialogue(){
 	//show instruction screen
 }
 
-
-void setLevel(int level)
-{
-	//this game offers four levels
-
-	//for level one
-	if (level == 1)
-	{
-
-	}
-	
-	//for level two
-	else if (level == 2)
-	{
-
-	}
-
-	//for level three
-	else if (level == 3)
-	{
-
-	}
-
-	//for level four
-	else
-	{
-
-	}
-
-}
-
-void showInstructions(int level){
+void showInstructions(){
 	//dependent on level, show text and picture instructions for the game
 
 	//place a button that lets the user begin the game
@@ -106,7 +65,7 @@ void setupGame()
 }
 
 //////////////////////////////////////////
-//	click functions			//
+//	click functions						//
 //////////////////////////////////////////
 
 void clickHandler(int x, int y)

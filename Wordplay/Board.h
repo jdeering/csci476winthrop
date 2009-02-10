@@ -25,6 +25,8 @@ class Board
 
 		//submit the current word
 		int submitWord();
+
+		int returnLevel();
 		
 		
 		
