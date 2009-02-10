@@ -14,15 +14,23 @@ Board::Board(int lvl)
 
 void Board::generateBoard()
 {
+	
+	//i don't think I need this any more
+	/*
 	//for each position in the array, make a new tile
 	for (int i = 0; i < 9; ++i)
 	{
 		for (int j = 0; j < 9; ++j)
 		{
-//			boardset[i][j] = new Tile();
+			//check for compiling...
+			Tile * nT;
+			nT = new Tile();
+			boardset[i][j] = nT;
 		}
 			
 	}
+	 
+	 */
 
 }
 
@@ -90,14 +98,14 @@ void Board::clickHandler(int x, int y)
 			case 2:
 				//allow for any neighboring tile (cardinal directions as well as diagonals)
 				//check to make sure it is selected, and it is the end of the word
-				if ((boardset[x+1][y+1].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y+1]) ||
-					(boardset[x-1][y-1].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y-1]) ||
-					(boardset[x+1][y].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y]) ||
-					(boardset[x-1][y].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y]) ||
-					(boardset[x][y+1].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y+1]) ||
-					(boardset[x][y-1].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y-1]) ||
-					(boardset[x+1][y-1].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y-1]) ||
-					(boardset[x-1][y+1].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y+1]) 
+				if ((boardset[x+1][y+1].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x+1][y+1]) ||
+					(boardset[x-1][y-1].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x-1][y-1]) ||
+					(boardset[x+1][y].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x+1][y]) ||
+					(boardset[x-1][y].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x-1][y]) ||
+					(boardset[x][y+1].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x][y+1]) ||
+					(boardset[x][y-1].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x][y-1]) ||
+					(boardset[x+1][y-1].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x+1][y-1]) ||
+					(boardset[x-1][y+1].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x-1][y+1]) 
 					)
 				{
 					validMove = true;
@@ -109,10 +117,10 @@ void Board::clickHandler(int x, int y)
 			case 3:
 			case 4:
 				//allow for any tile in cardinal direction
-				if ((boardset[x+1][y].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y]) ||
-					(boardset[x-1][y].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y]) ||
-					(boardset[x][y+1].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y+1]) ||
-					(boardset[x][y-1].isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y-1]) 
+				if ((boardset[x+1][y].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x+1][y]) ||
+					(boardset[x-1][y].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x-1][y]) ||
+					(boardset[x][y+1].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x][y+1]) ||
+					(boardset[x][y-1].isSelected() && currentWord.at(currentWord.size() - 1).tileObj == &boardset[x][y-1]) 
 					)
 				{
 					validMove = true;
@@ -123,7 +131,7 @@ void Board::clickHandler(int x, int y)
 		//if we've decided it's a valid move
 		if (validMove){
 			//add the letter to the word
-			addLetter(boardset[x][y]);
+			addLetter(boardset[x][y], x, y);
 		}
 
 		//otherwise ignore the click
@@ -131,10 +139,15 @@ void Board::clickHandler(int x, int y)
 
 }
 
-void Board::addLetter(Tile lastLetter)
+void Board::addLetter(Tile lastLetter, int arrayX, int arrayY)
 {
+	TileItem newTile;
+	newTile.tileObj = &lastLetter;
+	newTile.x = arrayX;
+	newTile.y = arrayY;
+	
 	//add the letter to the back of our current word
-	currentWord.push_back(&lastLetter);
+	currentWord.push_back(newTile);
 	
 	//change the word's appearance to indicate whether it's a submittable word or not
 	changeAppearance();
@@ -143,14 +156,14 @@ void Board::addLetter(Tile lastLetter)
 void Board::removeLetter(Tile toRemove)
 {
 	//unselect the top letter
-	currentWord.at(currentWord.size() - 1)->unhighlight();
+	currentWord.at(currentWord.size() - 1).tileObj->unhighlight();
 
 	//recursively remove the letters in the word until we reach the letter the user clicked on 
-	if (currentWord.back() != &toRemove)
+	if (currentWord.back().tileObj != &toRemove)
 	{		
 		currentWord.pop_back();
 
-		//go with the next title
+		//go with the next tile
 		removeLetter(toRemove);
 	}
 	//if we've found it, remove & stop recursing
@@ -168,13 +181,13 @@ void Board::changeAppearance()
 	if (isWord())
 	{
 		for (int i = 0; i < currentWord.size(); ++i)
-			currentWord.at(i)->highlightValid();
+			currentWord.at(i).tileObj->highlightValid();
 	}
 	//otherwise highlight it as not valid
 	else
 	{
 		for (int i = 0; i < currentWord.size(); ++i)
-			currentWord.at(i)->highlightInvalid();
+			currentWord.at(i).tileObj->highlightInvalid();
 	}
 }
 
@@ -184,7 +197,7 @@ std::string Board::returnWord()
 
 	//go through the vector of tiles, putting all the letters into a string
 	for (int i = 0; i < currentWord.size(); ++i){
-		currentString += currentWord.at(i)->getLetter();
+		currentString += currentWord.at(i).tileObj->getLetter();
 	}
 
 	//return the resultant string
@@ -207,28 +220,8 @@ int Board::submitWord(){
 		//scoring is dependent on level
 		wordScore = returnWord().length() * gameLevel * 10;
 
-		//now, delete all those tiles and, dependent on level, replace appropriately
-		switch (gameLevel)
-		{
-
-		//for levels one, two, and three, the tiles "fall" into place
-		case 1:
-		case 2:
-		case 3:
-			while (currentWord.size())
-			{
-				
-			}
-
-			break;
-
-		//for level four, the tiles are simply replaced with new tiles that are generated
-		case 4:
-			while (currentWord.size()){
-				
-			}
-			break;
-		}
+		//remove & replace the letters we just used
+		replaceLetters();
 
 	}
 
@@ -238,6 +231,55 @@ int Board::submitWord(){
 	return wordScore;
 }
 
-bool Board::isWord(){
+bool Board::isWord()
+{
 	return validWord;
+}
+
+void Board::replaceLetters()
+{
+	//now, delete all those tiles and, dependent on level, replace appropriately
+	switch (gameLevel)
+	{
+			
+			//for levels one, two, and three, the tiles "fall" into place
+		case 1:
+		case 2:
+		case 3:
+			while (currentWord.size())
+			{
+				//delete the letter from the board
+				boardset[currentWord.back().x][currentWord.back().y].delete();
+				
+				//fill in from top
+				if (currentWord.back().y > 0)
+				{
+					//drop blocks down until the only blank one remaining is at top
+					for (int i = 0; i < currentWord.back().y; i++){
+						boardset[currentWord.back().x][currentWord.back().y + i] = boardset[currentWord.back().x][currentWord.back().y + 1];
+						boardset[currentWord.back().x][currentWord.back().y + 1].dropDown();
+						
+						currentWord.pop_back();
+					}
+				}
+				Tile * nT;
+				nT = new Tile();
+			
+				nt->slideFromTop();
+				
+				//fill in the top block with a new letter
+				boardset[currentWord.back().x][0] = nT;
+			}
+			
+			break;
+			
+			//for level four, the tiles are simply replaced with new tiles that are generated
+		case 4:
+			while (currentWord.size()){
+				Tile * nT;
+				nT = new Tile();
+				boardset[currentWord.back().x][currentWord.back().y] = nT;
+			}
+		break;
+	}
 }
