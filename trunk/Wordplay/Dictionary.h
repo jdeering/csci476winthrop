@@ -1,3 +1,5 @@
+#ifndef DICTIONARY_H
+#define DICTIONARY_H
 #include <vector>
 #include <string>
 
@@ -10,3 +12,4 @@ class Dictionary
 	private:
 		std::vector <std::string> words;
 };
+#endif

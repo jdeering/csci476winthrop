@@ -1,5 +1,7 @@
+#ifndef TILE_H
+#define TILE_H
 #include <string>
-#include "../APIFramework/GameFramework.h";
+#include "../APIFramework/GameFramework.h"
 
 class Tile
 {
@@ -13,11 +15,16 @@ class Tile
 		void highlightInvalid();
 		void unhighlight();
 
+		void dropDown(int, int);
+		void slideFromTop(int, int);
+		Tile & operator=(Tile & rhs);
+	
+		
+		GFSprite * relatedSprite;
+
 	private:
 		char letter;
 		bool selected;
-
-		GFSprite * relatedSprite;
-
 		char generateLetter();
 };
+#endif
