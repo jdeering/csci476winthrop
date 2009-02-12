@@ -4,11 +4,28 @@
 #include "Tile.h"
 #include "Dictionary.h"
 
-const int CHOOSE_LEVEL = 0;
-const int INSTRUCTIONS = 1;
-const int IN_GAME = 2;
+enum GameStatus {CHOOSE_LEVEL, INSTRUCTIONS, IN_GAME};
+GameStatus currentStatus;
 
-int gameStatus = 0;
+Board * gameBoard;
+int gameLevel;
+
+//function prototypes
+
+//hide and show functions for beginning of game
+void showSetLevelDialogue();
+void hideSetLevelDialogue();
+void showInstructions(int);
+void hideInstructions();
+
+//setup functions
+void setupGame();
+
+//click handlers
+void clickHandler(int, int);
+void clickSubmit();
+void clickReset();
+void clickEnd();
 
 //////////////////////////////////////////
 //	beginning the game					//
@@ -18,34 +35,34 @@ void showSetLevelDialogue()
 {
 	//show the user a choice of levels with explanations of the rules
 
-	//display background dialog box, it blocks out the whole gameplay area
-
-	//display the four buttons for each of the levels
-
-	//display the four text labels below them, and the level descriptions
-
-	//need to think about how to make level descriptions concise and understandable
-	
+	//change game status to let us know that we're choosing the level
+	currentStatus = CHOOSE_LEVEL;
 
 }
 
 void hideSetLevelDialogue(){
 	//when the user clicks a level, we want to take away the dialogue box
 
-	//and begin the rest of gameplay
-
 	//show instruction screen
+
+
 }
 
 void showInstructions(){
 	//dependent on level, show text and picture instructions for the game
 
+
 	//place a button that lets the user begin the game
+	currentStatus = INSTRUCTIONS;
 }
 
 void hideInstructions(){
 
 	//hide the instruction screen
+
+
+
+	currentStatus = IN_GAME;
 
 }
 
@@ -56,9 +73,11 @@ void hideInstructions(){
 void setupGame()
 {
 
-	//set up board
-
 	//set up dictionary
+	Dictionary userDictionary("");
+
+	//make the gameboard
+	gameBoard = new Board(gameLevel, &userDictionary);
 
 	//set up layout of everything on screen
 
@@ -76,24 +95,40 @@ void clickHandler(int x, int y)
 
 
 	//during choosing a level
-	if(gameStatus == CHOOSE_LEVEL)
+	if(currentStatus == CHOOSE_LEVEL)
 	{
 		//if it's a level button
-		if()
+		if(y > 400 && y < 575)
 		{
 			//hide the dialogue box
-			hideSetLevelDialogue()
+			hideSetLevelDialogue();
 
 			//decide which level it is, and select that level
-			setLevel(n);
+			if(x > 20 && x < 145)
+			{
+				gameLevel = 1;
+			}
+			else if (x > 165 && x < 290)
+			{
+				gameLevel = 2;
+			}
+			else if (x > 310 && x < 435)
+			{
+				gameLevel = 3;
+			}
+
+			else if (x > 455 && x < 580)
+			{
+				gameLevel = 4;
+			}
 			//go ahead and show instructions for that level
-			showInstructions(level);
+			showInstructions();
 		}
 
 	}
 			
 	//during instructions
-	else if (gameStatus == INSTRUCTIONS)
+	else if (currentStatus == INSTRUCTIONS)
 	{	
 		//if it's the begin game button	
 		if()
@@ -106,13 +141,13 @@ void clickHandler(int x, int y)
 	}
 
 	//during gameplay
-	else if (gameStatus == IN_GAME)
+	else if (currentStatus == IN_GAME)
 	{
 	
 		//if it's anywhere in the board, let it be handled there
 		if(x >= 25 && x <= 475 && y > 25 && y <=475)
 		{
-			gameBoard.clickHandler(x,y);
+			gameBoard->clickHandler(x,y);
 		}
 
 		//if it's the submit word button
@@ -122,13 +157,12 @@ void clickHandler(int x, int y)
 			//check to see if the word is valid
 
 			//if it is
-			if(gameBoard.isWord())
+			if(gameBoard->isWord())
 			{
 				//submit the word
-				
 				//replace the tiles on the board and take care of
 				//resetting any other variables on the board
-				gameboard.submitWord();
+				gameBoard->submitWord();
 				
 			}
 	
@@ -136,56 +170,18 @@ void clickHandler(int x, int y)
 		}
 		
 		//if it's the reset board button
-		else if(x > 510 && x < 590 && y > 130 & y < 160)
+		else if(x > 510 && x < 590 && y > 130 && y < 160)
 		{
-
+			clickReset();
 		}
 
 		//if it's the end game button
 		else if (x > 510 && x < 590 && y > 180 && y < 210)
 		{
-
+			clickEnd();
 		}
 
 	}
-}
-
-void clickLetter(Tile t)
-{
-
-	//a bunch of this will probably go in the board class but I'm going to go ahead and pseudocode it out
-
-	
-	//find the letter that the user just clicked on
-
-	//if the letter is not currently selected
-
-		//if the letter is adjacent to the most recently selected tile
-
-			//highlight it
-
-			//add it to the back of the current word we're forming
-
-			//check to see if that word is in the dictionary
-
-			//if the word is in the dictionary, highlight the button that lets the user submit the word
-			
-			//if not, we take no action
-
-	//if the letter is currently selected
-
-		//unhighlight it
-
-		//if it's the last letter
-
-			//take it off the end of the current word
-		
-		//if it's not the last letter
-
-			//take off the letters before the letter we clicked on and start it there
-
-	//update the currrent word in the game interface
-
 }
 
 void clickSubmit()

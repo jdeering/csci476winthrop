@@ -1,3 +1,5 @@
+#ifndef BOARD_H
+#define BOARD_H
 #include <string>
 #include <vector>
 #include "Dictionary.h"
@@ -7,13 +9,13 @@ class Board
 {
 	typedef struct {
 		Tile * tileObj;
-		int xpos;
-		int ypos;
+		int x;
+		int y;
 	} TileItem;
 
 	public:
 		//construct 
-		Board(int);
+		Board(int, Dictionary *);
 
 		//handle clicks
 		void clickHandler(int, int);
@@ -27,6 +29,8 @@ class Board
 		int submitWord();
 
 		int returnLevel();
+
+		void displayBoard();
 		
 		
 		
@@ -40,19 +44,16 @@ class Board
 		//keep a vector of the tiles for the current word
 		std::vector<TileItem> currentWord;
 
+		Dictionary * userDictionary;
+
 		bool validWord;
 
-		void generateBoard();
-		void displayBoard();
-
-		void addLetter(Tile);
+		void addLetter(Tile, int, int);
 		void removeLetter(Tile);
 
 		//visually change the word when it is submittable or unsubmittable
 		void changeAppearance();
 	
 		void replaceLetters();
-	
-
-
 };
+#endif

@@ -50,11 +50,30 @@ void Tile::unhighlight()
 	relatedSprite->setSpriteFrame(0);
 }
 
+void Tile::dropDown(int x, int y)
+{
+	//this is used to slide a tile to the position just below it
+	//so we just move down in the y direction 50 px
+	relatedSprite->moveTo(x * 50 + 25, y * 50 + 50, 500);
+}
+
+void Tile::slideFromTop(int x, int y)
+{
+	//this is used to slide a tile from the top of the screen
+	//to the specified spot
+
+	showTile(x * 50 + 25, 0);
+
+	//slide to position we want
+	relatedSprite->moveTo(x * 50 + 25,y + 25,500);
+
+}
+
 char Tile::generateLetter(){
 	//generate random number between 0 and 100 (double precision)
 	int leftDecimal = (rand() % 100);
-	float rightDecimal = (rand() % 1000) / 1000.00;
-	float n = leftDecimal + rightDecimal;	
+	double rightDecimal = (rand() % 1000) / 1000.00;
+	double n = leftDecimal + rightDecimal;	
 
 	//depending on where it is in the distribution, return a letter
 	//distribution based on http://www.csm.astate.edu/~rossa/datasec/frequency.html
@@ -85,4 +104,12 @@ char Tile::generateLetter(){
 	else if (n < 99.955) return 'y';
 	else return 'z';
 
+}
+
+Tile &Tile::operator= (Tile & rhs)
+{
+	letter = rhs.getLetter();
+	selected = rhs.isSelected();
+	relatedSprite = rhs.relatedSprite;
+	return *this;
 }

@@ -1,37 +1,11 @@
 #include "Board.h"
 
-Board::Board(int lvl)
+Board::Board(int lvl, Dictionary * d)
 {
 	//set the game level according to user input
 	gameLevel = lvl;
 
-	//generate the gameboard
-	generateBoard();
-
-	//display the gameboard
-	displayBoard();
-}
-
-void Board::generateBoard()
-{
-	
-	//i don't think I need this any more
-	/*
-	//for each position in the array, make a new tile
-	for (int i = 0; i < 9; ++i)
-	{
-		for (int j = 0; j < 9; ++j)
-		{
-			//check for compiling...
-			Tile * nT;
-			nT = new Tile();
-			boardset[i][j] = nT;
-		}
-			
-	}
-	 
-	 */
-
+	userDictionary = d;
 }
 
 void Board::displayBoard()
@@ -69,7 +43,7 @@ void Board::clickHandler(int x, int y)
 
 	found = false;
 	//and figure out where we are y-wise in the same manner
-	for (int i = 0; i < 450 & ! found; i = i + 50)
+	for (int i = 0; i < 450 && ! found; i = i + 50)
 	{
 		if (x > i && x < (i + 50))
 		{
@@ -180,13 +154,13 @@ void Board::changeAppearance()
 	//if it's a word, highlight it as valid
 	if (isWord())
 	{
-		for (int i = 0; i < currentWord.size(); ++i)
+		for (int i = 0; i < (signed)currentWord.size(); ++i)
 			currentWord.at(i).tileObj->highlightValid();
 	}
 	//otherwise highlight it as not valid
 	else
 	{
-		for (int i = 0; i < currentWord.size(); ++i)
+		for (int i = 0; i < (signed)currentWord.size(); ++i)
 			currentWord.at(i).tileObj->highlightInvalid();
 	}
 }
@@ -196,7 +170,7 @@ std::string Board::returnWord()
 	std::string currentString = "";
 
 	//go through the vector of tiles, putting all the letters into a string
-	for (int i = 0; i < currentWord.size(); ++i){
+	for (int i = 0; i < (signed)currentWord.size(); ++i){
 		currentString += currentWord.at(i).tileObj->getLetter();
 	}
 
@@ -249,8 +223,6 @@ void Board::replaceLetters()
 		case 3:
 			while (currentWord.size())
 			{
-				//delete the letter from the board
-				boardset[currentWord.back().x][currentWord.back().y].delete();
 				
 				//fill in from top
 				if (currentWord.back().y > 0)
@@ -258,18 +230,18 @@ void Board::replaceLetters()
 					//drop blocks down until the only blank one remaining is at top
 					for (int i = 0; i < currentWord.back().y; i++){
 						boardset[currentWord.back().x][currentWord.back().y + i] = boardset[currentWord.back().x][currentWord.back().y + 1];
-						boardset[currentWord.back().x][currentWord.back().y + 1].dropDown();
-						
-						currentWord.pop_back();
+						boardset[currentWord.back().x][currentWord.back().y + 1].dropDown(currentWord.back().x, currentWord.back().y);
 					}
 				}
 				Tile * nT;
 				nT = new Tile();
 			
-				nt->slideFromTop();
+				nT->slideFromTop(currentWord.back().x, currentWord.back().y);
 				
 				//fill in the top block with a new letter
 				boardset[currentWord.back().x][0] = nT;
+
+				currentWord.pop_back();
 			}
 			
 			break;
@@ -280,6 +252,8 @@ void Board::replaceLetters()
 				Tile * nT;
 				nT = new Tile();
 				boardset[currentWord.back().x][currentWord.back().y] = nT;
+
+				currentWord.pop_back();
 			}
 		break;
 	}
@@ -287,5 +261,5 @@ void Board::replaceLetters()
 
 int Board::returnLevel()
 {
-	return level;
+	return gameLevel;
 }
