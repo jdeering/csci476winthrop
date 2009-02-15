@@ -18,9 +18,9 @@ SpriteHandler::~SpriteHandler()
 }
 
 
-bool SpriteHandler::RemoveSprite(int refNum)
+bool SpriteHandler::RemoveSprite(std::string refName)
 {
-	std::map<int, Sprite>::iterator loc = sprites.find(refNum);
+	std::map<std::string, Sprite>::iterator loc = sprites.find(refName);
 	if(numSprites > 0 && loc != sprites.end())
 	{
 		sprites.erase(loc);
@@ -29,14 +29,32 @@ bool SpriteHandler::RemoveSprite(int refNum)
 	}
 	return false;
 }
-bool SpriteHandler::AddSprite(int refNum, std::string imageRef, int x, int y, int w, int h)
+bool SpriteHandler::AddSprite(std::string refName, std::string imageRef, int x, int y, int w, int h)
 {
 	if(numSprites < MAXSPRITES)
 	{
 		Sprite temp(imageRef, x, y, w, h);
 		temp.SetFrameCount(files[imageRef].GetNumFrames());
 		temp.SetColumnCount(files[imageRef].GetNumCols());
-		sprites[refNum] = temp;
+		sprites[refName] = temp;
+		numSprites++;	
+		return true;
+	}
+	else
+	{
+		allegro_message("Sprite cannot be added.");
+		return false;
+	}
+}
+
+bool SpriteHandler::AddSprite(std::string refName, std::string imageRef, int x, int y)
+{
+	if(numSprites < MAXSPRITES)
+	{
+		Sprite temp(imageRef, x, y, files[imageRef].GetWidth(), files[imageRef].GetHeight());
+		temp.SetFrameCount(files[imageRef].GetNumFrames());
+		temp.SetColumnCount(files[imageRef].GetNumCols());
+		sprites[refName] = temp;
 		numSprites++;	
 		return true;
 	}
@@ -52,13 +70,20 @@ void SpriteHandler::DrawSprites(BITMAP *buffer)
 	std::string refName = "";
 	int frame = 0;
 	BITMAP *temp;
-	for(std::map<int, Sprite>::iterator i = sprites.begin(); i != sprites.end(); ++i)
+	for(std::map<std::string, Sprite>::iterator i = sprites.begin(); i != sprites.end(); ++i)
 	{
-		i->second.Update();
-		refName = i->second.GetSheetRef();
-		frame = i->second.GetFrameNum();
-		temp = files[refName].GetFrame(frame, i->second.GetWidth(), i->second.GetHeight());
-		i->second.Draw(temp, buffer);
+		if(i->second.isAlive())
+		{
+			i->second.Update();
+			refName = i->second.GetSheetRef();
+			frame = i->second.GetFrameNum();
+			temp = files[refName].GetFrame(frame, i->second.GetWidth(), i->second.GetHeight());
+			i->second.Draw(temp, buffer);
+		}
+		else
+		{
+			sprites.erase(i);
+		}
 	}
 	destroy_bitmap(temp);
 }
@@ -86,4 +111,18 @@ bool SpriteHandler::RemoveFile(std::string imageRef)
 		return true;
 	}
 	return false;
+}
+
+std::string SpriteHandler::CheckClicks(BoundingBox &pointer)
+{
+	std::string sprite_name = "";
+	for(std::map<std::string, Sprite>::reverse_iterator i = sprites.rbegin(); i != sprites.rend(); ++i)
+	{
+		if(i->second.isColliding(pointer))
+		{
+			sprite_name = i->first;
+			break;
+		}
+	}
+	return sprite_name;
 }

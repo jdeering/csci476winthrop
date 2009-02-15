@@ -2,14 +2,7 @@
 
 #define FULLSCREEN 0
 
-void setText(const char*, int, int, int, bool);
-void readText(const std::wstring);
-std::wstring getWChar(const std::string&);
-
-#define BUFSIZE 4096
-
 Framework* fw;
-ISpVoice * pVoice = NULL;
 
 void Update()
 {
@@ -42,7 +35,6 @@ int main(int argc, char* argv[])
    fw = Framework::Instance();
 
    fw->LoadImages("Images.xml");
-   fw->AddSprite(100, "mainMenu", 0, 0, 400, 300);
 
 	while(fw->isActive())
 	{
@@ -56,41 +48,3 @@ int main(int argc, char* argv[])
 }
 
 END_OF_MAIN()
-
-
-
-void setText(const char *str, int x, int y, int color, bool read)
-{
-	if(str != NULL)
-	{
-		textout_centre_ex(screen, font, str, x, y, color, -1);
-		if(read)
-			readText(getWChar(str));
-	}
-	else
-		allegro_message("Invalid displayStr.\n");
-}
-
-void readText(const std::wstring str)
-{
-	HRESULT hr = CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&pVoice);
-    if( SUCCEEDED( hr ) )
-    {
-		hr = pVoice->SetRate(0);
-		hr = pVoice->Speak(str.c_str(), 0, NULL);
-        pVoice->Release();
-        pVoice = NULL;
-    }
-}
-
-std::wstring getWChar(const std::string &s)
-{
-	 int len;
-	 int slength = (int)s.length() + 1;
-	 len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
-	 wchar_t* buf = new wchar_t[len];
-	 MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
-	 std::wstring r(buf);
-	 delete[] buf;
-	 return r;
-}

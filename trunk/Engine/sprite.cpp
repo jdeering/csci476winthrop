@@ -13,7 +13,7 @@ Sprite::Sprite()
 	currFrame = 0;
 	moving = false;
 	animating = false;
-	active = true;
+	alive = true;
 	rest = 0;
 }
 
@@ -37,7 +37,7 @@ Sprite::Sprite(std::string imageRef, int x = 0, int y = 0, int w = 0, int h = 0)
 	box.SetSize(w, h);
 	moving = false;
 	animating = false;
-	active = true;
+	alive = true;
 	rest = 0;
 }
 
@@ -75,14 +75,14 @@ void Sprite::SetFrameDelay(int delay)
 }
 
 /******************************************************
-	Toggles whether or not the sprite is active.
+	Toggles whether or not the sprite is alive.
 
 	@param val <code>true</code> to have the sprite drawn,
 				 <code>false</code> to have it not drawn
 ******************************************************/
-void Sprite::SetActive(bool val)
+void Sprite::SetAlive(bool val)
 {
-	active = val;
+	alive = val;
 }
 
 /******************************************************
@@ -95,7 +95,7 @@ bool Sprite::isAnimating(){ return animating; }
 	@return <code>true</code> if the sprite is being drawn,
 			  <code>false</code> otherwise
 ******************************************************/
-bool Sprite::isActive(){ return active; }
+bool Sprite::isAlive(){ return alive; }
 
 /******************************************************
 	Sets the current animation frame to draw.
@@ -159,7 +159,7 @@ void Sprite::MoveTo(int x, int y, int s)
 ******************************************************/
 void Sprite::Update()
 {
-	if(active)
+	if(alive)
 	{
 		NextFrame();
 		MovePosition();
@@ -197,6 +197,7 @@ void Sprite::NextFrame()
 ******************************************************/
 void Sprite::Draw(BITMAP *frame, BITMAP *buffer)
 {
+	if(visible)
 	blit(frame, buffer, 0, 0, box.GetPositionX(), box.GetPositionY(),
 		box.GetWidth(), box.GetHeight());
 }
@@ -269,4 +270,24 @@ int Sprite::GetWidth()
 int Sprite::GetHeight()
 {
 	return box.GetHeight();
+}
+
+void Sprite::SetVisible(bool in)
+{
+	visible = in;
+}
+
+bool Sprite::isVisible()
+{
+	return visible;
+}
+
+
+bool Sprite::isColliding(BoundingBox &box)
+{
+	return box.isColliding(box);
+}
+bool Sprite::isColliding(Sprite &other_sprite)
+{
+	return box.isColliding(other_sprite.box);
 }
