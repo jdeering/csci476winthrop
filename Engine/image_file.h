@@ -17,6 +17,8 @@ public:
 	BITMAP* GetFrame(int frameNum, int width, int height);
 	int GetNumFrames();
 	int GetNumCols();
+	int GetWidth(){ return frameWidth; }	
+	int GetHeight(){ return frameHeight; }
 };
 
 

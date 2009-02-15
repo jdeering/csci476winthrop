@@ -1,5 +1,4 @@
 #include "engine.h"
-
 Framework* Framework::inst = NULL;
 
 Framework* Framework::Instance()
@@ -14,7 +13,10 @@ Framework* Framework::Instance()
 Framework::Framework()
 {
 	buffer = create_bitmap(800, 600);
+	gameRunning = false;
 	active = true;
+	gameCount = 0;
+	LoadGames();
 }
 
 Framework::~Framework()
@@ -75,21 +77,101 @@ void Framework::LoadImages()
 	destroy_bitmap(temp);
 }
 
-void Framework::LoadAudio(){}
-void Framework::LoadText(){}
+void Framework::LoadAudio()
+{
+	SAMPLE *temp = NULL;
+	audXML.FindElem();
+	bool loopVal = false;
+	while(audXML.FindChildElem(TEXT("audio")))
+	{
+		audXML.IntoElem();
+		// Get attributes
+		std::wstring atFile = audXML.GetAttrib(TEXT("file"));
+		std::wstring atRef = audXML.GetAttrib(TEXT("ref"));
+		std::wstring atLoop = audXML.GetAttrib(TEXT("loop"));
+
+		// Set variables for attributes
+		std::string file(atFile.begin(), atFile.end());
+		std::string ref(atRef.begin(), atRef.end());
+		std::string loop(atLoop.begin(), atLoop.end());
+		audXML.OutOfElem();
+
+		if(strcmp(loop.c_str(), "true") == 0)
+			loopVal = true;
+		else if(strcmp(loop.c_str(), "false") == 0)
+			loopVal = false;
+		else
+		{
+			allegro_message("Error in Audio XML file (loop value).");
+			return;
+		}
+
+		temp = load_sample(file.c_str());
+		if(!temp)
+		{
+			allegro_message("File not found. Audio Sample %s not added.", ref);
+		}
+		else
+			audioObjects.AddSample(ref, temp, loopVal);
+	}
+	destroy_sample(temp);
+}
+
+void Framework::LoadText()
+{
+	txtXML.FindElem();
+	int x, y;
+	bool visVal = false;
+	while(txtXML.FindChildElem(TEXT("text")))
+	{
+		x=0; y=0;
+		txtXML.IntoElem();
+		// Get attributes
+		std::wstring atString = txtXML.GetAttrib(TEXT("string"));
+		std::wstring atRef = txtXML.GetAttrib(TEXT("ref"));
+		std::wstring atX = txtXML.GetAttrib(TEXT("x"));
+		std::wstring atY = txtXML.GetAttrib(TEXT("y"));
+		std::wstring atVisible = txtXML.GetAttrib(TEXT("visible"));
+
+		// Set variables for attributes
+		std::string textString(atString.begin(), atString.end());
+		std::string ref(atRef.begin(), atRef.end());
+		std::string xLoc(atX.begin(), atX.end());
+		std::string yLoc(atY.begin(), atY.end());
+		std::string visible(atVisible.begin(), atVisible.end());
+		txtXML.OutOfElem();
+		x = atoi(xLoc.c_str());
+		y = atoi(yLoc.c_str());
+
+		if(strcmp(visible.c_str(), "true") == 0)
+			visVal = true;
+		else if(strcmp(visible.c_str(), "false") == 0)
+			visVal = false;
+		else
+		{
+			allegro_message("Error in Audio XML file (loop value).");
+			return;
+		}
+
+//		textObjects.AddText(ref, textString, x, y, visVal);
+	}
+}
 
 void Framework::UpdateSprites()
 {
-	clear_to_color(buffer, makecol(255, 255, 255));
+	clear_to_color(buffer, makecol(0, 0, 255));
 	sprites.DrawSprites(buffer);
 }
 
 void Framework::MessageLoop()
 {
 	if(key[KEY_ESC])
-		active = false;
+		gameRunning = false;
 	UpdateSprites();
-	sprites.MoveSprite(100, 401, 301, 10);
+	if(gameRunning)
+	{
+		GetMessage();
+	}
 }
 
 void Framework::MainLoop()
@@ -98,4 +180,303 @@ void Framework::MainLoop()
 	acquire_screen();
 	blit(buffer, screen, 0, 0, 0, 0, 800, 600);
 	release_screen();
+}
+
+void Framework::CreateMessagePipes()
+{
+	SECURITY_ATTRIBUTES saAttr;	
+	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES); 
+	saAttr.bInheritHandle = TRUE; 
+	saAttr.lpSecurityDescriptor = NULL;
+
+	// Create a pipe for the child process's STDOUT. 
+
+	if ( ! CreatePipe(&hStdIn_Parent, &hStdOut_Child, &saAttr, 0) ) 
+		allegro_message("Error creating output pipe.");
+
+	// Ensure the read handle to the pipe for STDOUT is not inherited.
+
+	if ( ! SetHandleInformation(hStdIn_Parent, HANDLE_FLAG_INHERIT, 0) )
+		allegro_message("Error setting handle information.");
+
+	// Create a pipe for the child process's STDIN. 
+
+	if ( ! CreatePipe(&hStdOut_Parent, &hStdIn_Child, &saAttr, 0) ) 
+		allegro_message("Error creating input pipe.");
+
+	// Ensure the write handle to the pipe for STDIN is not inherited.
+
+	if ( ! SetHandleInformation(hStdOut_Parent, HANDLE_FLAG_INHERIT, 0) )
+		allegro_message("Error setting handle information.");
+}
+
+void Framework::LaunchGame(int gameNum)
+{
+}
+
+void Framework::LoadGames()
+{	
+	gameList.Load(TEXT("Games.xml"));
+	gameList.FindElem();
+
+	while(gameList.FindChildElem(TEXT("game")) && gameCount < 4)
+	{
+		gameList.IntoElem();
+		// Get attributes
+		std::wstring atPath = gameList.GetAttrib(TEXT("path"));
+		std::wstring atName = gameList.GetAttrib(TEXT("name"));
+		// Get Asset XML File Paths
+		gameList.FindChildElem(TEXT("imageFile"));
+		std::wstring atImageXMLPath = gameList.GetChildData();
+		gameList.FindChildElem(TEXT("audioFile"));
+		std::wstring atAudioXMLPath = gameList.GetChildData();		
+		gameList.FindChildElem(TEXT("textFile"));
+		std::wstring atTextXMLPath = gameList.GetChildData();
+		gameList.FindChildElem(TEXT("icon"));
+		std::wstring atIconWidth = gameList.GetChildAttrib(TEXT("width"));
+		std::wstring atIcondHeight = gameList.GetChildAttrib(TEXT("height"));
+		std::wstring atIconPath = gameList.GetChildData();
+		gameList.OutOfElem();
+
+		// Set variables for attributes
+		std::string path(atPath.begin(), atPath.end());
+		games[gameCount] = path;
+		gameCount++;
+	}
+}
+
+void Framework::LaunchGame(std::string appPath)
+{ 
+	std::wstring szCmdline(appPath.begin(), appPath.end());
+	PROCESS_INFORMATION piProcInfo; 
+	STARTUPINFO siStartInfo;
+	BOOL bSuccess = FALSE; 
+
+	// Set up members of the PROCESS_INFORMATION structure. 
+
+	ZeroMemory( &piProcInfo, sizeof(PROCESS_INFORMATION) );
+
+	// Set up members of the STARTUPINFO structure. 
+	// This structure specifies the STDIN and STDOUT handles for redirection.
+
+	ZeroMemory( &siStartInfo, sizeof(STARTUPINFO) );
+	siStartInfo.cb = sizeof(STARTUPINFO); 
+	siStartInfo.hStdError = hStdOut_Child;
+	siStartInfo.hStdOutput = hStdOut_Child;
+	siStartInfo.hStdInput = hStdIn_Child;
+	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+
+	// Create the child process. 
+
+	bSuccess = CreateProcess(szCmdline.c_str(), 
+	NULL,     // command line 
+	NULL,          // process security attributes 
+	NULL,          // primary thread security attributes 
+	TRUE,          // handles are inherited 
+	0,             // creation flags 
+	NULL,          // use parent's environment 
+	NULL,          // use parent's current directory 
+	&siStartInfo,  // STARTUPINFO pointer 
+	&piProcInfo);  // receives PROCESS_INFORMATION 
+
+	// If an error occurs, exit the application. 
+	if ( ! bSuccess ) 
+	allegro_message("Game could not launch.");
+	else 
+	{
+	// Close handles to the child process and its primary thread.
+	// Some applications might keep these handles to monitor the status
+	// of the child process, for example. 
+
+	CloseHandle(piProcInfo.hProcess);
+	CloseHandle(piProcInfo.hThread);
+	}
+}
+
+
+void Framework::GetMessage()
+{
+	bool test;
+	DWORD bytesRead;
+	test = ReadFile(hStdIn_Parent, incMessage, MAX_MESSAGE_SIZE, &bytesRead, NULL);
+
+	std::stringstream stream;
+	stream.str(incMessage);
+	int code;
+	stream >> code;
+	switch(code)
+	{
+	default : allegro_message("%d message code not recognized.", code); break;
+	}
+}
+
+void Framework::SendMessage(const char *msg)
+{
+	DWORD bytesWritten;
+	std::string message(msg);
+	WriteFile(hStdOut_Parent, message.c_str(), message.size(), &bytesWritten, NULL);
+}
+
+void Framework::CreateSprite(std::stringstream &stream)
+{
+	int x, y, w, h;
+	std::string reference, imageReference;
+	stream >> reference >> imageReference >> x >> y >> w >> h;
+	sprites.AddSprite(reference, imageReference, x, y, w, h);
+}
+
+void Framework:: CreateSpriteRefDimensions(std::stringstream &stream)
+{
+	int x, y;
+	std::string reference, imageReference;
+	stream >> reference >> imageReference >> x >> y;
+	sprites.AddSprite(reference, imageReference, x, y);
+}
+
+
+void Framework::KillSprite(std::stringstream &stream)
+{
+	std::string reference;
+	stream >> reference;
+	sprites.RemoveSprite(reference);
+}
+
+void Framework::ShowSprite(std::stringstream &stream)
+{
+	int vis;
+	std::string reference;
+	stream >> reference >> vis;
+	sprites.SetVisible(reference, vis);
+}
+
+void Framework::SetSpriteSize(std::stringstream &stream)
+{
+	std::string reference;
+	int w, h;
+	stream >> reference >> w >> h;
+	sprites.SetSpriteSize(reference, w, h);
+}
+
+void Framework::SetSpriteLocation(std::stringstream &stream)
+{
+	std::string reference;
+	int x, y;
+	stream >> reference >> x >> y;
+	sprites.SetSpriteLocation(reference, x, y);
+}
+
+void Framework::SetFrameDelay(std::stringstream &stream)
+{
+	std::string reference;
+	int delay;
+	stream >> reference >> delay;
+	sprites.SetFrameDelay(reference, delay);
+}
+
+void Framework::SetAnimation(std::stringstream &stream)
+{
+	std::string reference;
+	int animate;
+	stream >> reference >> animate;
+	sprites.SetAnimation(reference, animate);
+}
+
+void Framework::SetFrame(std::stringstream &stream)
+{
+	std::string reference;
+	int frame;
+	stream >> reference >> frame;
+	sprites.SetFrame(reference, frame);
+}
+
+void Framework::MoveSprite(std::stringstream &stream)
+{
+	std::string reference;
+	int x, y, speed;
+	stream >> reference >> x >> y >> speed;
+	sprites.MoveSprite(reference, x, y, speed);
+}
+
+void Framework::SetTextPosition(std::stringstream &stream)
+{
+	std::string reference;
+	int x, y;
+	stream >> reference >> x >> y;
+	textObjects.SetTextPosition(reference, x, y);
+}
+
+void Framework::ShowText(std::stringstream &stream)
+{
+	std::string reference;
+	stream >> reference;
+	textObjects.ShowText(reference, buffer);
+}
+
+void Framework::PlayFile(std::stringstream &stream)
+{
+	std::string reference;
+	stream >> reference;
+	audioObjects.PlaySample(reference, 128); // EDIT volume
+}
+
+
+void Framework::ResetLoop(std::stringstream &stream)
+{
+	std::string reference;
+	int loop;
+	stream >> reference >> loop;
+	audioObjects.ResetLoopFlag(reference, loop);
+}
+
+void Framework::StopFile(std::stringstream &stream)
+{
+	std::string reference;
+	stream >> reference;
+	audioObjects.StopSample(reference);
+}
+
+
+
+void Framework::UpdateMouse()
+{
+	std::string mouse_message = "";
+	std::stringstream message;
+	int button, state, x, y;
+	mouse.Update(x, y);
+	message.str(mouse_message);
+	message << "101 " << x << " " << y;
+	SendMessage(mouse_message.c_str());
+	message.clear();
+	mouse_message.clear();
+	if(mouse.StateChange(button, state, x, y))
+	{
+		message.str(mouse_message);
+		message << "102 " << button << " " << state << " " << x << " " << y;
+		SendMessage(mouse_message.c_str());
+		message.clear();
+		mouse_message.clear();
+		std::string sprite_name = sprites.CheckClicks(mouse.GetPointer());
+		if(strcmp(sprite_name.c_str(), "") != 0)
+		{
+			message.str(mouse_message);
+			message << "103 " << button << " " << state << " " << sprite_name.c_str();
+			SendMessage(mouse_message.c_str());
+			message.clear();
+			mouse_message.clear();
+		}
+	}
+}
+
+void Framework::UpdateKeyboard()
+{
+	int key, state;
+	std::string key_message;
+	std::stringstream message;
+	while(keyboard.StateChange(key, state))
+	{
+		key_message.clear();
+		message.str(key_message);
+		message << "201 " << key << " " << state;
+		SendMessage(key_message.c_str());
+	}
 }

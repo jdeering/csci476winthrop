@@ -8,21 +8,30 @@ class Sprite
 {
 private:
 	std::string fileRefName;
-	bool animating, loops, active;
+	bool animating, loops;
+	bool visible, alive;
 	int currFrame, numFrames, frameDelay;
 	int frameRows, frameColumns;
 	bool moving;
 	int rest;
 	int new_x, new_y, speed;
 	BoundingBox box;
+
+	void NextFrame();
+	void MovePosition();
+
 public:
 	Sprite();
 	Sprite(std::string, int, int, int, int);
 	~Sprite();
 	std::string GetSheetRef() { return fileRefName; }
+	bool isColliding(BoundingBox &box);
+	bool isColliding(Sprite &other_sprite);
 	bool isAnimating(void);
-	bool isActive(void);
-	void SetActive(bool);
+	bool isAlive(void);
+	void SetAlive(bool);
+	void SetVisible(bool);
+	bool isVisible();
 	void SetAnimation(int);
 	void SetFrameDelay(int);
 	void SetFrame(int);
@@ -36,9 +45,6 @@ public:
 	int GetFrameNum	();
 	void SetFrameCount(int);
 	void SetColumnCount(int);
-private:
-	void NextFrame();
-	void MovePosition();
 };
 
 #endif

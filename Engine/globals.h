@@ -6,5 +6,10 @@
 #include "sapi.h"
 #include <iostream>
 #include <string>
+#include <map>
+
+#define MAXSPRITES 500
+#define MAXFILES 100
+#define MAXGAMES 4
 
 #endif
