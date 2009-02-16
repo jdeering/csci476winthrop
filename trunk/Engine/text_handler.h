@@ -8,13 +8,14 @@ class TextHandler
 private:
 	std::map<std::string, Text> text;
 	void ReadText(std::string refName);
+	int numObjects;
 public:
-	TextHandler(){}
-	~TextHandler(){}
+	TextHandler();
+	~TextHandler();
 	bool AddText(std::string refName, std::string textString, int x, int y, bool visible);
 	bool RemoveText(std::string refName);
-	bool ShowText(std::string refName, BITMAP *bmp){return true;}
-	void SetTextPosition(std::string refName, int x, int y){}
+	bool ShowText(std::string refName, BITMAP *bmp);
+	void SetTextPosition(std::string refName, int x, int y);
 };
 
 
