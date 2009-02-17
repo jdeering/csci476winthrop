@@ -20,6 +20,7 @@ int main(int argc, char* argv[])
 		return 1;
    /* set up the keyboard handler */
    install_keyboard(); 
+   install_mouse();
 
    /* set a graphics mode sized 800x600 */  
 	int mode;
@@ -32,9 +33,8 @@ int main(int argc, char* argv[])
 	 allegro_message("Unable to set graphic mode.\n%s\n", allegro_error);
 	 return 1;
    } 
+   show_mouse(screen);
    fw = Framework::Instance();
-
-   fw->LoadImages("Images.xml");
 
 	while(fw->isActive())
 	{
@@ -42,6 +42,8 @@ int main(int argc, char* argv[])
 		fw->MainLoop();
 	}
 
+	remove_mouse();
+	remove_keyboard();
 	remove_timer();
     ::CoUninitialize();
     return EXIT_SUCCESS;

@@ -6,6 +6,8 @@ Mouse::Mouse()
 	y = mouse_y;
 	pointer.SetSize(2,2);
 	pointer.SetPosition(x-1, y-1);
+	leftPressed = false;
+	rightPressed = false;
 }
 
 void Mouse::Update(int &x_, int &y_)
@@ -21,7 +23,7 @@ bool Mouse::StateChange(int &button, int &state, int &x_, int &y_)
 {
 	button = 0;
 	state = 0;
-	bool change;
+	bool change = false;
 	Update(x_, y_);
 	int lb = (mouse_b & 1);
 	int rb = (mouse_b & 2);
@@ -68,9 +70,7 @@ bool Mouse::StateChange(int &button, int &state, int &x_, int &y_)
 		}
 	}
 
-	if(x >= 200 && x <= 800 && y >= 0 && y <= 600)
-		return change;
-	return false; // Do not return state changes if outside of game area
+	return change;
 }
 
 bool Mouse::LeftClick(BoundingBox &box)
@@ -152,7 +152,7 @@ Keyboard::Keyboard()
 
 bool Keyboard::StateChange(int &key_, int &state_)
 {
-	bool change;
+	bool change = false;
 	key_ = 0;
 	state_ = 0;
 	for(int i = 0; i < KEY_MAX && !change; i++)
@@ -164,7 +164,6 @@ bool Keyboard::StateChange(int &key_, int &state_)
 				change = true;
 				key_ = i;
 				state_ = 0;
-
 			}
 		}
 		else
@@ -177,6 +176,6 @@ bool Keyboard::StateChange(int &key_, int &state_)
 			}
 		}
 	}
-	pressed[key_] ^= true;
+	pressed[key_] ^= change;
 	return change;
 }

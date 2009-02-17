@@ -110,15 +110,20 @@ int BoundingBox::GetHeight()
 *********************************************/
 bool BoundingBox::isColliding(const BoundingBox &other)
 {
-	int diffX, diffY;
-	diffX = x - other.x;
-	diffY = y - other.y;
+	int left[2] = {x, other.x};
+	int top[2] = {y, other.y};
+	int right[2] = {x+width, other.x+other.width};
+	int bottom[2] = {y+height, other.y+other.height};
+	colliding = true;
 
-	if(diffX <= (width + other.width) &&
-		diffY <= (height + other.height))
-		colliding = true;
-	else
-		colliding = false;
+	// One is completely above or below the other
+
+	if(bottom[0] < top[1]) colliding = false;
+	if(top[0] > bottom[1]) colliding = false;
+
+	// One is completely left or right of the other
+	if(left[0] > right[1]) colliding = false;
+	if(right[0] < left[1]) colliding = false;
 
 	return colliding;
 }

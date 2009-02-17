@@ -2,7 +2,6 @@
 #define _Framework_H
 
 #include "globals.h"
-#include <sstream>
 #include "sprite_handler.h"
 #include "audio_handler.h"
 #include "text_handler.h"
@@ -10,6 +9,20 @@
 #include "Markup.h"
 
 #define MAX_MESSAGE_SIZE 512
+
+typedef struct
+{
+	std::string name;
+	std::string path;
+	std::string imageFile, audioFile, textFile;
+	BITMAP *icon;
+}Game;
+
+typedef struct
+{
+	int VOLUME;
+	bool TTS;
+}OPTIONS;
 
 class Framework
 {
@@ -31,26 +44,30 @@ public:
 	void LoadAudio(std::string file_name);
 	void LoadText(std::string file_name);
 	
-	void AddSprite(std::string refName, std::string imageRef, int x, int y, int w, int h)
-	{ sprites.AddSprite(refName, imageRef, x, y, w, h); }
-	bool isActive() { return active; }
-	bool gameIsRunning() { return gameRunning; }
+	void AddSprite(std::string refName, std::string imageRef, int x, int y, int w, int h);
+	bool isActive();
+	bool gameIsRunning();
+	void DrawMenu();
 protected:
 	/* PROTECTED CONSTRUCTORS */
 	Framework();
 	Framework(const Framework& fw);
 	Framework& operator=(const Framework&);
+
+
 	
 private:
 	/* TO PREVENT MULTIPLE FRAMEWORK INSTANCES */
 	static Framework* inst;
+
 
 	/* CLASS VARIABLES */
 	CMarkup imgXML, audXML, txtXML;
 	BITMAP *buffer;
 	bool gameRunning, active;
 	int gameCount;
-	std::string games[MAXGAMES];
+	Game games[MAXGAMES];
+	OPTIONS options;
 
 	/* MOUSE AND KEYBOARD HANDLERS */
 	Mouse mouse;
@@ -108,6 +125,8 @@ private:
 	void PlayFile(std::stringstream &stream);
 	void ResetLoop(std::stringstream &stream);
 	void StopFile(std::stringstream &stream);
+
+	void PostScore(std::stringstream &stream);
 };
 
 #endif
