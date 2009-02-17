@@ -21,7 +21,7 @@ TextHandler::~TextHandler()
 bool TextHandler::AddText(std::string refName, std::string textString, int x, int y, bool visible)
 {
 	Text temp;
-	if(numObjects < MAXOBJECTS)
+	if(numObjects < MAXFILES)
 	{
 		temp.LoadText(textString, x, y, visible);
 		text[refName] = temp;

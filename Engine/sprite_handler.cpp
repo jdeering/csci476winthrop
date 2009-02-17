@@ -69,7 +69,7 @@ void SpriteHandler::DrawSprites(BITMAP *buffer)
 {
 	std::string refName = "";
 	int frame = 0;
-	BITMAP *temp;
+	BITMAP *temp = NULL;
 	for(std::map<std::string, Sprite>::iterator i = sprites.begin(); i != sprites.end(); ++i)
 	{
 		if(i->second.isAlive())
@@ -85,7 +85,8 @@ void SpriteHandler::DrawSprites(BITMAP *buffer)
 			sprites.erase(i);
 		}
 	}
-	destroy_bitmap(temp);
+	if(temp)
+		destroy_bitmap(temp);
 }
 
 bool SpriteHandler::AddFile(std::string imageRef, std::string filePath, int w, int h, int frame_count, int col_count)
@@ -125,4 +126,34 @@ std::string SpriteHandler::CheckClicks(BoundingBox &pointer)
 		}
 	}
 	return sprite_name;
+}
+
+void SpriteHandler::SetSpriteSize(std::string refName, int w, int h)
+{
+	sprites[refName].SetSize(w, h);
+}
+
+void SpriteHandler::SetSpriteLocation(std::string refName, int x, int y)
+{
+	sprites[refName].SetPosition(x, y);
+}
+
+void SpriteHandler::SetVisible(std::string refName, int visible)
+{
+	sprites[refName].SetVisible(visible);
+}
+
+void SpriteHandler::SetFrameDelay(std::string refName, int delay)
+{
+	sprites[refName].SetFrameDelay(delay);
+}
+
+void SpriteHandler::SetAnimation(std::string refName, int animate)
+{
+	sprites[refName].SetAnimation(animate);
+}
+
+void SpriteHandler::SetFrame(std::string refName, int frame)
+{
+	sprites[refName].SetFrame(frame);
 }

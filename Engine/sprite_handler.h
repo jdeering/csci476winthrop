@@ -30,12 +30,12 @@ public:
 
 	// Sprite moving/animating
 	void MoveSprite(std::string refName, int new_x, int new_y, int speed){ sprites[refName].MoveTo(new_x, new_y, speed); }
-	void SetSpriteSize(std::string refName, int w, int h){}
-	void SetSpriteLocation(std::string refName, int x, int y){}
-	void SetVisible(std::string refName, int visible){}
-	void SetFrameDelay(std::string refName, int delay){}
-	void SetAnimation(std::string refName, int animate){}
-	void SetFrame(std::string refName, int frame){}
+	void SetSpriteSize(std::string refName, int w, int h);
+	void SetSpriteLocation(std::string refName, int x, int y);
+	void SetVisible(std::string refName, int visible);
+	void SetFrameDelay(std::string refName, int delay);
+	void SetAnimation(std::string refName, int animate);
+	void SetFrame(std::string refName, int frame);
 
 	// Check Mouse Clicks on Sprites
 	std::string CheckClicks(BoundingBox &pointer);

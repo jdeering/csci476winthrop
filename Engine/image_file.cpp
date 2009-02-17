@@ -3,6 +3,7 @@
 
 ImageFile::ImageFile()
 {
+	img = NULL;
 }
 
 ImageFile::ImageFile(std::string file, int frame_count, int col_count, int w, int h)

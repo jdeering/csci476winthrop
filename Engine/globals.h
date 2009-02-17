@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <sstream>
 
 #define MAXSPRITES 500
 #define MAXFILES 100

@@ -16,11 +16,19 @@ Framework::Framework()
 	gameRunning = false;
 	active = true;
 	gameCount = 0;
+	options.VOLUME = 128;
+	options.TTS = false;
 	LoadGames();
+	std::string menu = "MenuImages.xml";
+	LoadImages(menu);
+	DrawMenu();
 }
 
 Framework::~Framework()
 {
+	show_mouse(NULL);
+	for(int i = 0; i < gameCount; i++)
+		destroy_bitmap(games[i].icon);
 	destroy_bitmap(buffer);
 	active = false;
 }
@@ -159,15 +167,22 @@ void Framework::LoadText()
 
 void Framework::UpdateSprites()
 {
+	scare_mouse();
 	clear_to_color(buffer, makecol(0, 0, 255));
 	sprites.DrawSprites(buffer);
+	unscare_mouse();
 }
 
 void Framework::MessageLoop()
 {
 	if(key[KEY_ESC])
+	{
 		gameRunning = false;
+		active = false;
+	}
 	UpdateSprites();
+	UpdateMouse();
+	UpdateKeyboard();
 	if(gameRunning)
 	{
 		GetMessage();
@@ -212,6 +227,7 @@ void Framework::CreateMessagePipes()
 
 void Framework::LaunchGame(int gameNum)
 {
+	gameRunning = true;
 }
 
 void Framework::LoadGames()
@@ -240,7 +256,17 @@ void Framework::LoadGames()
 
 		// Set variables for attributes
 		std::string path(atPath.begin(), atPath.end());
-		games[gameCount] = path;
+		std::string name(atName.begin(), atName.end());
+		std::string image(atImageXMLPath.begin(), atImageXMLPath.end());
+		std::string audio(atAudioXMLPath.begin(), atAudioXMLPath.end());
+		std::string text(atTextXMLPath.begin(), atTextXMLPath.end());
+		std::string iconPath(atIconPath.begin(), atIconPath.end());
+		games[gameCount].path = path;
+		games[gameCount].name = name;
+		games[gameCount].imageFile = image;
+		games[gameCount].audioFile = audio;
+		games[gameCount].textFile = text;
+		games[gameCount].icon = load_bitmap(iconPath.c_str(), NULL);
 		gameCount++;
 	}
 }
@@ -315,6 +341,11 @@ void Framework::SendMessage(const char *msg)
 	DWORD bytesWritten;
 	std::string message(msg);
 	WriteFile(hStdOut_Parent, message.c_str(), message.size(), &bytesWritten, NULL);
+}
+
+void Framework::AddSprite(std::string refName, std::string imageRef, int x, int y, int w, int h)
+{ 
+	sprites.AddSprite(refName, imageRef, x, y, w, h); 
 }
 
 void Framework::CreateSprite(std::stringstream &stream)
@@ -435,7 +466,12 @@ void Framework::StopFile(std::stringstream &stream)
 	audioObjects.StopSample(reference);
 }
 
-
+void Framework::PostScore(std::stringstream &stream)
+{
+	int score;
+	stream >> score;
+	gameRunning = false;
+}
 
 void Framework::UpdateMouse()
 {
@@ -443,26 +479,59 @@ void Framework::UpdateMouse()
 	std::stringstream message;
 	int button, state, x, y;
 	mouse.Update(x, y);
-	message.str(mouse_message);
+	message.clear();
 	message << "101 " << x << " " << y;
+	mouse_message = message.str();
 	SendMessage(mouse_message.c_str());
 	message.clear();
+	message.str("");
 	mouse_message.clear();
 	if(mouse.StateChange(button, state, x, y))
 	{
-		message.str(mouse_message);
-		message << "102 " << button << " " << state << " " << x << " " << y;
-		SendMessage(mouse_message.c_str());
-		message.clear();
-		mouse_message.clear();
 		std::string sprite_name = sprites.CheckClicks(mouse.GetPointer());
-		if(strcmp(sprite_name.c_str(), "") != 0)
+		if(x >= 0 && x <= 600 && y >= 0 && y <= 600/* && gameRunning*/) // Game event
 		{
-			message.str(mouse_message);
-			message << "103 " << button << " " << state << " " << sprite_name.c_str();
+			message.clear();
+			message.str("");
+			message << "102 " << button << " " << state << " " << x << " " << y;
+			mouse_message = message.str();
 			SendMessage(mouse_message.c_str());
 			message.clear();
 			mouse_message.clear();
+			if(strcmp(sprite_name.c_str(), "") != 0)
+			{				
+				message.clear();
+				message.str("");
+				message << "103 " << button << " " << state << " " << sprite_name.c_str();
+				mouse_message = message.str();
+				SendMessage(mouse_message.c_str());
+				message.clear();
+				mouse_message.clear();
+			}
+		}
+		else // Framework event
+		{
+			x += 200; // Reset x to reflect entire screen instead of only the game window
+			int volumeY = 200;
+			std::string sprite_name = sprites.CheckClicks(mouse.GetPointer());
+			if(strcmp(sprite_name.c_str(), "exitButton") == 0)
+			{
+				active = false;
+			}
+			else if(strcmp(sprite_name.c_str(), "volumeStrip") == 0)
+			{
+				if(state == 1 && button == 1)
+				{
+					int volX = x + 200;
+					if(volX > (160-25)) volX = (160-25);
+					if(volX < 10) volX = 10;
+					sprites.SetSpriteLocation("volumeIndicator", volX, volumeY);
+					audioObjects.SetVolume(volX * 2);
+				}
+			}
+			else
+			{
+			}
 		}
 	}
 }
@@ -475,8 +544,28 @@ void Framework::UpdateKeyboard()
 	while(keyboard.StateChange(key, state))
 	{
 		key_message.clear();
-		message.str(key_message);
+		message.clear();
+		message.str("");
 		message << "201 " << key << " " << state;
+		key_message = message.str();
 		SendMessage(key_message.c_str());
 	}
+}
+
+
+bool Framework::isActive()
+{ 
+	return active; 
+}
+
+bool Framework::gameIsRunning() 
+{ 
+	return gameRunning; 
+}
+
+void Framework::DrawMenu()
+{
+	sprites.AddSprite("exitButton", "exitButton", 10, 10);
+	sprites.AddSprite("volumeStrip", "volumeStrip", 10, 200);
+	sprites.AddSprite("volumeIndicator", "volumeIndicator", 10, 200);
 }

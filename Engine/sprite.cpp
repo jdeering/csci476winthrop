@@ -198,7 +198,7 @@ void Sprite::NextFrame()
 void Sprite::Draw(BITMAP *frame, BITMAP *buffer)
 {
 	if(visible)
-	blit(frame, buffer, 0, 0, box.GetPositionX(), box.GetPositionY(),
+	masked_blit(frame, buffer, 0, 0, box.GetPositionX(), box.GetPositionY(),
 		box.GetWidth(), box.GetHeight());
 }
 
@@ -283,10 +283,11 @@ bool Sprite::isVisible()
 }
 
 
-bool Sprite::isColliding(BoundingBox &box)
+bool Sprite::isColliding(BoundingBox &other_box)
 {
-	return box.isColliding(box);
+	return box.isColliding(other_box);
 }
+
 bool Sprite::isColliding(Sprite &other_sprite)
 {
 	return box.isColliding(other_sprite.box);
