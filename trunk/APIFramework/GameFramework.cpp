@@ -54,10 +54,14 @@ void GameFramework::gameLoop()
 void GameFramework::_getMessages()
 {
 	/* SIZE OF BUFFER DATA READ */
-	int readSize;
+	int readSize, p1, p2, p3, p4;
 
 	/* CHECK TO SEE IF THERE ARE MESSAGES REMAINING IN THE BUFFER */
 	//while (ReadFile(stdinFW, _msgBuffer, GFW_BUFFER_SIZE, &readSize, NULL))
+	std::cout << "getting buffer" << std::endl;
+	std::cin.getline(_msgBuffer, GFW_BUFFER_SIZE * sizeof(char));
+	std::cout << "got buffer: " << _msgBuffer << "***" << std::endl;
+
 	{
 		/* MESSAGE OPCODE */
 		int opcode;
@@ -68,13 +72,20 @@ void GameFramework::_getMessages()
 		switch(opcode)
 		{
 			case 101:
-				
+				if (!cb_MH) return;
+
+				sscanf(_msgBuffer, "%*d %d %d %d %d", &p1, &p2, &p3, &p4);
+				cb_MH(p1, p2, p3, p4); break;
 
 			case 102:
-				
+				sscanf(_msgBuffer, "%*d %d %d", &mouseX, &mouseY);
+				break;
 
 			case 201:
-				
+				if (!cb_KH) return;
+
+				sscanf(_msgBuffer, "%*d %d %d", &p1, &p2);
+				cb_KH(p1, p2); break;
 		}
 	}
 }
