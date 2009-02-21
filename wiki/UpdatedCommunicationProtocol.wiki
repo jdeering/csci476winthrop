@@ -1,4 +1,4 @@
-#summary Update Message Passing Protocol
+#summary Updated Message Passing Protocol
 
 = Introduction =
 
