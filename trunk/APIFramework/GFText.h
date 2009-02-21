@@ -6,6 +6,9 @@ class GFText
 	friend class GameFramework;
 
 	public:
+		/* SCREEN POSITION */
+		int _x, _y;
+		
 		/* NULL OBJECT */
 		static const GFText null;
 
@@ -29,8 +32,5 @@ class GFText
 	private:
 		/* REFERENCE NUMBER FOR FRAMEWORK */
 		int _ref;
-
-		/* SCREEN POSITION */
-		int _x, _y;
 };
 

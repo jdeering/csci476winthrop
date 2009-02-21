@@ -3,6 +3,7 @@
 #include "GameFramework.h"
 
 void mouseCB(int, int, int, int);
+bool gameCB();
 
 int main()
 {
@@ -38,9 +39,19 @@ int main()
 	
 	/* MOUSE CALLBACK HANDLER */
 	gf.mouseFunc(mouseCB);
+	
+	/* GAME HANDLER */
+	// gf.gameFunc(gameCB);
+	
+	gf.gameLoop();
 }
 
 void mouseCB(int btn, int state, int x, int y)
 {
 	std::cout << "Mouse button " << btn << " is now " << state << " @ " << x << ", " << y << std::endl;
 }
+
+bool gameCB()
+{
+	return true;
+};

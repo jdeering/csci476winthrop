@@ -7,6 +7,9 @@ class GFSprite
 	friend class GameFramework;
 
 	public:
+		/* SCREEN POSITION */
+		int _x, _y;
+		
 		/* NULL OBJECT */
 		static const GFSprite null;
 
@@ -40,7 +43,4 @@ class GFSprite
 	private:
 		/* REFERENCE NUMBER FOR FRAMEWORK */
 		int _ref;
-
-		/* SCREEN POSITION */
-		int _x, _y;
 };

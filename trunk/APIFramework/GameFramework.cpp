@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 //#include <winalleg.h>
 
 #include "GameFramework.h"
@@ -13,6 +14,9 @@ GameFramework::GameFramework()
 {
 	/* EMPTY THE BUFFER */
 	_clrBuffer();
+	
+	/* INITIAL SCORE */
+	score = 0ULL;
 
 	/* EMPTY THE INDEX TABLE */
 	memset(_index_table, INDEX_AVAIL, INDEX_TABLE_SIZE * sizeof(int));
@@ -28,12 +32,6 @@ GameFramework::~GameFramework()
 {
 	/* EMPTY THE BUFFER */
 	_clrBuffer();
-
-	/* DESTROY ALL OBJECTS FROM MEMORY */
-	sprintf(_msgBuffer, "602");
-
-	/* SEND THE MESSAGE TO THE FRAMEWORK */
-	std::cout << _msgBuffer << std::endl;
 }
 
 void GameFramework::_clrBuffer()
@@ -45,11 +43,14 @@ void GameFramework::kybdFunc(void (*f)(int, int))
 void GameFramework::mouseFunc(void (*f)(int, int, int, int))
 { cb_MH = f; };
 
+void GameFramework::spriteClickFunc(void (*f)(int, int, GFSprite&))
+{ cb_SH = f; };
+
 void GameFramework::gameFunc(bool (*f)())
 { cb_GL = f; };
 
 void GameFramework::gameLoop()
-{ do { _getMessages(); } while(cb_GL()); }
+{ if (cb_GL) do { _getMessages(); } while(cb_GL()); }
 
 void GameFramework::_getMessages()
 {
@@ -60,7 +61,7 @@ void GameFramework::_getMessages()
 	//while (ReadFile(stdinFW, _msgBuffer, GFW_BUFFER_SIZE, &readSize, NULL))
 	std::cout << "getting buffer" << std::endl;
 	std::cin.getline(_msgBuffer, GFW_BUFFER_SIZE * sizeof(char));
-	std::cout << "got buffer: " << _msgBuffer << "***" << std::endl;
+	std::cout << "got buffer: " << _msgBuffer << " ***" << std::endl;
 
 	{
 		/* MESSAGE OPCODE */
@@ -72,14 +73,20 @@ void GameFramework::_getMessages()
 		switch(opcode)
 		{
 			case 101:
+				sscanf(_msgBuffer, "%*d %d %d", &mouseX, &mouseY);
+				break;
+
+			case 102:
 				if (!cb_MH) return;
 
 				sscanf(_msgBuffer, "%*d %d %d %d %d", &p1, &p2, &p3, &p4);
 				cb_MH(p1, p2, p3, p4); break;
+				
+			case 103:
+				if (!cb_MH) return;
 
-			case 102:
-				sscanf(_msgBuffer, "%*d %d %d", &mouseX, &mouseY);
-				break;
+				sscanf(_msgBuffer, "%*d %d %d %d", &p1, &p2, &p3);
+				cb_SH(p1, p2, getSprite(p3)); break;
 
 			case 201:
 				if (!cb_KH) return;
@@ -88,6 +95,8 @@ void GameFramework::_getMessages()
 				cb_KH(p1, p2); break;
 		}
 	}
+	
+	std::cout << "done..." << std::endl;
 }
 
 GFSprite& GameFramework::createSprite(std::string aname, int x, int y, int w, int h)
@@ -276,6 +285,42 @@ void GameFramework::removeAudio(GFAudio &a)
 		_gfa.remove(a);
 	}
 	/* else WHERE IS YOUR GOD NOW? */
+};
+
+GFSprite& GameFramework::getSprite(int r)
+{ 
+	/* TEMPORARY OBJECT FOR EQUALITY */
+	GFSprite tmp(r, 0, 0); 
+	
+	/* FIND THE OBJECT CORRESPONDING TO THE REFERENCE NUMBER */
+	std::list<GFSprite>::iterator i = find(_gfs.begin(), _gfs.end(), tmp);
+	
+	/* RETURN THE OBJECT */
+	return (i == _gfs.end() ? (GFSprite&)GFSprite::null : *i);
+};
+
+GFText& GameFramework::getTextObj(int r)
+{ 
+	/* TEMPORARY OBJECT FOR EQUALITY */
+	GFText tmp(r, 0, 0); 
+	
+	/* FIND THE OBJECT CORRESPONDING TO THE REFERENCE NUMBER */
+	std::list<GFText>::iterator i = find(_gft.begin(), _gft.end(), tmp); 
+	
+	/* RETURN THE OBJECT */
+	return (i == _gft.end() ? (GFText&)GFText::null : *i);
+};
+
+GFAudio& GameFramework::getAudioObj(int r)
+{ 
+	/* TEMPORARY OBJECT FOR EQUALITY */
+	GFAudio tmp(r); 
+	
+	/* FIND THE OBJECT CORRESPONDING TO THE REFERENCE NUMBER */
+	std::list<GFAudio>::iterator i = find(_gfa.begin(), _gfa.end(), tmp); 
+	
+	/* RETURN THE OBJECT */
+	return (i == _gfa.end() ? (GFAudio&)GFAudio::null : *i);
 };
 
 /* MAXIMUM NUMBER OF OBJECTS */

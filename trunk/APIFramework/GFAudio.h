@@ -15,7 +15,6 @@ class GFAudio
 		/* CONSTANTS FOR AUDIO PLAYBACK */
 		static const int STOP = 0;
 		static const int PLAY = 1;
-		static const int PAUSE = 2;
 
 		/* PLAYBACK FUNCTIONS */
 		void setPlayback(int);
