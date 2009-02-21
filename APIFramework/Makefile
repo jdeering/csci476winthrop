@@ -38,3 +38,6 @@ GFText.o: GFText.cpp GFText.h
 # creates the GFAudio object
 GFAudio.o: GFAudio.cpp GFAudio.h
 	$(CPP) $(CFLAGS) $(COMPILE) GFAudio.cpp
+	
+winmake: example.cpp $(LIB_OBJS)
+	$(CPP) $(CFLAGS) -g -o example example.cpp $(LIB_OBJS)

@@ -16,6 +16,10 @@
 class /*SINGLETON*/ GameFramework
 {
 	public:
+		
+		/* SCORE */
+		unsigned long long int score;
+		
 		/* PUBLIC DESTRUCTOR */
 		~GameFramework();
 
@@ -25,6 +29,7 @@ class /*SINGLETON*/ GameFramework
 		/* SET CALLBACK FUNCTIONS */
 		void kybdFunc(void (*f)(int, int));
 		void mouseFunc(void (*f)(int, int, int, int));
+		void spriteClickFunc(void (*f)(int, int, GFSprite&));
 		void gameFunc(bool (*f)());
 
 		/* START LOOP FUNCTION */
@@ -46,6 +51,11 @@ class /*SINGLETON*/ GameFramework
 		/* MOUSE POSITION */
 		int mouseX, mouseY;
 		
+		/* GETTER FUNCTIONS */
+		GFSprite& getSprite(int r);
+		GFText& getTextObj(int r);
+		GFAudio& getAudioObj(int r);
+		
 	protected:
 		/* PROTECTED CONSTRUCTORS */
 		GameFramework();
@@ -54,6 +64,8 @@ class /*SINGLETON*/ GameFramework
 		/* COMMUNICATION DETAILS */
 		//HANDLE stdinFW, stdoutFW;
 		char _msgBuffer[GFW_BUFFER_SIZE];
+		
+		/* CLEANUP METHODS */
 		void _clrBuffer();
 		void _getMessages();
 
@@ -75,6 +87,7 @@ class /*SINGLETON*/ GameFramework
 		/* FUNCTION POINTERS */
 		void (*cb_KH)(int, int);		// CALLBACK - KYBD
 		void (*cb_MH)(int, int, int, int);	// CALLBACK - MOUSE
+		void (*cb_SH)(int, int, GFSprite&);	// CALLBACK - SPRITE CLICK
 		bool (*cb_GL)();			// GAME LOOP
 
 		/* OBJECT LISTS (FOR DESTRUCTION) */
