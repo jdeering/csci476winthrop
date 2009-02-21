@@ -1,4 +1,4 @@
-#summary Message Passing Protocol between the Developer API and the Framework
+#summary Update Message Passing Protocol
 
 = Introduction =
 
