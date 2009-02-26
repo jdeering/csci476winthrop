@@ -67,6 +67,7 @@ bool SpriteHandler::AddSprite(std::string refName, std::string imageRef, int x, 
 
 void SpriteHandler::DrawSprites(BITMAP *buffer)
 {
+	allegro_message("drawing sprites");
 	std::string refName = "";
 	int frame = 0;
 	BITMAP *temp = NULL;
@@ -77,8 +78,11 @@ void SpriteHandler::DrawSprites(BITMAP *buffer)
 			i->second.Update();
 			refName = i->second.GetSheetRef();
 			frame = i->second.GetFrameNum();
-			temp = files[refName].GetFrame(frame, i->second.GetWidth(), i->second.GetHeight());
-			i->second.Draw(temp, buffer);
+			temp = files[refName].GetFrame(frame, i->second.GetWidth(), i->second.GetHeight());	
+			if(!temp)
+				allegro_message("Error generating frame for sprite reference %s.", i->first);
+			else
+				i->second.Draw(temp, buffer);
 		}
 		else
 		{

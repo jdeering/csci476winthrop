@@ -1,5 +1,7 @@
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
+#define ALLEGRO_AND_MFC
+#define ALLEGRO_NO_MAGIC_MAIN
 
 #include "allegro.h"
 #include "winalleg.h"

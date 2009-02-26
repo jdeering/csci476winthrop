@@ -9,13 +9,15 @@ private:
 	std::map<std::string, Text> text;
 	void ReadText(std::string refName);
 	int numObjects;
+	bool readEnabled;
 public:
 	TextHandler();
 	~TextHandler();
 	bool AddText(std::string refName, std::string textString, int x, int y, bool visible);
 	bool RemoveText(std::string refName);
-	bool ShowText(std::string refName, BITMAP *bmp);
+	bool ShowText(std::string refName, int setVisible, BITMAP *bmp);
 	void SetTextPosition(std::string refName, int x, int y);
+	void SetTTS(bool TTS);
 };
 
 

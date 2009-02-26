@@ -1,11 +1,15 @@
 #include "engine.h"
 Framework* Framework::inst = NULL;
 
-Framework* Framework::Instance()
+Framework* Framework::Instance(char* user)
 {
+	allegro_message("FI");
+	std::string tempUsername = user;
+	allegro_message("user copied");
 	if(!Framework::inst)
 	{
-		Framework::inst = new Framework;
+		allegro_message("calling constructor");
+		Framework::inst = new Framework(tempUsername);
 	}
 	return Framework::inst;
 }
@@ -14,6 +18,22 @@ Framework::Framework()
 {
 	buffer = create_bitmap(800, 600);
 	gameRunning = false;
+	username = "Anonymous";
+	active = true;
+	gameCount = 0;
+	options.VOLUME = 128;
+	options.TTS = false;
+	LoadGames();
+	std::string menu = "MenuImages.xml";
+	LoadImages(menu);
+	DrawMenu();
+}
+
+Framework::Framework(std::string user)
+{
+	buffer = create_bitmap(800, 600);
+	gameRunning = false;
+	username = user;
 	active = true;
 	gameCount = 0;
 	options.VOLUME = 128;
@@ -37,27 +57,26 @@ Framework::~Framework()
 void Framework::LoadImages(std::string file_name)
 {
 	std::wstring file(file_name.begin(), file_name.end());
-	imgXML.Load(file);
+	imgXML.Load(file.c_str());
 	LoadImages();
 }
 
 void Framework::LoadAudio(std::string file_name)
 {
 	std::wstring file(file_name.begin(), file_name.end());
-	audXML.Load(file);
+	audXML.Load(file.c_str());
 	LoadAudio();
 }
 
 void Framework::LoadText(std::string file_name)
 {
 	std::wstring file(file_name.begin(), file_name.end());
-	txtXML.Load(file);
+	txtXML.Load(file.c_str());
 	LoadText();
 }
 
 void Framework::LoadImages()
 {
-	BITMAP *temp = NULL;
 	imgXML.FindElem();
 
 	while(imgXML.FindChildElem(TEXT("image")))
@@ -82,7 +101,6 @@ void Framework::LoadImages()
 		// Add file to sprite handler
 		sprites.AddFile(ref, file, atoi(numFrames.c_str()), atoi(numFrameCol.c_str()), atoi(width.c_str()), atoi(height.c_str()));
 	}
-	destroy_bitmap(temp);
 }
 
 void Framework::LoadAudio()
@@ -180,13 +198,16 @@ void Framework::MessageLoop()
 		gameRunning = false;
 		active = false;
 	}
+
 	UpdateSprites();
 	UpdateMouse();
 	UpdateKeyboard();
+	UpdateOptions();
 	if(gameRunning)
 	{
 		GetMessage();
 	}
+	CheckErrors();
 }
 
 void Framework::MainLoop()
@@ -332,7 +353,27 @@ void Framework::GetMessage()
 	stream >> code;
 	switch(code)
 	{
-	default : allegro_message("%d message code not recognized.", code); break;
+		// Sprites
+	case 301 : CreateSprite(stream); break;
+	case 302 : CreateSpriteRefDimensions(stream); break;
+	case 303 : KillSprite(stream); break;
+	case 304 : ShowSprite(stream); break;
+	case 305 : SetSpriteSize(stream); break;
+	case 306 : SetSpriteLocation(stream); break;
+	case 307 : SetFrameDelay(stream); break;
+	case 308 : SetAnimation(stream); break;
+	case 309 : SetFrame(stream); break;
+	case 310 : MoveSprite(stream); break;
+		// Text
+	case 401 : SetTextPosition(stream); break;
+	case 402 : ShowText(stream); break;
+		// Audio
+	case 501 : PlayFile(stream); break;
+	case 502 : ResetLoop(stream); break;
+	case 503 : StopFile(stream); break;
+		// Score
+	case 601 : PostScore(stream); break;
+	default : allegro_message("Code %d not recognized.", code); break;
 	}
 }
 
@@ -439,15 +480,16 @@ void Framework::SetTextPosition(std::stringstream &stream)
 void Framework::ShowText(std::stringstream &stream)
 {
 	std::string reference;
-	stream >> reference;
-	textObjects.ShowText(reference, buffer);
+	int show;
+	stream >> reference >> show;
+	textObjects.ShowText(reference, show, buffer);
 }
 
 void Framework::PlayFile(std::stringstream &stream)
 {
 	std::string reference;
 	stream >> reference;
-	audioObjects.PlaySample(reference, 128); // EDIT volume
+	audioObjects.PlaySample(reference, options.VOLUME); // EDIT volume
 }
 
 
@@ -555,7 +597,7 @@ void Framework::UpdateKeyboard()
 
 bool Framework::isActive()
 { 
-	return active; 
+	return active;
 }
 
 bool Framework::gameIsRunning() 
@@ -568,4 +610,21 @@ void Framework::DrawMenu()
 	sprites.AddSprite("exitButton", "exitButton", 10, 10);
 	sprites.AddSprite("volumeStrip", "volumeStrip", 10, 200);
 	sprites.AddSprite("volumeIndicator", "volumeIndicator", 10, 200);
+}
+
+void Framework::CheckErrors()
+{
+	if(errno && errno != 2)
+	{
+		char* message = strerror(errno);
+		allegro_message("Error %d : %s", errno, message);
+	}
+}
+
+void Framework::UpdateOptions()
+{	
+	if(options.VOLUME < 1) options.VOLUME = 1;
+	if(options.VOLUME > 255) options.VOLUME = 255;
+	audioObjects.SetVolume(options.VOLUME);
+	textObjects.SetTTS(options.TTS);
 }

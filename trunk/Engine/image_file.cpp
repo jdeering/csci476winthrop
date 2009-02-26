@@ -8,6 +8,7 @@ ImageFile::ImageFile()
 
 ImageFile::ImageFile(std::string file, int frame_count, int col_count, int w, int h)
 {	
+	img = NULL;
 	filePath = file;
 	frameWidth = w;
 	frameHeight = h;
@@ -17,8 +18,7 @@ ImageFile::ImageFile(std::string file, int frame_count, int col_count, int w, in
 	if(!img)
 	{
 		char* msg = "Could not find file ";
-		strcat(msg, filePath.c_str());
-		allegro_message(msg);
+		allegro_message("%s %s", msg, filePath.c_str());
 	}
 }
 
@@ -42,4 +42,14 @@ int ImageFile::GetNumFrames()
 int ImageFile::GetNumCols()
 { 
 	return numCols; 
+}
+
+int ImageFile::GetWidth()
+{ 
+	return frameWidth; 
+}
+
+int ImageFile::GetHeight()
+{ 
+	return frameHeight; 
 }
