@@ -74,23 +74,26 @@ void AudioHandler::SetReadText(bool read)
 void AudioHandler::Mute()
 {
 	muted = true;
+	ResetVolume(0);
 }
 
 void AudioHandler::Unmute()
 {
 	muted = false;
+	ResetVolume(volume);
 }
-
 
 void AudioHandler::ResetLoopFlag(std::string refName, int loop)
 {
 	samples[refName].ResetLoopFlag(volume, PAN, FREQ, loop);
 }
 
-void AudioHandler::ResetVolume(int volume)
+void AudioHandler::ResetVolume(int volume_)
 {
 	for(std::map<std::string, Audio>::iterator i = samples.begin(); i != samples.end(); ++i)
 	{
-		i->second.ResetVolume(volume, PAN, FREQ);
+		i->second.ResetVolume(volume_, PAN, FREQ);
 	}
+	if(volume_) // Only resets volume if not muting
+		volume = volume_;
 }

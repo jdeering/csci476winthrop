@@ -14,7 +14,7 @@ public:
 	Audio(SAMPLE* sam, bool loops);
 	void LoadSample(char* file, bool loops);
 	void Stop();
-	bool Play(int volume, int pan, int freq);
+	int Play(int volume, int pan, int freq);
 	void ResetVolume(int volume, int pan, int freq);
 	void ResetLoopFlag(int volume, int pan, int freq, int set_loop);
 };

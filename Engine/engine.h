@@ -7,6 +7,7 @@
 #include "text_handler.h"
 #include "input.h"
 #include "Markup.h"
+#include <errno.h>
 
 #define MAX_MESSAGE_SIZE 512
 
@@ -31,7 +32,7 @@ public:
 	~Framework();
 
 	/* SINGLETON INSTANCE METHOD */
-	static Framework* Instance();
+	static Framework* Instance(char*);
 	
 	/* MAIN GAME LOOP */
 	void MainLoop();
@@ -51,6 +52,7 @@ public:
 protected:
 	/* PROTECTED CONSTRUCTORS */
 	Framework();
+	Framework(std::string);
 	Framework(const Framework& fw);
 	Framework& operator=(const Framework&);
 
@@ -60,7 +62,6 @@ private:
 	/* TO PREVENT MULTIPLE FRAMEWORK INSTANCES */
 	static Framework* inst;
 
-
 	/* CLASS VARIABLES */
 	CMarkup imgXML, audXML, txtXML;
 	BITMAP *buffer;
@@ -68,6 +69,7 @@ private:
 	int gameCount;
 	Game games[MAXGAMES];
 	OPTIONS options;
+	std::string username;
 
 	/* MOUSE AND KEYBOARD HANDLERS */
 	Mouse mouse;
@@ -86,6 +88,7 @@ private:
 	void LaunchGame(std::string appPath);
 	void GetMessage();
 	void SendMessage(const char *msg);
+	void CheckErrors();
 
 	/* OBJECT VARIABLES */
 	SpriteHandler sprites;
@@ -96,6 +99,7 @@ private:
 	void UpdateSprites();
 	void UpdateAudio();
 	void UpdateText();
+	void UpdateOptions();
 
 	/* OBJECT INITIALIZATION / FILE LOADING */
 	void LoadGames();

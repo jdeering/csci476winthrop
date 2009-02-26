@@ -1,9 +1,5 @@
 #include "text_handler.h"
 
-void TextHandler::ReadText(std::string refName)
-{
-}
-
 TextHandler::TextHandler()
 {
 	numObjects = 0;
@@ -12,8 +8,8 @@ TextHandler::TextHandler()
 TextHandler::~TextHandler()
 {
 //	for(std::map<std::string, Text>::iterator i = text.begin(); i != text.end(); ++i)
-//	{
-		text.clear();			
+//	{			
+		text.clear();
 	//}
 	numObjects = 0;
 }
@@ -46,12 +42,27 @@ bool TextHandler::RemoveText(std::string refName)
 }
 
 
-bool TextHandler::ShowText(std::string refName, BITMAP *bmp)
+bool TextHandler::ShowText(std::string refName, int setVisible, BITMAP *bmp)
 {
+	if(setVisible)
+		text[refName].ShowText(readEnabled, bmp);
+	if(readEnabled)
+		ReadText(refName);
+
 	return true;
 }
 
 void TextHandler::SetTextPosition(std::string refName, int x, int y)
 {
 	text[refName].SetPosition(x, y);
+}
+
+void TextHandler::SetTTS(bool TTS)
+{
+	readEnabled = TTS;
+}
+
+void TextHandler::ReadText(std::string refName)
+{
+	text[refName].ReadText();
 }

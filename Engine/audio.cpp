@@ -32,7 +32,7 @@ void Audio::Stop()
 	playing = false;
 }
 
-bool Audio::Play(int volume, int pan, int freq)
+int Audio::Play(int volume, int pan, int freq)
 {
 	if(loop)
 	{
@@ -41,6 +41,7 @@ bool Audio::Play(int volume, int pan, int freq)
 			playing = true;
 			return play_sample(sample, volume, pan, freq, loop);
 		}
+		return 0;
 	}
 	else
 		return play_sample(sample, volume, pan, freq, loop);
