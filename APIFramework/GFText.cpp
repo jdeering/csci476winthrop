@@ -1,24 +1,32 @@
 #include <iostream>
-
-#include "GFText.h"
+#include "GameFramework.h"
 
 /* NULL OBJECT */
 GFText const GFText::null(-1, 0, 0);
 
+/* CONSTRUCTOR */
+GFText::GFText(int r, int x, int y) : GFObject(r), _x(x), _y(y) { };
+
 /* DESTRUCTOR */
 GFText::~GFText() { };
 
-/* CONSTRUCTOR */
-GFText::GFText(int r, int x, int y) : _ref(r), _x(x), _y(y) { };
+void GFText::setTextPosition(int x, int y)
+{ 
+	sprintf(_msgBuffer, "%d %d %d %d", TEXT_CHANGE_LOCATION, _ref, x, y); 
+	GameFramework::Instance().sendMessage(_msgBuffer);
+};
 
- /* 
-	A QUICK COMMENT ABOUT THIS OPERATOR:
-	there should be no case where this operator is EVER true, except in the case
-	where a function return value is checked against null. for that reason, this
-	operator serves only to service the needs of error checking.
- */
-bool GFText::operator==(const GFText &t)
-{ return _ref == t._ref; };
+void GFText::setVisible(bool f)
+{ 
+	sprintf(_msgBuffer, "%d %d %d", TEXT_VISIBILITY_CHANGE, _ref, f); 
+	GameFramework::Instance().sendMessage(_msgBuffer);
+};
+
+void GFText::setContent(std::string content)
+{ 
+	sprintf(_msgBuffer, "%d %d %s", TEXT_CHANGE_CONTENT, _ref, content.c_str()); 
+	GameFramework::Instance().sendMessage(_msgBuffer);
+};
 
 /* PRINT FUNCTION */
 std::ostream& operator<<(std::ostream &s, GFText &t)

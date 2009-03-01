@@ -52,6 +52,9 @@ void GameFramework::gameFunc(bool (*f)())
 void GameFramework::gameLoop()
 { if (cb_GL) do { _getMessages(); } while(cb_GL()); }
 
+void GameFramework::sendMessage(char* buffer)
+{ std::cout << buffer << std::endl; };
+
 void GameFramework::_getMessages()
 {
 	/* SIZE OF BUFFER DATA READ */
@@ -59,10 +62,6 @@ void GameFramework::_getMessages()
 
 	/* CHECK TO SEE IF THERE ARE MESSAGES REMAINING IN THE BUFFER */
 	//while (ReadFile(stdinFW, _msgBuffer, GFW_BUFFER_SIZE, &readSize, NULL))
-	std::cout << "getting buffer" << std::endl;
-	std::cin.getline(_msgBuffer, GFW_BUFFER_SIZE * sizeof(char));
-	std::cout << "got buffer: " << _msgBuffer << " ***" << std::endl;
-
 	{
 		/* MESSAGE OPCODE */
 		int opcode;
@@ -72,31 +71,29 @@ void GameFramework::_getMessages()
 
 		switch(opcode)
 		{
-			case 101:
+			case MOUSE_LOCATION_UPDATE:
 				sscanf(_msgBuffer, "%*d %d %d", &mouseX, &mouseY);
 				break;
 
-			case 102:
+			case MOUSE_STATE_CHANGE:
 				if (!cb_MH) return;
 
 				sscanf(_msgBuffer, "%*d %d %d %d %d", &p1, &p2, &p3, &p4);
 				cb_MH(p1, p2, p3, p4); break;
 				
-			case 103:
+			case MOUSE_SPRITE_CLICK:
 				if (!cb_MH) return;
 
 				sscanf(_msgBuffer, "%*d %d %d %d", &p1, &p2, &p3);
 				cb_SH(p1, p2, getSprite(p3)); break;
 
-			case 201:
+			case KEY_STATE_CHANGE:
 				if (!cb_KH) return;
 
 				sscanf(_msgBuffer, "%*d %d %d", &p1, &p2);
 				cb_KH(p1, p2); break;
 		}
 	}
-	
-	std::cout << "done..." << std::endl;
 }
 
 GFSprite& GameFramework::createSprite(std::string aname, int x, int y, int w, int h)
@@ -113,10 +110,43 @@ GFSprite& GameFramework::createSprite(std::string aname, int x, int y, int w, in
 	{ std::cerr << "Malformed Asset Name: " << aname << std::endl; return (GFSprite&)GFSprite::null; };
 
 	/* CREATE THE MESSAGE BUFFER TO SEND THE DATA TO THE FRAMEWORK */
-	sprintf(_msgBuffer, "301 %d %s %d %d %d %d", gfsi, aname.c_str(), x, y, w, h);
+	sprintf(_msgBuffer, "%d %d %s %d %d %d %d", SPRITE_CREATE, gfsi, aname.c_str(), x, y, w, h);
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
-	std::cout << _msgBuffer << std::endl;
+	sendMessage(_msgBuffer);
+
+	/* FIND THE NEXT AVAILABLE INDEX */
+	while (_index_table[gfsi] == INDEX_TAKEN)
+	{ ++gfsi; if (gfsi >= GFSU) gfsi = GFSL; };
+
+	/* CREATE THE OBJECT */
+	_gfs.push_back(GFSprite(gfsi, x, y));
+
+	/* INCREMENT VARIABLES */
+	_index_table[gfsi] = INDEX_TAKEN; ++gfsi; ++gfs_count;
+
+	/* RETURN THE REFERENCE */
+	return _gfs.back();
+}
+
+GFSprite& GameFramework::createSprite(std::string aname, int x, int y)
+{
+	/* IF WE HAVE ENOUGH SPRITES ALREADY, STOP HERE */
+	if (gfs_count >= GFS_MAX)
+	{ 
+		std::cerr << "Cannot create more than " << GFS_MAX << " sprites." << std::endl;
+		return (GFSprite&)GFSprite::null;
+	};
+
+	/* IF THERE ARE SPACES IN THE ASSET NAME, EXIT AS GRACEFULLY AS POSSIBLE */
+	if (aname.find(' ') != std::string::npos)
+	{ std::cerr << "Malformed Asset Name: " << aname << std::endl; return (GFSprite&)GFSprite::null; };
+
+	/* CREATE THE MESSAGE BUFFER TO SEND THE DATA TO THE FRAMEWORK */
+	sprintf(_msgBuffer, "%d %d %s %d %d", SPRITE_CREATE_FROM_ASSET, gfsi, aname.c_str(), x, y);
+
+	/* SEND THE MESSAGE TO THE FRAMEWORK */
+	sendMessage(_msgBuffer);
 
 	/* FIND THE NEXT AVAILABLE INDEX */
 	while (_index_table[gfsi] == INDEX_TAKEN)
@@ -141,10 +171,10 @@ void GameFramework::removeSprite(GFSprite &s)
 		_index_table[s._ref] = INDEX_AVAIL;
 
 		/* INFORM THE FRAMEWORK */
-		sprintf(_msgBuffer, "309 %d", s._ref);
+		sprintf(_msgBuffer, "%d %d", SPRITE_REMOVE, s._ref);
 
 		/* SEND THE MESSAGE TO THE FRAMEWORK */
-		std::cout << _msgBuffer << std::endl;
+		sendMessage(_msgBuffer);
 
 		/* REMOVE THE OFFENDING OBJECT */
 		_gfs.remove(s);
@@ -166,10 +196,10 @@ GFText& GameFramework::createTextFromAsset(std::string aname, int size, int x, i
 	{ std::cerr << "Malformed Asset Name: " << aname << std::endl; return (GFText&)GFText::null; };
 
 	/* CREATE THE MESSAGE BUFFER TO SEND THE DATA TO THE FRAMEWORK */
-	sprintf(_msgBuffer, "402 %d %d %d %d %s", gfti, size, x, y, aname.c_str());
+	sprintf(_msgBuffer, "%d %d %d %d %d %s", TEXT_CREATE_FROM_ASSET, gfti, size, x, y, aname.c_str());
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
-	std::cout << _msgBuffer << std::endl;
+	sendMessage(_msgBuffer);
 
 	/* FIND THE NEXT AVAILABLE INDEX */
 	while (_index_table[gfti] == INDEX_TAKEN)
@@ -195,10 +225,10 @@ GFText& GameFramework::createTextFromString(std::string str, int size, int x, in
 	};
 
 	/* CREATE THE MESSAGE BUFFER TO SEND THE DATA TO THE FRAMEWORK */
-	sprintf(_msgBuffer, "401 %d %d %d %d %s", gfti, size, x, y, str.c_str());
+	sprintf(_msgBuffer, "%d %d %d %d %d %s", TEXT_CREATE_FROM_STRING, gfti, size, x, y, str.c_str());
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
-	std::cout << _msgBuffer << std::endl;
+	sendMessage(_msgBuffer);
 
 	/* CREATE THE OBJECT */
 	_gft.push_back(GFText(gfti, x, y));
@@ -223,10 +253,10 @@ void GameFramework::removeText(GFText &t)
 		_index_table[t._ref] = INDEX_AVAIL;
 
 		/* INFORM THE FRAMEWORK */
-		sprintf(_msgBuffer, "405 %d", t._ref);
+		sprintf(_msgBuffer, "%d %d", TEXT_REMOVE, t._ref);
 
 		/* SEND THE MESSAGE TO THE FRAMEWORK */
-		std::cout << _msgBuffer << std::endl;
+		sendMessage(_msgBuffer);
 
 		/* REMOVE THE OFFENDING OBJECT */
 		_gft.remove(t);
@@ -248,10 +278,10 @@ GFAudio& GameFramework::createAudio(std::string aname)
 	{ std::cerr << "Malformed Asset Name: " << aname << std::endl; return (GFAudio&)GFAudio::null; };
 
 	/* CREATE THE MESSAGE BUFFER TO SEND THE DATA TO THE FRAMEWORK */
-	sprintf(_msgBuffer, "501 %d %s", gfai, aname.c_str());
+	sprintf(_msgBuffer, "%d %d %s", AUDIO_CREATE, gfai, aname.c_str());
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
-	std::cout << _msgBuffer << std::endl;
+	sendMessage(_msgBuffer);
 
 	/* FIND THE NEXT AVAILABLE INDEX */
 	while (_index_table[gfai] == INDEX_TAKEN)
@@ -276,10 +306,10 @@ void GameFramework::removeAudio(GFAudio &a)
 		_index_table[a._ref] = INDEX_AVAIL;
 
 		/* INFORM THE FRAMEWORK */
-		sprintf(_msgBuffer, "504 %d", a._ref);
+		sprintf(_msgBuffer, "%d %d", AUDIO_REMOVE, a._ref);
 
 		/* SEND THE MESSAGE TO THE FRAMEWORK */
-		std::cout << _msgBuffer << std::endl;
+		sendMessage(_msgBuffer);
 
 		/* REMOVE THE OFFENDING OBJECT */
 		_gfa.remove(a);
