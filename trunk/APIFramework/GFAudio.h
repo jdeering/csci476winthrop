@@ -1,27 +1,27 @@
+#pragma once
 #include <string>
 
-class GFAudio
+#include "GFObject.h"
+class GFAudio : public GFObject
 {
 	/* SO THAT THE FRAMEWORK CAN ACCESS PROTECTED MEMBERS */
 	friend class GameFramework;
 
 	public:
-		/* NULL OBJECT */
-		static const GFAudio null;
-
 		/* PUBLIC DESTRUCTOR */
 		~GFAudio();
+		
+		/* NULL OBJECT */
+		static const GFAudio null;
 
 		/* CONSTANTS FOR AUDIO PLAYBACK */
 		static const int STOP = 0;
 		static const int PLAY = 1;
 
 		/* PLAYBACK FUNCTIONS */
-		void setPlayback(int);
+		void play();
 		void stop();
-
-		/* OVERLOADED OPERATORS */
-		bool operator==(const GFAudio&);
+		void setLoopCount(int);
 
 		/* PRINT FUNCTION (FOR DEBUG) */
 		friend std::ostream& operator<<(std::ostream&, GFAudio&);
@@ -29,8 +29,4 @@ class GFAudio
 	protected:
 		/* PROTECTED CONSTRUCTOR */
 		GFAudio(int);
-
-	private:
-		/* REFERENCE NUMBER FOR FRAMEWORK */
-		int _ref;
 };

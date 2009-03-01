@@ -1,24 +1,32 @@
 #include <iostream>
-
-#include "GFAudio.h"
+#include "GameFramework.h"
 
 /* NULL OBJECT */
 GFAudio const GFAudio::null(-1);
 
+/* CONSTRUCTOR */
+GFAudio::GFAudio(int r) : GFObject(r) { };
+
 /* DESTRUCTOR */
 GFAudio::~GFAudio() { };
 
-/* CONSTRUCTOR */
-GFAudio::GFAudio(int r) : _ref(r) { };
+void GFAudio::play()
+{ 
+	sprintf(_msgBuffer, "%d %d", AUDIO_PLAY, _ref); 
+	GameFramework::Instance().sendMessage(_msgBuffer);
+};
 
- /* 
-	A QUICK COMMENT ABOUT THIS OPERATOR:
-	there should be no case where this operator is EVER true, except in the case
-	where a function return value is checked against null. for that reason, this
-	operator serves only to service the needs of error checking.
- */
-bool GFAudio::operator==(const GFAudio &a)
-{ return _ref == a._ref; };
+void GFAudio::stop()
+{ 
+	sprintf(_msgBuffer, "%d %d", AUDIO_STOP, _ref); 
+	GameFramework::Instance().sendMessage(_msgBuffer);
+};
+
+void GFAudio::setLoopCount(int loops)
+{ 
+	sprintf(_msgBuffer, "%d %d %d", AUDIO_SET_LOOP_COUNT, _ref, loops); 
+	GameFramework::Instance().sendMessage(_msgBuffer);
+};
 
 /* PRINT FUNCTION */
 std::ostream& operator<<(std::ostream &s, GFAudio &a)
