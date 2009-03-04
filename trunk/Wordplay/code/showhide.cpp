@@ -1,8 +1,6 @@
 #ifndef SHOWHIDE_CPP
 #define SHOWHIDE_CPP
-#include "globals.cpp"
-#include "clickhandlers.cpp"
-#include "main.cpp"
+#include "globals.h"
 
 void dialogueBox(string name)
 {

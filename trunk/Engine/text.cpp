@@ -1,10 +1,8 @@
 #include "text.h"
 
-ISpVoice* Text::pVoice = NULL;
-
 Text::Text()
 {
-	Text::pVoice = NULL;
+	pVoice = NULL;
 	x = 0; 
 	y = 0; 
 	visible = false;
@@ -12,8 +10,11 @@ Text::Text()
 
 Text::~Text()
 {
-	Text::pVoice->Release();
-	Text::pVoice = NULL;
+	if(pVoice)
+	{
+		pVoice->Release();
+		pVoice = NULL;
+	}
 }
 
 void Text::LoadText(std::string txt, int x_, int y_, bool vis)
@@ -27,13 +28,13 @@ void Text::LoadText(std::string txt, int x_, int y_, bool vis)
 void Text::ReadText()
 {	
 	const std::wstring str(text.begin(), text.end());
-	HRESULT hr = CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&Text::pVoice);
+	HRESULT hr = CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&pVoice);
     if( SUCCEEDED( hr ) )
     {
-		hr = Text::pVoice->SetRate(0);
-		hr = Text::pVoice->Speak(str.c_str(), 0, NULL);
-        Text::pVoice->Release();
-        Text::pVoice = NULL;
+		hr = pVoice->SetRate(0);
+		hr = pVoice->Speak(str.c_str(), 0, NULL);
+        pVoice->Release();
+        pVoice = NULL;
     }
 }
 

@@ -5,6 +5,8 @@
 
 Framework* fw;
 
+void LaunchLogin();
+
 void Update()
 {
 	fw->MessageLoop();
@@ -17,24 +19,20 @@ int main(int argc, char* argv[])
 
 	if (allegro_init())
 	{
-		allegro_message("Allegro could not be initialized. Application Terminating.");
+		printf("Allegro could not be initialized. Application Terminating.");
 		return 1;
 	}
+
 	if (install_timer())
 	{
 		allegro_message("Failed to install timer. Application Terminating.");
 		return 1;
 	}
-	
-	for(int i = 0; i < argc; i++)
-	{
-		allegro_message("%s", argv[i]);
-	}
 
-	char* username = "Anonymous";
+	std::string user = "Anonymous";
 	// Get username
 	if(argc > 1)
-		strcpy(username, argv[1]);
+		user = argv[1];
 
    install_keyboard(); 
    install_mouse();
@@ -53,7 +51,8 @@ int main(int argc, char* argv[])
 	} 
 
 	show_mouse(screen);
-    fw = Framework::Instance(username);
+
+    fw = Framework::Instance(user);
 
 	while(fw->isActive())
 	{
@@ -67,7 +66,57 @@ int main(int argc, char* argv[])
 	remove_keyboard();
 	remove_timer();
     ::CoUninitialize();
+
+	LaunchLogin();
+
     return EXIT_SUCCESS;
 }
 
 END_OF_MAIN()
+
+
+void LaunchLogin()
+// Create a child process that uses the previously created pipes for STDIN and STDOUT.
+{ 
+	TCHAR szCmdline[]=TEXT("LoginGUI.exe");
+   PROCESS_INFORMATION piProcInfo;
+   STARTUPINFO siStartInfo;
+   BOOL bSuccess = FALSE; 
+ 
+// Set up members of the PROCESS_INFORMATION structure. 
+ 
+	   ZeroMemory( &piProcInfo, sizeof(PROCESS_INFORMATION) );
+ 
+// Set up members of the STARTUPINFO structure. 
+// This structure specifies the STDIN and STDOUT handles for redirection.
+ 
+   ZeroMemory( &siStartInfo, sizeof(STARTUPINFO) );
+   siStartInfo.cb = sizeof(STARTUPINFO); 
+   siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+
+// Create the child process. 
+    
+   bSuccess = CreateProcess(NULL, 
+      szCmdline,     // command line 
+      NULL,          // process security attributes 
+      NULL,          // primary thread security attributes 
+      TRUE,          // handles are inherited 
+      0,             // creation flags 
+      NULL,          // use parent's environment 
+      NULL,          // use parent's current directory 
+      &siStartInfo,  // STARTUPINFO pointer 
+      &piProcInfo);  // receives PROCESS_INFORMATION 
+   
+   // If an error occurs, exit the application. 
+   if ( ! bSuccess ) 
+      allegro_message("CreateProcess failed");
+   else 
+   {
+      // Close handles to the child process and its primary thread.
+	  // Some applications might keep these handles to monitor the status
+	  // of the child process, for example. 
+
+      CloseHandle(piProcInfo.hProcess);
+      CloseHandle(piProcInfo.hThread);
+   }
+}

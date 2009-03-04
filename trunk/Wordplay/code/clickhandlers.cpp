@@ -1,8 +1,6 @@
 #ifndef CLICKHANDLERS_CPP
 #define CLICKHANDLERS_CPP
-#include "globals.cpp"
-#include "showhide.cpp"
-#include "main.cpp"
+#include "globals.h"
 
 void masterClickHandler(int x, int y)
 {

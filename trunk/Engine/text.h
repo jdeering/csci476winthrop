@@ -6,7 +6,7 @@
 class Text
 {
 private:	
-	static ISpVoice *pVoice;
+	ISpVoice *pVoice;
 	int x, y;
 	bool visible;
 	std::string text;

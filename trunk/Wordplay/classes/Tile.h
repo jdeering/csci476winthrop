@@ -53,7 +53,7 @@ slideFromTop(x,y)
 #ifndef TILE_H
 #define TILE_H
 #include <string>
-#include "../../APIFramework/GameFramework.h"
+#include "GameFramework.h"
 
 class Tile
 {
