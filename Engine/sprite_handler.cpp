@@ -67,7 +67,6 @@ bool SpriteHandler::AddSprite(std::string refName, std::string imageRef, int x, 
 
 void SpriteHandler::DrawSprites(BITMAP *buffer)
 {
-	allegro_message("drawing sprites");
 	std::string refName = "";
 	int frame = 0;
 	BITMAP *temp = NULL;

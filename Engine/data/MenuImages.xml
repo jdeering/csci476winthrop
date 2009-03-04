@@ -1,0 +1,5 @@
+<IMAGES>
+  <image file="Images/exit.bmp" ref="exitButton" numFrames="1" numFrameCol="1" frameWidth="100" frameHeight="40"></image>
+  <image file="Images/volumeIndicator.bmp" ref="volumeStrip" numFrames="1" numFrameCol="1" frameWidth="150" frameHeight="25"></image>
+  <image file="Images/volumeKnob.bmp" ref="volumeIndicator" numFrames="1" numFrameCol="1" frameWidth="25" frameHeight="25"></image>
+</IMAGES>

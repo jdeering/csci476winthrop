@@ -11,6 +11,7 @@ Sprite::Sprite()
 	frameRows = 1;
 	numFrames = 1;
 	currFrame = 0;
+	visible = true;
 	moving = false;
 	animating = false;
 	alive = true;
@@ -35,6 +36,7 @@ Sprite::Sprite(std::string imageRef, int x = 0, int y = 0, int w = 0, int h = 0)
 	currFrame = 0;
 	box.SetPosition(x, y);
 	box.SetSize(w, h);
+	visible = true;
 	moving = false;
 	animating = false;
 	alive = true;

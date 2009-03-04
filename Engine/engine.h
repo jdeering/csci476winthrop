@@ -32,7 +32,7 @@ public:
 	~Framework();
 
 	/* SINGLETON INSTANCE METHOD */
-	static Framework* Instance(char*);
+	static Framework* Instance(std::string);
 	
 	/* MAIN GAME LOOP */
 	void MainLoop();
@@ -83,6 +83,7 @@ private:
 
 	/* MESSAGE HANDLING */
 	CMarkup gameList;
+	void CreateGameProcess(TCHAR []);
 	void CreateMessagePipes();
 	void LaunchGame(int gameNum);
 	void LaunchGame(std::string appPath);
@@ -112,25 +113,29 @@ private:
 	void UpdateKeyboard();
 
 	/* FUNCTIONS CALLED VIA MESSAGE */
-	void CreateSprite(std::stringstream &stream);
-	void CreateSpriteRefDimensions(std::stringstream &stream);
-	void KillSprite(std::stringstream &stream);
-	void ShowSprite(std::stringstream &stream);
-	void SetSpriteSize(std::stringstream &stream);
-	void SetSpriteLocation(std::stringstream &stream);
-	void SetFrameDelay(std::stringstream &stream);
-	void SetAnimation(std::stringstream &stream);
-	void SetFrame(std::stringstream &stream);
-	void MoveSprite(std::stringstream &stream);
+	void CreateSprite(char *msg);
+	void CreateSpriteRefDimensions(char *msg);
+	void KillSprite(char *msg);
+	void ShowSprite(char *msg);
+	void SetSpriteSize(char *msg);
+	void SetSpriteLocation(char *msg);
+	void SetFrameDelay(char *msg);
+	void SetAnimation(char *msg);
+	void SetFrame(char *msg);
+	void MoveSprite(char *msg);
 
-	void SetTextPosition(std::stringstream &stream);
-	void ShowText(std::stringstream &stream);
+	void SetTextPosition(char *msg);
+	void ShowText(char *msg);	
+	void CreateTextFromRef(char *msg);
+	void CreateTextFromString(char *msg);
+	void RemoveText(char *msg);
+	void ChangeText(char *msg);
 
-	void PlayFile(std::stringstream &stream);
-	void ResetLoop(std::stringstream &stream);
-	void StopFile(std::stringstream &stream);
+	void PlayFile(char *msg);
+	void ResetLoop(char *msg);
+	void StopFile(char *msg);
 
-	void PostScore(std::stringstream &stream);
+	void PostScore(char *msg);
 };
 
 #endif

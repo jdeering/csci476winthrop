@@ -43,8 +43,10 @@ enum PROTOCOL_OPCODES
 #include "GFSprite.h"
 #include "GFText.h"
 #include "GFAudio.h"
-
-//#include <winalleg.h>
+#include "allegro.h"
+#include <winalleg.h>
+#define ALLEGRO_AND_MFC
+#define ALLEGRO_NO_MAGIC_MAIN
 
 class /*SINGLETON*/ GameFramework
 {

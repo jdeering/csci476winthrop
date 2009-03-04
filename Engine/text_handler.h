@@ -14,6 +14,8 @@ public:
 	TextHandler();
 	~TextHandler();
 	bool AddText(std::string refName, std::string textString, int x, int y, bool visible);
+	bool AddText(std::string refName, const char* inString, int x, int y, bool visible);
+	bool AddTextByRef(std::string refName, std::string assetName, int x, int y, bool visible);
 	bool RemoveText(std::string refName);
 	bool ShowText(std::string refName, int setVisible, BITMAP *bmp);
 	void SetTextPosition(std::string refName, int x, int y);

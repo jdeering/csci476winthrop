@@ -1,32 +1,23 @@
 #include "engine.h"
 Framework* Framework::inst = NULL;
 
-Framework* Framework::Instance(char* user)
+Framework* Framework::Instance(std::string user)
 {
-	allegro_message("FI");
-	std::string tempUsername = user;
-	allegro_message("user copied");
 	if(!Framework::inst)
 	{
-		allegro_message("calling constructor");
-		Framework::inst = new Framework(tempUsername);
+		Framework::inst = new Framework(user);
 	}
 	return Framework::inst;
 }
 
 Framework::Framework()
 {
-	buffer = create_bitmap(800, 600);
 	gameRunning = false;
 	username = "Anonymous";
 	active = true;
 	gameCount = 0;
 	options.VOLUME = 128;
 	options.TTS = false;
-	LoadGames();
-	std::string menu = "MenuImages.xml";
-	LoadImages(menu);
-	DrawMenu();
 }
 
 Framework::Framework(std::string user)
@@ -39,9 +30,11 @@ Framework::Framework(std::string user)
 	options.VOLUME = 128;
 	options.TTS = false;
 	LoadGames();
-	std::string menu = "MenuImages.xml";
+	std::string menu = "data/MenuImages.xml";
 	LoadImages(menu);
 	DrawMenu();
+	allegro_message("Game Launching");
+	LaunchGame(0);
 }
 
 Framework::~Framework()
@@ -191,6 +184,11 @@ void Framework::UpdateSprites()
 	unscare_mouse();
 }
 
+
+void Framework::UpdateText()
+{
+}
+
 void Framework::MessageLoop()
 {
 	if(key[KEY_ESC])
@@ -200,12 +198,13 @@ void Framework::MessageLoop()
 	}
 
 	UpdateSprites();
+	UpdateText();
 	UpdateMouse();
 	UpdateKeyboard();
 	UpdateOptions();
 	if(gameRunning)
 	{
-		GetMessage();
+		GetMessage();		
 	}
 	CheckErrors();
 }
@@ -248,12 +247,15 @@ void Framework::CreateMessagePipes()
 
 void Framework::LaunchGame(int gameNum)
 {
+	CreateMessagePipes();
+	TCHAR szCmdline[]=TEXT("C:\\Users\\Deering\\Documents\\Visual Studio 2005\\Projects\\WordPlayNew\\debug\\WordPlayNew.exe");
+	CreateGameProcess(szCmdline);
 	gameRunning = true;
 }
 
 void Framework::LoadGames()
 {	
-	gameList.Load(TEXT("Games.xml"));
+	gameList.Load(TEXT("data/Games.xml"));
 	gameList.FindElem();
 
 	while(gameList.FindChildElem(TEXT("game")) && gameCount < 4)
@@ -345,35 +347,42 @@ void Framework::GetMessage()
 {
 	bool test;
 	DWORD bytesRead;
-	test = ReadFile(hStdIn_Parent, incMessage, MAX_MESSAGE_SIZE, &bytesRead, NULL);
-
-	std::stringstream stream;
-	stream.str(incMessage);
-	int code;
-	stream >> code;
-	switch(code)
+	if(ReadFile(hStdIn_Parent, incMessage, MAX_MESSAGE_SIZE, &bytesRead, NULL))
 	{
-		// Sprites
-	case 301 : CreateSprite(stream); break;
-	case 302 : CreateSpriteRefDimensions(stream); break;
-	case 303 : KillSprite(stream); break;
-	case 304 : ShowSprite(stream); break;
-	case 305 : SetSpriteSize(stream); break;
-	case 306 : SetSpriteLocation(stream); break;
-	case 307 : SetFrameDelay(stream); break;
-	case 308 : SetAnimation(stream); break;
-	case 309 : SetFrame(stream); break;
-	case 310 : MoveSprite(stream); break;
-		// Text
-	case 401 : SetTextPosition(stream); break;
-	case 402 : ShowText(stream); break;
-		// Audio
-	case 501 : PlayFile(stream); break;
-	case 502 : ResetLoop(stream); break;
-	case 503 : StopFile(stream); break;
-		// Score
-	case 601 : PostScore(stream); break;
-	default : allegro_message("Code %d not recognized.", code); break;
+		allegro_message("Bytes Read : %d\n", bytesRead);
+		printf("Message : %s\n", incMessage);
+		int code;
+		allegro_message("reading code");
+		sscanf(incMessage, "%d", &code);
+		allegro_message("Code = %d", code);
+		switch(code)
+		{
+			// Sprites
+		case SPRITE_CREATE : CreateSprite(incMessage); break;
+		case SPRITE_CREATE_FROM_ASSET : CreateSpriteRefDimensions(incMessage); break;
+		case SPRITE_REMOVE : KillSprite(incMessage); break;
+		case SPRITE_VISIBILITY_CHANGE : ShowSprite(incMessage); break;
+		case SPRITE_SET_SIZE : SetSpriteSize(incMessage); break;
+		case SPRITE_SET_LOCATION : SetSpriteLocation(incMessage); break;
+		case SPRITE_SET_FRAME_DELAY : SetFrameDelay(incMessage); break;
+		case SPRITE_SET_ANIMATION : SetAnimation(incMessage); break;
+		case SPRITE_SET_FRAME : SetFrame(incMessage); break;
+		case SPRITE_MOVE_TO : MoveSprite(incMessage); break;
+			// Text
+		case TEXT_CREATE_FROM_ASSET	: CreateTextFromRef(incMessage); break;
+		case TEXT_CREATE_FROM_STRING : CreateTextFromString(incMessage); break; 
+		case TEXT_REMOVE : RemoveText(incMessage); break;
+		case TEXT_CHANGE_CONTENT : ChangeText(incMessage); break;
+		case TEXT_CHANGE_LOCATION : SetTextPosition(incMessage); break;
+		case TEXT_VISIBILITY_CHANGE : ShowText(incMessage); break;
+			// Audio
+		case AUDIO_PLAY	: PlayFile(incMessage); break;		 
+		case AUDIO_SET_LOOP_COUNT : ResetLoop(incMessage); break;
+		case AUDIO_STOP	: StopFile(incMessage); break;
+			// Score
+		case SCORE : PostScore(incMessage); break;
+		default : break;
+		}
 	}
 }
 
@@ -389,129 +398,136 @@ void Framework::AddSprite(std::string refName, std::string imageRef, int x, int 
 	sprites.AddSprite(refName, imageRef, x, y, w, h); 
 }
 
-void Framework::CreateSprite(std::stringstream &stream)
+void Framework::CreateSprite(char *msg)
 {
 	int x, y, w, h;
-	std::string reference, imageReference;
-	stream >> reference >> imageReference >> x >> y >> w >> h;
-	sprites.AddSprite(reference, imageReference, x, y, w, h);
+	char reference[25], imageReference[25];
+	allegro_message("Creating Sprite");
+	sscanf(msg, "%*d %s %s %d %d %d %d", reference, imageReference, &x, &y, &w, &h);
+	std::string str_reference = reference;
+	std::string str_imageReference = imageReference;
+	printf("sprites.AddSprite(%s, %s, %d, %d, %d, %d)\n", reference, imageReference, x, y, w, h);	
+	sprites.AddSprite(str_reference, str_imageReference, x, y, w, h);
 }
 
-void Framework:: CreateSpriteRefDimensions(std::stringstream &stream)
+void Framework:: CreateSpriteRefDimensions(char *msg)
 {
 	int x, y;
-	std::string reference, imageReference;
-	stream >> reference >> imageReference >> x >> y;
-	sprites.AddSprite(reference, imageReference, x, y);
+	char reference[25], imageReference[25];
+	sscanf(msg, "%*d %s %s %d %d", reference, imageReference, &x, &y);
+	std::string str_reference = reference;
+	std::string str_imageReference = imageReference;
+	sprites.AddSprite(str_reference, str_imageReference, x, y);
 }
 
 
-void Framework::KillSprite(std::stringstream &stream)
+void Framework::KillSprite(char *msg)
 {
-	std::string reference;
-	stream >> reference;
+	char reference[5];
+	sscanf(msg, "%*d %s", reference);
+	std::string str_reference = reference;
 	sprites.RemoveSprite(reference);
 }
 
-void Framework::ShowSprite(std::stringstream &stream)
+void Framework::ShowSprite(char *msg)
 {
 	int vis;
 	std::string reference;
-	stream >> reference >> vis;
+	sscanf(msg, "%*d %s %d", reference, &vis);
 	sprites.SetVisible(reference, vis);
 }
 
-void Framework::SetSpriteSize(std::stringstream &stream)
+void Framework::SetSpriteSize(char *msg)
 {
 	std::string reference;
 	int w, h;
-	stream >> reference >> w >> h;
+	sscanf(msg, "%*d %s %d %d", reference, &w, &h);
 	sprites.SetSpriteSize(reference, w, h);
 }
 
-void Framework::SetSpriteLocation(std::stringstream &stream)
+void Framework::SetSpriteLocation(char *msg)
 {
 	std::string reference;
 	int x, y;
-	stream >> reference >> x >> y;
+	sscanf(msg, "%*d %s %d %d", reference, &x, &y);
 	sprites.SetSpriteLocation(reference, x, y);
 }
 
-void Framework::SetFrameDelay(std::stringstream &stream)
+void Framework::SetFrameDelay(char *msg)
 {
 	std::string reference;
 	int delay;
-	stream >> reference >> delay;
+	sscanf(msg, "%*d %s %d", reference, &delay);
 	sprites.SetFrameDelay(reference, delay);
 }
 
-void Framework::SetAnimation(std::stringstream &stream)
+void Framework::SetAnimation(char *msg)
 {
 	std::string reference;
 	int animate;
-	stream >> reference >> animate;
+	sscanf(msg, "%*d %s %d", reference, &animate);
 	sprites.SetAnimation(reference, animate);
 }
 
-void Framework::SetFrame(std::stringstream &stream)
+void Framework::SetFrame(char *msg)
 {
 	std::string reference;
 	int frame;
-	stream >> reference >> frame;
+	sscanf(msg, "%*d %s %d", reference, &frame);
 	sprites.SetFrame(reference, frame);
 }
 
-void Framework::MoveSprite(std::stringstream &stream)
+void Framework::MoveSprite(char *msg)
 {
 	std::string reference;
 	int x, y, speed;
-	stream >> reference >> x >> y >> speed;
+	sscanf(msg, "%*d %s %d %d %d", reference, &x, &y, &speed);
 	sprites.MoveSprite(reference, x, y, speed);
 }
 
-void Framework::SetTextPosition(std::stringstream &stream)
+void Framework::SetTextPosition(char *msg)
 {
 	std::string reference;
 	int x, y;
-	stream >> reference >> x >> y;
+	sscanf(msg, "%*d %s %d %d", reference, &x, &y);
 	textObjects.SetTextPosition(reference, x, y);
 }
 
-void Framework::ShowText(std::stringstream &stream)
+void Framework::ShowText(char *msg)
 {
 	std::string reference;
 	int show;
-	stream >> reference >> show;
+	sscanf(msg, "%*d %s %d", reference, &show);
 	textObjects.ShowText(reference, show, buffer);
 }
 
-void Framework::PlayFile(std::stringstream &stream)
+void Framework::PlayFile(char *msg)
 {
 	std::string reference;
-	stream >> reference;
+	sscanf(msg, "%*d %s", reference);
 	audioObjects.PlaySample(reference, options.VOLUME); // EDIT volume
 }
 
 
-void Framework::ResetLoop(std::stringstream &stream)
+void Framework::ResetLoop(char *msg)
 {
 	std::string reference;
 	int loop;
-	stream >> reference >> loop;
+	sscanf(msg, "%*d %s %d", reference, &loop);
 	audioObjects.ResetLoopFlag(reference, loop);
 }
 
-void Framework::StopFile(std::stringstream &stream)
+void Framework::StopFile(char *msg)
 {
 	std::string reference;
-	stream >> reference;
+	sscanf(msg, "%*d %s", reference);
 	audioObjects.StopSample(reference);
 }
 
-void Framework::PostScore(std::stringstream &stream)
+void Framework::PostScore(char *msg)
 {
 	int score;
-	stream >> score;
+	sscanf(msg, "%*d %d", &score);
 	gameRunning = false;
 }
 
@@ -610,6 +626,7 @@ void Framework::DrawMenu()
 	sprites.AddSprite("exitButton", "exitButton", 10, 10);
 	sprites.AddSprite("volumeStrip", "volumeStrip", 10, 200);
 	sprites.AddSprite("volumeIndicator", "volumeIndicator", 10, 200);
+	textObjects.AddText("volume", "Volume : ", 100, 100, true);
 }
 
 void Framework::CheckErrors()
@@ -627,4 +644,86 @@ void Framework::UpdateOptions()
 	if(options.VOLUME > 255) options.VOLUME = 255;
 	audioObjects.SetVolume(options.VOLUME);
 	textObjects.SetTTS(options.TTS);
+}
+
+ 
+void Framework::CreateGameProcess(TCHAR szCmdline[])
+// Create a child process that uses the previously created pipes for STDIN and STDOUT.
+{ 
+	
+   PROCESS_INFORMATION piProcInfo;
+   STARTUPINFO siStartInfo;
+   BOOL bSuccess = FALSE; 
+ 
+// Set up members of the PROCESS_INFORMATION structure. 
+ 
+	   ZeroMemory( &piProcInfo, sizeof(PROCESS_INFORMATION) );
+ 
+// Set up members of the STARTUPINFO structure. 
+// This structure specifies the STDIN and STDOUT handles for redirection.
+ 
+   ZeroMemory( &siStartInfo, sizeof(STARTUPINFO) );
+   siStartInfo.cb = sizeof(STARTUPINFO); 
+   siStartInfo.hStdError = hStdOut_Child;
+   siStartInfo.hStdOutput = hStdOut_Child;
+   siStartInfo.hStdInput = hStdIn_Child;
+   siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+
+// Create the child process. 
+    
+   bSuccess = CreateProcess(NULL, 
+      szCmdline,     // command line 
+      NULL,          // process security attributes 
+      NULL,          // primary thread security attributes 
+      TRUE,          // handles are inherited 
+      0,             // creation flags 
+      NULL,          // use parent's environment 
+      NULL,          // use parent's current directory 
+      &siStartInfo,  // STARTUPINFO pointer 
+      &piProcInfo);  // receives PROCESS_INFORMATION 
+   
+   // If an error occurs, exit the application. 
+   if ( ! bSuccess ) 
+      allegro_message("Game Launch failed");
+   else 
+   {
+      // Close handles to the child process and its primary thread.
+	  // Some applications might keep these handles to monitor the status
+	  // of the child process, for example. 
+
+      CloseHandle(piProcInfo.hProcess);
+      CloseHandle(piProcInfo.hThread);
+   }
+}
+
+
+void Framework::CreateTextFromRef(char *msg)
+{
+	int length, x, y;
+	std::string refName, assetName;
+	sscanf(msg, "%*d %s %d %d %d %s", refName, &length, &x, &y, assetName);
+	textObjects.AddTextByRef(refName, assetName, x, y, true);
+}
+
+void Framework::CreateTextFromString(char *msg)
+{
+	int length, x, y;
+	std::string refName, string;
+	sscanf(msg, "%*d %s %d %d %d", refName, &length, &x, &y);
+	std::string str_refName = refName;
+	sscanf(msg, "%*d %s %d %d %d", refName, &length, &x, &y);
+	std::string str_string = string;
+	textObjects.AddText(str_refName, str_string, x, y, true);
+}
+
+void Framework::RemoveText(char *msg)
+{
+	std::string refName;
+	sscanf(msg, "%*d %s", refName);
+
+}
+
+void Framework::ChangeText(char *msg)
+{
+	
 }

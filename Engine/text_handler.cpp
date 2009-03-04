@@ -3,6 +3,7 @@
 TextHandler::TextHandler()
 {
 	numObjects = 0;
+	readEnabled = false;
 }
 
 TextHandler::~TextHandler()
@@ -23,6 +24,41 @@ bool TextHandler::AddText(std::string refName, std::string textString, int x, in
 		text[refName] = temp;
 		numObjects++;
 		return true;
+	}
+	allegro_message("Text Object %s could not be added.", refName.c_str());
+	return false;
+}
+
+bool TextHandler::AddText(std::string refName, const char* inString, int x, int y, bool visible)
+{
+	Text temp;
+	std::string textString = inString;
+	if(numObjects < MAXFILES)
+	{
+		temp.LoadText(textString, x, y, visible);
+		text[refName] = temp;
+		numObjects++;
+		return true;
+	}
+	allegro_message("Text Object %s could not be added.", refName.c_str());
+	return false;
+}
+
+bool TextHandler::AddTextByRef(std::string refName, std::string assetName, int x, int y, bool visible)
+{
+	if(numObjects < MAXFILES)
+	{
+		if(refName != assetName)
+		{
+			text[refName] = text[assetName];
+			numObjects++;
+			return true;
+		}
+		else
+		{
+			allegro_message("Text Object reference already exists.");
+			return false;
+		}
 	}
 	allegro_message("Text Object %s could not be added.", refName.c_str());
 	return false;
