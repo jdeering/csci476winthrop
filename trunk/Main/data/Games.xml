@@ -1,8 +1,8 @@
 <GAMES>
   <game name="Wordplay" path="Wordplay/">
-    <imageFile>Images.xml</imageFile>
-    <audioFile>Audio.xml</audioFile>
-    <textFile>Text.xml</textFile>
+    <imageFile>images/images.xml</imageFile>
+    <audioFile>audio/audio.xml</audioFile>
+    <textFile>text/text.xml</textFile>
     <icon width="200" height ="200">icon.bmp</icon>
   </game>
 </GAMES>
