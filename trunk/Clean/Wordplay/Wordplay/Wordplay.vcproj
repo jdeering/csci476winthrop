@@ -27,6 +27,9 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
+				Description="Moving executable..."
+				CommandLine="move /Y $(TargetPath) c:\Users\Lauren\Desktop\wordplay\Main\modules\Wordplay\"
+				Outputs="out.txt"
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"

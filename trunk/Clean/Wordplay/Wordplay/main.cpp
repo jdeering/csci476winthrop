@@ -24,33 +24,37 @@ void dialogueClickHandler(int x, int y, void (*yesFunction)(), void (*noFunction
 
 void masterClickHandler(int button, int state, int x, int y)
 {
-	//dependent on status, choose the correct click handler
-	if (currentState == CHOOSE_LEVEL)
-	{
-		introClickHandler(x,y);
-	}
-	else if (currentState == INSTRUCTIONS_1)
-	{
-		instructionsClickHandler(x, y, 1);
-	}
-	else if (currentState == INSTRUCTIONS_2)
-	{
-		instructionsClickHandler (x, y, 2);
-	}
-	else if (currentState == IN_GAME)
-	{
-		inGameClickHandler(x,y);
-	}
-	else if (currentState == DIALOGUE_EXIT)
-	{
-		dialogueClickHandler(x, y, exitGame, endDialogue);
-	}
-	else if (currentState == DIALOGUE_RESET)
-	{
-		dialogueClickHandler(x,y, resetBoard, endDialogue);
+
+	//1 is clicked, not worrying about which button for the purposes of this game
+	if (state == 1){
+
+		//dependent on status, choose the correct click handler
+		if (currentState == CHOOSE_LEVEL)
+		{
+			introClickHandler(x,y);
+		}
+		else if (currentState == INSTRUCTIONS_1)
+		{
+			instructionsClickHandler(x, y, 1);
+		}
+		else if (currentState == INSTRUCTIONS_2)
+		{
+			instructionsClickHandler (x, y, 2);
+		}
+		else if (currentState == IN_GAME)
+		{
+			inGameClickHandler(x,y);
+		}
+		else if (currentState == DIALOGUE_EXIT)
+		{
+			dialogueClickHandler(x, y, exitGame, endDialogue);
+		}
+		else if (currentState == DIALOGUE_RESET)
+		{
+			dialogueClickHandler(x,y, resetBoard, endDialogue);
+		}
 	}
 }
-
 
 void introClickHandler(int x, int y)
 {
@@ -173,6 +177,7 @@ void dialogueBox(string name)
 
 	//display the dialogue screen
 	overlays.push_back(framework.createSprite(assetName, 0, 0, 600, 600));
+	overlays.back().setVisible(true);
 }
 
 void showInstructions(int gameLevel, int page)
@@ -203,6 +208,7 @@ void showInstructions(int gameLevel, int page)
 
 	//and display it
 	overlays.push_back(framework.createSprite(assetName, 0, 0, 600, 600));
+	overlays.back().setVisible(true);
 
 	//set the game state to be in the instructions state
 	switch (page)
@@ -265,6 +271,7 @@ void beginGame()
 {
 	//display the background
 	overlays.push_back(framework.createSprite("background", 0, 0, 600, 600));
+	overlays.back().setVisible(true);
 
 	//display the gameboard
 	gameBoard->displayBoard();
@@ -284,6 +291,12 @@ void exitGame()
 	/////api
 
 	//end game
+	gameRunning = false;
+}
+
+bool returnRunning()
+{
+	return gameRunning;
 }
 
 void resetBoard()
@@ -315,20 +328,18 @@ void submitWord()
 	updateCurrentWord();
 }
 int main(int argc, char argv[]){
-//	GameFramework *framework;
+	GameFramework framework = GameFramework::Instance();
 	//display the beginning screen
-	//GFSprite& createSprite(std::string, int, int, int, int);
-	/////api
 	overlays.push_back(framework.createSprite("intro", 0, 0, 600, 600));
+	overlays.back().setVisible(true);
 
 	//set the correct click handler
-	//	void mouseFunc(void (*f)(int, int, int, int));
-	//***can't figure this out :(
+	//this needs to be fixed to have more parameters
 	framework.mouseFunc(masterClickHandler);
 
+	//begin the game loop
+	framework.gameFunc(returnRunning);
 
-	//and wait on the user to make their move!
-	//allegro_exit();
 	return 0;
 }
 

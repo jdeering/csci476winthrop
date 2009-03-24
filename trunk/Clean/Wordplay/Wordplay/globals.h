@@ -19,7 +19,7 @@ vector <GFSprite> overlays;
 GFText * gScore;
 int score;
 GFText * currentWord;
-
+bool gameRunning = true;
 
 void masterClickHandler(int x, int y);
 void introClickHandler(int x, int y);
