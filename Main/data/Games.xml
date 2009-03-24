@@ -3,6 +3,6 @@
     <imageFile>images/images.xml</imageFile>
     <audioFile>audio/audio.xml</audioFile>
     <textFile>text/text.xml</textFile>
-    <icon width="200" height ="200">icon.bmp</icon>
+    <icon width="200" height ="200"></icon>
   </game>
 </GAMES>
