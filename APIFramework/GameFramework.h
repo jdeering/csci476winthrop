@@ -43,8 +43,8 @@ enum PROTOCOL_OPCODES
 #include "GFSprite.h"
 #include "GFText.h"
 #include "GFAudio.h"
-#include "allegro.h"
-#include <winalleg.h>
+#include "../Allegro Headers/allegro.h"
+#include "../Allegro Headers/winalleg.h"
 #define ALLEGRO_AND_MFC
 #define ALLEGRO_NO_MAGIC_MAIN
 
