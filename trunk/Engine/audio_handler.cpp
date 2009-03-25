@@ -20,11 +20,13 @@ bool AudioHandler::AddSample(std::string refName, SAMPLE *sample, bool loop)
 {
 	if(numSamples < MAXFILES)
 	{
+		Audio temp(sample, loop);
+		samples[refName] = temp;
 		numSamples++;
 	}
 	else
 	{
-		allegro_message("Sample %d could not be added.", refName);
+		allegro_message("Sample \"%d\" could not be added.", refName);
 		return false;
 	}
 }
@@ -40,7 +42,7 @@ bool AudioHandler::RemoveSample(std::string refName)
 	}
 	else
 	{
-		allegro_message("Sample %d not found or could not be removed.", refName);
+		allegro_message("Sample \"%d\" not found or could not be removed.", refName);
 		return false;
 	}
 }
@@ -49,7 +51,7 @@ bool AudioHandler::PlaySample(std::string refName, int volume)
 {
 	if(samples[refName].Play(volume, PAN, FREQ) < 0)
 	{
-		allegro_message("Sample %d could not be played.\n(May be out of voice channels)", refName);
+		allegro_message("Sample \"%d\" could not be played.\n(May be out of voice channels)", refName);
 		return false;
 	}
 	else

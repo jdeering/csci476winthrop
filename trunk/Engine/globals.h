@@ -11,9 +11,10 @@
 #include <map>
 #include <sstream>
 
-#define MAXSPRITES 500
-#define MAXFILES 100
-#define MAXGAMES 4
+#define MAXSPRITES		500
+#define MAXFILES		100
+#define MAXGAMES		4
+#define XOFFSET			200
 
 
 	/* MOUSE OPCODES */
