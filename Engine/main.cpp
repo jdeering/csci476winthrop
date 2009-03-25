@@ -3,14 +3,15 @@
 
 #define FULLSCREEN 0
 
-Framework* fw;
+Framework fw;
 
 void LaunchLogin();
 
 void Update()
 {
-	fw->MessageLoop();
+	fw.MessageLoop();
 }
+END_OF_FUNCTION(Update)
 
 int main(int argc, char* argv[])
 {
@@ -28,6 +29,7 @@ int main(int argc, char* argv[])
 		allegro_message("Failed to install timer. Application Terminating.");
 		return 1;
 	}
+	LOCK_FUNCTION(Update);
 
 	std::string user = "Anonymous";
 	// Get username
@@ -54,14 +56,15 @@ int main(int argc, char* argv[])
 
     fw = Framework::Instance(user);
 
-	while(fw->isActive())
+	while(fw.isActive())
 	{
 		// Set framerate to about 30 fps
-		rest_callback(33, Update);
-		fw->MainLoop();
+		//rest_callback(33, Update);
+		fw.MainLoop();
 	}
 
 	// Uninitialize all Allegro devices
+	fw.~Framework();
 	remove_mouse();
 	remove_keyboard();
 	remove_timer();

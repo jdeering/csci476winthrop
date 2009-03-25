@@ -15,7 +15,7 @@ void Mouse::Update(int &x_, int &y_)
 	x = mouse_x;
 	y = mouse_y;
 	pointer.SetPosition(x-1, y-1);
-	x_ = x - 200;
+	x_ = x - XOFFSET;
 	y_ = y;
 }
 

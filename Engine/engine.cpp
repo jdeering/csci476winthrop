@@ -1,13 +1,11 @@
 #include "engine.h"
+#include <sstream>
 Framework* Framework::inst = NULL;
 
-Framework* Framework::Instance(std::string user)
+Framework& Framework::Instance(std::string user)
 {
-	if(!Framework::inst)
-	{
-		Framework::inst = new Framework(user);
-	}
-	return Framework::inst;
+	static Framework inst;	
+	return inst;
 }
 
 Framework::Framework()
@@ -30,10 +28,9 @@ Framework::Framework(std::string user)
 	options.VOLUME = 128;
 	options.TTS = false;
 	LoadGames();
-	std::string menu = "data/MenuImages.xml";
-	LoadImages(menu);
-	DrawMenu();
-	allegro_message("Game Launching");
+	//std::string menu = "data/MenuImages.xml";
+	//LoadImages(menu);
+	//DrawMenu();
 	LaunchGame(0);
 }
 
@@ -128,7 +125,7 @@ void Framework::LoadAudio()
 		temp = load_sample(file.c_str());
 		if(!temp)
 		{
-			allegro_message("File not found. Audio Sample %s not added.", ref);
+			allegro_message("File not found at \"%s\". Audio Sample \"%s\" not added.", file.c_str(), ref.c_str());
 		}
 		else
 			audioObjects.AddSample(ref, temp, loopVal);
@@ -172,7 +169,7 @@ void Framework::LoadText()
 			return;
 		}
 
-//		textObjects.AddText(ref, textString, x, y, visVal);
+		textObjects.AddText(ref, textString, x, y, visVal);
 	}
 }
 
@@ -191,7 +188,7 @@ void Framework::UpdateText()
 
 void Framework::MessageLoop()
 {
-	if(key[KEY_ESC])
+	if(key[KEY_ESC] || !active)
 	{
 		gameRunning = false;
 		active = false;
@@ -204,9 +201,9 @@ void Framework::MessageLoop()
 	UpdateOptions();
 	if(gameRunning)
 	{
-		GetMessage();		
+		GetMessages();		
 	}
-	CheckErrors();
+	//CheckErrors();
 }
 
 void Framework::MainLoop()
@@ -248,8 +245,11 @@ void Framework::CreateMessagePipes()
 void Framework::LaunchGame(int gameNum)
 {
 	CreateMessagePipes();
-	TCHAR szCmdline[]=TEXT("C:\\Users\\Deering\\Documents\\Visual Studio 2005\\Projects\\WordPlayNew\\debug\\WordPlayNew.exe");
-	CreateGameProcess(szCmdline);
+	LoadGameAssets(gameNum);
+	std::string gameExe = "modules/"+games[gameNum].path + games[gameNum].name + ".exe";
+	std::wstring gameToLaunch(gameExe.begin(), gameExe.end());
+	TCHAR szCmdline[]=TEXT("modules\\Wordplay\\Wordplay.exe");
+	CreateGameProcess(gameToLaunch);
 	gameRunning = true;
 }
 
@@ -343,47 +343,56 @@ void Framework::LaunchGame(std::string appPath)
 }
 
 
-void Framework::GetMessage()
+void Framework::GetMessages()
 {
 	bool test;
 	DWORD bytesRead;
+	std::stringstream msgStream;
+	msgStream.clear();
 	if(ReadFile(hStdIn_Parent, incMessage, MAX_MESSAGE_SIZE, &bytesRead, NULL))
 	{
-		allegro_message("Bytes Read : %d\n", bytesRead);
-		printf("Message : %s\n", incMessage);
-		int code;
-		allegro_message("reading code");
-		sscanf(incMessage, "%d", &code);
-		allegro_message("Code = %d", code);
+		msgStream.write(incMessage, bytesRead);
+	}
+	char message[MAX_MESSAGE_SIZE];
+	int code;
+	while(!msgStream.eof())
+	{
+		memset(message, 0, MAX_MESSAGE_SIZE);
+		msgStream.getline(message, MAX_MESSAGE_SIZE);
+		printf("Message : %s\n", message);
+		code = 0;
+		sscanf(message, "%d", &code);
+		if(!code) continue;
 		switch(code)
 		{
 			// Sprites
-		case SPRITE_CREATE : CreateSprite(incMessage); break;
-		case SPRITE_CREATE_FROM_ASSET : CreateSpriteRefDimensions(incMessage); break;
-		case SPRITE_REMOVE : KillSprite(incMessage); break;
-		case SPRITE_VISIBILITY_CHANGE : ShowSprite(incMessage); break;
-		case SPRITE_SET_SIZE : SetSpriteSize(incMessage); break;
-		case SPRITE_SET_LOCATION : SetSpriteLocation(incMessage); break;
-		case SPRITE_SET_FRAME_DELAY : SetFrameDelay(incMessage); break;
-		case SPRITE_SET_ANIMATION : SetAnimation(incMessage); break;
-		case SPRITE_SET_FRAME : SetFrame(incMessage); break;
-		case SPRITE_MOVE_TO : MoveSprite(incMessage); break;
+		case SPRITE_CREATE : CreateSprite(message); break;
+		case SPRITE_CREATE_FROM_ASSET : CreateSpriteRefDimensions(message); break;
+		case SPRITE_REMOVE : KillSprite(message); break;
+		case SPRITE_VISIBILITY_CHANGE : ShowSprite(message); break;
+		case SPRITE_SET_SIZE : SetSpriteSize(message); break;
+		case SPRITE_SET_LOCATION : SetSpriteLocation(message); break;
+		case SPRITE_SET_FRAME_DELAY : SetFrameDelay(message); break;
+		case SPRITE_SET_ANIMATION : SetAnimation(message); break;
+		case SPRITE_SET_FRAME : SetFrame(message); break;
+		case SPRITE_MOVE_TO : MoveSprite(message); break;
 			// Text
-		case TEXT_CREATE_FROM_ASSET	: CreateTextFromRef(incMessage); break;
-		case TEXT_CREATE_FROM_STRING : CreateTextFromString(incMessage); break; 
-		case TEXT_REMOVE : RemoveText(incMessage); break;
-		case TEXT_CHANGE_CONTENT : ChangeText(incMessage); break;
-		case TEXT_CHANGE_LOCATION : SetTextPosition(incMessage); break;
-		case TEXT_VISIBILITY_CHANGE : ShowText(incMessage); break;
+		case TEXT_CREATE_FROM_ASSET	: CreateTextFromRef(message); break;
+		case TEXT_CREATE_FROM_STRING : CreateTextFromString(message); break; 
+		case TEXT_REMOVE : RemoveText(message); break;
+		case TEXT_CHANGE_CONTENT : ChangeText(message); break;
+		case TEXT_CHANGE_LOCATION : SetTextPosition(message); break;
+		case TEXT_VISIBILITY_CHANGE : ShowText(message); break;
 			// Audio
-		case AUDIO_PLAY	: PlayFile(incMessage); break;		 
-		case AUDIO_SET_LOOP_COUNT : ResetLoop(incMessage); break;
-		case AUDIO_STOP	: StopFile(incMessage); break;
+		case AUDIO_PLAY	: PlayFile(message); break;		 
+		case AUDIO_SET_LOOP_COUNT : ResetLoop(message); break;
+		case AUDIO_STOP	: StopFile(message); break;
 			// Score
-		case SCORE : PostScore(incMessage); break;
+		case SCORE : PostScore(message); break;
 		default : break;
 		}
 	}
+	clearBuffer();
 }
 
 void Framework::SendMessage(const char *msg)
@@ -393,21 +402,15 @@ void Framework::SendMessage(const char *msg)
 	WriteFile(hStdOut_Parent, message.c_str(), message.size(), &bytesWritten, NULL);
 }
 
-void Framework::AddSprite(std::string refName, std::string imageRef, int x, int y, int w, int h)
-{ 
-	sprites.AddSprite(refName, imageRef, x, y, w, h); 
-}
 
 void Framework::CreateSprite(char *msg)
 {
 	int x, y, w, h;
 	char reference[25], imageReference[25];
-	allegro_message("Creating Sprite");
 	sscanf(msg, "%*d %s %s %d %d %d %d", reference, imageReference, &x, &y, &w, &h);
 	std::string str_reference = reference;
 	std::string str_imageReference = imageReference;
-	printf("sprites.AddSprite(%s, %s, %d, %d, %d, %d)\n", reference, imageReference, x, y, w, h);	
-	sprites.AddSprite(str_reference, str_imageReference, x, y, w, h);
+	sprites.AddSprite(str_reference, str_imageReference, x+XOFFSET, y, w, h);
 }
 
 void Framework:: CreateSpriteRefDimensions(char *msg)
@@ -417,7 +420,7 @@ void Framework:: CreateSpriteRefDimensions(char *msg)
 	sscanf(msg, "%*d %s %s %d %d", reference, imageReference, &x, &y);
 	std::string str_reference = reference;
 	std::string str_imageReference = imageReference;
-	sprites.AddSprite(str_reference, str_imageReference, x, y);
+	sprites.AddSprite(str_reference, str_imageReference, x+XOFFSET, y);
 }
 
 
@@ -432,14 +435,14 @@ void Framework::KillSprite(char *msg)
 void Framework::ShowSprite(char *msg)
 {
 	int vis;
-	std::string reference;
+	char reference[5];
 	sscanf(msg, "%*d %s %d", reference, &vis);
 	sprites.SetVisible(reference, vis);
 }
 
 void Framework::SetSpriteSize(char *msg)
 {
-	std::string reference;
+	char reference[5];
 	int w, h;
 	sscanf(msg, "%*d %s %d %d", reference, &w, &h);
 	sprites.SetSpriteSize(reference, w, h);
@@ -447,15 +450,15 @@ void Framework::SetSpriteSize(char *msg)
 
 void Framework::SetSpriteLocation(char *msg)
 {
-	std::string reference;
+	char reference[5];
 	int x, y;
 	sscanf(msg, "%*d %s %d %d", reference, &x, &y);
-	sprites.SetSpriteLocation(reference, x, y);
+	sprites.SetSpriteLocation(reference, x+XOFFSET, y);
 }
 
 void Framework::SetFrameDelay(char *msg)
 {
-	std::string reference;
+	char reference[5];
 	int delay;
 	sscanf(msg, "%*d %s %d", reference, &delay);
 	sprites.SetFrameDelay(reference, delay);
@@ -463,7 +466,7 @@ void Framework::SetFrameDelay(char *msg)
 
 void Framework::SetAnimation(char *msg)
 {
-	std::string reference;
+	char reference[5];
 	int animate;
 	sscanf(msg, "%*d %s %d", reference, &animate);
 	sprites.SetAnimation(reference, animate);
@@ -471,7 +474,7 @@ void Framework::SetAnimation(char *msg)
 
 void Framework::SetFrame(char *msg)
 {
-	std::string reference;
+	char reference[5];
 	int frame;
 	sscanf(msg, "%*d %s %d", reference, &frame);
 	sprites.SetFrame(reference, frame);
@@ -479,15 +482,15 @@ void Framework::SetFrame(char *msg)
 
 void Framework::MoveSprite(char *msg)
 {
-	std::string reference;
+	char reference[5];
 	int x, y, speed;
 	sscanf(msg, "%*d %s %d %d %d", reference, &x, &y, &speed);
-	sprites.MoveSprite(reference, x, y, speed);
+	sprites.MoveSprite(reference, x+XOFFSET, y, speed);
 }
 
 void Framework::SetTextPosition(char *msg)
 {
-	std::string reference;
+	char reference[5];
 	int x, y;
 	sscanf(msg, "%*d %s %d %d", reference, &x, &y);
 	textObjects.SetTextPosition(reference, x, y);
@@ -495,7 +498,7 @@ void Framework::SetTextPosition(char *msg)
 
 void Framework::ShowText(char *msg)
 {
-	std::string reference;
+	char reference[5];
 	int show;
 	sscanf(msg, "%*d %s %d", reference, &show);
 	textObjects.ShowText(reference, show, buffer);
@@ -503,7 +506,7 @@ void Framework::ShowText(char *msg)
 
 void Framework::PlayFile(char *msg)
 {
-	std::string reference;
+	char reference[5];
 	sscanf(msg, "%*d %s", reference);
 	audioObjects.PlaySample(reference, options.VOLUME); // EDIT volume
 }
@@ -511,7 +514,7 @@ void Framework::PlayFile(char *msg)
 
 void Framework::ResetLoop(char *msg)
 {
-	std::string reference;
+	char reference[5];
 	int loop;
 	sscanf(msg, "%*d %s %d", reference, &loop);
 	audioObjects.ResetLoopFlag(reference, loop);
@@ -519,7 +522,7 @@ void Framework::ResetLoop(char *msg)
 
 void Framework::StopFile(char *msg)
 {
-	std::string reference;
+	char reference[5];
 	sscanf(msg, "%*d %s", reference);
 	audioObjects.StopSample(reference);
 }
@@ -569,27 +572,8 @@ void Framework::UpdateMouse()
 		}
 		else // Framework event
 		{
-			x += 200; // Reset x to reflect entire screen instead of only the game window
-			int volumeY = 200;
+			x += XOFFSET; // Reset x to reflect entire screen instead of only the game window
 			std::string sprite_name = sprites.CheckClicks(mouse.GetPointer());
-			if(strcmp(sprite_name.c_str(), "exitButton") == 0)
-			{
-				active = false;
-			}
-			else if(strcmp(sprite_name.c_str(), "volumeStrip") == 0)
-			{
-				if(state == 1 && button == 1)
-				{
-					int volX = x + 200;
-					if(volX > (160-25)) volX = (160-25);
-					if(volX < 10) volX = 10;
-					sprites.SetSpriteLocation("volumeIndicator", volX, volumeY);
-					audioObjects.SetVolume(volX * 2);
-				}
-			}
-			else
-			{
-			}
 		}
 	}
 }
@@ -647,7 +631,7 @@ void Framework::UpdateOptions()
 }
 
  
-void Framework::CreateGameProcess(TCHAR szCmdline[])
+void Framework::CreateGameProcess(std::wstring szCmdline)
 // Create a child process that uses the previously created pipes for STDIN and STDOUT.
 { 
 	
@@ -670,9 +654,9 @@ void Framework::CreateGameProcess(TCHAR szCmdline[])
    siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
 
 // Create the child process. 
-    
+
    bSuccess = CreateProcess(NULL, 
-      szCmdline,     // command line 
+      const_cast<LPWSTR>(szCmdline.c_str()),     // command line 
       NULL,          // process security attributes 
       NULL,          // primary thread security attributes 
       TRUE,          // handles are inherited 
@@ -684,7 +668,7 @@ void Framework::CreateGameProcess(TCHAR szCmdline[])
    
    // If an error occurs, exit the application. 
    if ( ! bSuccess ) 
-      allegro_message("Game Launch failed");
+      allegro_message("Game Launch failed. Could not launch %s", szCmdline.c_str());
    else 
    {
       // Close handles to the child process and its primary thread.
@@ -727,3 +711,169 @@ void Framework::ChangeText(char *msg)
 {
 	
 }
+
+
+void Framework::LoadGameAssets(int gameIndex)
+{
+	std::string gamePath = "modules/" + games[gameIndex].path;
+	std::string imageFilePath = games[gameIndex].imageFile;
+	std::string audioFilePath = games[gameIndex].audioFile;
+	std::string textFilePath = games[gameIndex].textFile;
+
+	LoadImages(imageFilePath, gamePath);
+	LoadAudio(audioFilePath, gamePath);
+	LoadText(textFilePath, gamePath);
+}
+
+
+void Framework::LoadImages(std::string file_name, std::string gamePath)
+{
+	std::string file = gamePath + file_name;
+	std::wstring w_file(file.begin(), file.end());
+	if(imgXML.Load(w_file.c_str()))
+		LoadGameImages(gamePath);
+	else
+	{
+		allegro_message("Image asset XML file not found at %s.", file.c_str());
+	}
+}
+
+void Framework::LoadAudio(std::string file_name, std::string gamePath)
+{
+	std::string file = gamePath + file_name;
+	std::wstring w_file(file.begin(), file.end());
+	if(audXML.Load(w_file.c_str()))
+		LoadGameAudio(gamePath);
+	else
+	{
+		file_name.erase(0, 8);
+		allegro_message("Audio asset XML file not found at %s.", file.c_str());
+	}
+}
+
+void Framework::LoadText(std::string file_name, std::string gamePath)
+{
+	std::string file = gamePath + file_name;
+	std::wstring w_file(file.begin(), file.end());
+	if(txtXML.Load(w_file.c_str()))
+		LoadGameText(gamePath);
+	else
+	{
+		file_name.erase(0, 8);
+		allegro_message("Text asset XML file not found at %s.", file.c_str());
+	}
+}
+
+
+void Framework::LoadGameImages(std::string gamePath)
+{
+	imgXML.FindElem();
+
+	while(imgXML.FindChildElem(TEXT("image")))
+	{
+		imgXML.IntoElem();
+		// Get attributes
+		std::wstring atFile = imgXML.GetAttrib(TEXT("file"));
+		std::wstring atRef = imgXML.GetAttrib(TEXT("ref"));
+		std::wstring atNumFrames = imgXML.GetAttrib(TEXT("numFrames"));
+		std::wstring atNumFrameCol = imgXML.GetAttrib(TEXT("numFrameCol"));
+		std::wstring atWidth = imgXML.GetAttrib(TEXT("spriteWidth"));
+		std::wstring atHeight = imgXML.GetAttrib(TEXT("spriteHeight"));
+		// Set variables for attributes
+		std::string file(atFile.begin(), atFile.end());
+		file = gamePath + file;
+		std::string ref(atRef.begin(), atRef.end());
+		std::string numFrames(atNumFrames.begin(), atNumFrames.end());
+		std::string numFrameCol(atNumFrameCol.begin(), atNumFrameCol.end());
+		std::string width(atWidth.begin(), atWidth.end());
+		std::string height(atHeight.begin(), atHeight.end());
+		imgXML.OutOfElem();
+		
+		// Add file to sprite handler
+		sprites.AddFile(ref, file, atoi(numFrames.c_str()), atoi(numFrameCol.c_str()), atoi(width.c_str()), atoi(height.c_str()));
+	}
+}
+
+void Framework::LoadGameAudio(std::string gamePath)
+{
+	SAMPLE *temp = NULL;
+	audXML.FindElem();
+	bool loopVal = false;
+	while(audXML.FindChildElem(TEXT("audio")))
+	{
+		audXML.IntoElem();
+		// Get attributes
+		std::wstring atFile = audXML.GetAttrib(TEXT("file"));
+		std::wstring atRef = audXML.GetAttrib(TEXT("ref"));
+		std::wstring atLoop = audXML.GetAttrib(TEXT("loop"));
+
+		// Set variables for attributes
+		std::string file(atFile.begin(), atFile.end());
+		file = gamePath + file;
+		std::string ref(atRef.begin(), atRef.end());
+		std::string loop(atLoop.begin(), atLoop.end());
+		audXML.OutOfElem();
+
+		if(strcmp(loop.c_str(), "true") == 0)
+			loopVal = true;
+		else if(strcmp(loop.c_str(), "false") == 0)
+			loopVal = false;
+		else
+		{
+			allegro_message("Error in Audio XML file (loop value).");
+			return;
+		}
+
+		temp = load_sample(file.c_str());
+		if(!temp)
+		{
+			allegro_message("File not found at \"%s\". Audio Sample \"%s\" not added.", file.c_str(), ref.c_str());
+		}
+		else
+			audioObjects.AddSample(ref, temp, loopVal);
+	}
+	destroy_sample(temp);
+}
+
+void Framework::LoadGameText(std::string gamePath)
+{
+	txtXML.FindElem();
+	int x, y;
+	bool visVal = false;
+	while(txtXML.FindChildElem(TEXT("text")))
+	{
+		x=0; y=0;
+		txtXML.IntoElem();
+		// Get attributes
+		std::wstring atString = txtXML.GetAttrib(TEXT("string"));
+		std::wstring atRef = txtXML.GetAttrib(TEXT("ref"));
+		std::wstring atX = txtXML.GetAttrib(TEXT("x"));
+		std::wstring atY = txtXML.GetAttrib(TEXT("y"));
+		std::wstring atVisible = txtXML.GetAttrib(TEXT("visible"));
+
+		// Set variables for attributes
+		std::string textString(atString.begin(), atString.end());
+		std::string ref(atRef.begin(), atRef.end());
+		std::string xLoc(atX.begin(), atX.end());
+		std::string yLoc(atY.begin(), atY.end());
+		std::string visible(atVisible.begin(), atVisible.end());
+		txtXML.OutOfElem();
+		x = atoi(xLoc.c_str());
+		y = atoi(yLoc.c_str());
+
+		if(strcmp(visible.c_str(), "true") == 0)
+			visVal = true;
+		else if(strcmp(visible.c_str(), "false") == 0)
+			visVal = false;
+		else
+		{
+			allegro_message("Error in Text XML file (visible value).");
+			return;
+		}
+
+		textObjects.AddText(ref, textString, x, y, visVal);
+	}
+}
+
+void Framework::clearBuffer()
+{ memset(incMessage, 0, MAX_MESSAGE_SIZE); }

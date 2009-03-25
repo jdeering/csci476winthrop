@@ -17,9 +17,13 @@ ImageFile::ImageFile(std::string file, int frame_count, int col_count, int w, in
 	img = load_bitmap(filePath.c_str(), NULL);
 	if(!img)
 	{
-		char* msg = "Could not find file ";
-		allegro_message("%s %s", msg, filePath.c_str());
+		allegro_message("Could not find file \"%s\"", filePath.c_str());
 	}
+}
+
+ImageFile::~ImageFile()
+{
+	destroy_bitmap(img);
 }
 
 BITMAP* ImageFile::GetFrame(int frameNum, int width, int height)
@@ -52,4 +56,11 @@ int ImageFile::GetWidth()
 int ImageFile::GetHeight()
 { 
 	return frameHeight; 
+}
+
+
+bool ImageFile::isValid()
+{
+	if(img == NULL) return false;
+	return true;
 }

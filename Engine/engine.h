@@ -32,7 +32,7 @@ public:
 	~Framework();
 
 	/* SINGLETON INSTANCE METHOD */
-	static Framework* Instance(std::string);
+	static Framework& Instance(std::string);
 	
 	/* MAIN GAME LOOP */
 	void MainLoop();
@@ -40,10 +40,15 @@ public:
 	/* MESSAGE LOOP FUNCTION */
 	void MessageLoop();
 
-	/* GET FILES FOR ASSETS */
+	/* GET FILES FOR MENU ASSETS */
 	void LoadImages(std::string file_name);
 	void LoadAudio(std::string file_name);
 	void LoadText(std::string file_name);
+
+	/* GET FILES FOR GAME ASSETS */
+	void LoadImages(std::string file_name, std::string gamePath);
+	void LoadAudio(std::string file_name, std::string gamePath);
+	void LoadText(std::string file_name, std::string gamePath);
 	
 	void AddSprite(std::string refName, std::string imageRef, int x, int y, int w, int h);
 	bool isActive();
@@ -56,7 +61,7 @@ protected:
 	Framework(const Framework& fw);
 	Framework& operator=(const Framework&);
 
-
+	void clearBuffer();
 	
 private:
 	/* TO PREVENT MULTIPLE FRAMEWORK INSTANCES */
@@ -83,11 +88,11 @@ private:
 
 	/* MESSAGE HANDLING */
 	CMarkup gameList;
-	void CreateGameProcess(TCHAR []);
+	void CreateGameProcess(std::wstring);
 	void CreateMessagePipes();
 	void LaunchGame(int gameNum);
 	void LaunchGame(std::string appPath);
-	void GetMessage();
+	void GetMessages();
 	void SendMessage(const char *msg);
 	void CheckErrors();
 
@@ -107,6 +112,11 @@ private:
 	void LoadImages();
 	void LoadAudio();
 	void LoadText();
+
+	void LoadGameAssets(int gameIndex);
+	void LoadGameImages(std::string gamePath);
+	void LoadGameAudio(std::string gamePath);
+	void LoadGameText(std::string gamePath);
 
 	/* KEYBOARD / MOUSE FUNCTIONS */
 	void UpdateMouse();

@@ -13,12 +13,14 @@ private:
 	BITMAP *img;
 public:
 	ImageFile();
+	~ImageFile();
 	ImageFile(std::string filePath, int frame_count, int col_count, int w, int h);
 	BITMAP* GetFrame(int frameNum, int width, int height);
 	int GetNumFrames();
 	int GetNumCols();
 	int GetWidth();
 	int GetHeight();
+	bool isValid();
 };
 
 

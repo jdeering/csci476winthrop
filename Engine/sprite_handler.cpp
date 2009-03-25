@@ -33,12 +33,20 @@ bool SpriteHandler::AddSprite(std::string refName, std::string imageRef, int x, 
 {
 	if(numSprites < MAXSPRITES)
 	{
-		Sprite temp(imageRef, x, y, w, h);
-		temp.SetFrameCount(files[imageRef].GetNumFrames());
-		temp.SetColumnCount(files[imageRef].GetNumCols());
-		sprites[refName] = temp;
-		numSprites++;	
-		return true;
+		if(files.count(imageRef) > 0)
+		{
+			Sprite temp(imageRef, x, y, w, h);
+			temp.SetFrameCount(files[imageRef].GetNumFrames());
+			temp.SetColumnCount(files[imageRef].GetNumCols());
+			sprites[refName] = temp;
+			numSprites++;	
+			return true;
+		}
+		else
+		{
+			allegro_message("Image file reference \"%s\" not found.", imageRef.c_str());
+			return false;
+		}
 	}
 	else
 	{
@@ -51,12 +59,20 @@ bool SpriteHandler::AddSprite(std::string refName, std::string imageRef, int x, 
 {
 	if(numSprites < MAXSPRITES)
 	{
-		Sprite temp(imageRef, x, y, files[imageRef].GetWidth(), files[imageRef].GetHeight());
-		temp.SetFrameCount(files[imageRef].GetNumFrames());
-		temp.SetColumnCount(files[imageRef].GetNumCols());
-		sprites[refName] = temp;
-		numSprites++;	
-		return true;
+		if(files.count(imageRef) > 0)
+		{
+			Sprite temp(imageRef, x, y, files[imageRef].GetWidth(), files[imageRef].GetHeight());
+			temp.SetFrameCount(files[imageRef].GetNumFrames());
+			temp.SetColumnCount(files[imageRef].GetNumCols());
+			sprites[refName] = temp;
+			numSprites++;	
+			return true;
+		}
+		else
+		{
+			allegro_message("Image file reference \"%s\" not found.", imageRef.c_str());
+			return false;
+		}
 	}
 	else
 	{
@@ -79,7 +95,7 @@ void SpriteHandler::DrawSprites(BITMAP *buffer)
 			frame = i->second.GetFrameNum();
 			temp = files[refName].GetFrame(frame, i->second.GetWidth(), i->second.GetHeight());	
 			if(!temp)
-				allegro_message("Error generating frame for sprite reference %s.", i->first);
+				allegro_message("Error generating Frame %d for sprite reference \"%s\".", frame, i->first);
 			else
 				i->second.Draw(temp, buffer);
 		}
@@ -92,14 +108,17 @@ void SpriteHandler::DrawSprites(BITMAP *buffer)
 		destroy_bitmap(temp);
 }
 
-bool SpriteHandler::AddFile(std::string imageRef, std::string filePath, int w, int h, int frame_count, int col_count)
+bool SpriteHandler::AddFile(std::string imageRef, std::string filePath, int frame_count, int col_count, int w, int h)
 {
 	if(numFiles < MAXFILES)
 	{
-		ImageFile temp(filePath, w, h, frame_count, col_count);
-		files.insert(std::pair<std::string, ImageFile>(imageRef, temp));
-		numFiles++;
-		return true;
+		ImageFile temp(filePath, frame_count, col_count, w, h);
+		if(temp.isValid())
+		{
+			files.insert(std::pair<std::string, ImageFile>(imageRef, temp));
+			numFiles++;
+			return true;
+		}
 	}
 	return false;
 } 
