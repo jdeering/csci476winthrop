@@ -110,7 +110,8 @@ void instructionsClickHandler(int x, int y, int instructionsPage){
 		//if it's the previous button
 		else if(x > 40 && x < 170 && y > 505 && y < 550)
 		{
-			showInstructions(gameBoard->returnLevel(), 1);
+//			showInstructions(gameBoard->returnLevel(), 1);
+			showInstructions(1,1);
 		}
 	}
 
@@ -119,7 +120,8 @@ void instructionsClickHandler(int x, int y, int instructionsPage){
 		//if it's the 'next' button
 		if (x > 420 && x < 545 && y > 505 && y < 550)
 		{
-			showInstructions(gameBoard->returnLevel(), 2);
+//			showInstructions(gameBoard->returnLevel(), 2);
+			showInstructions(1,1);
 		}
 	}
 }
@@ -153,7 +155,7 @@ void inGameClickHandler(int x, int y)
 }
 void gameboardClickHandler(int x, int y){
 	//handle inside of the gameboard
-	gameBoard->clickHandler(x,y);
+//	gameBoard->clickHandler(x,y);
 }
 void dialogueBox(string name)
 {
@@ -257,18 +259,20 @@ void updateCurrentWord()
 void constructBoard(int level)
 {
 	//make the new gameboard dependent on the level passed in and the new user dictionary
-	gameBoard = new Board(level, userDictionary);
+//	gameBoard = new Board(level, userDictionary);
 }
 
 void makeDictionary()
 {
 	//make a new user dictionary
-	userDictionary = new Dictionary("dictionary.txt");
+//	userDictionary = new Dictionary("dictionary.txt");
 
 }
 
+
 void beginGame()
 {
+/*
 	//display the background
 	overlays.push_back(framework.createSprite("background", 0, 0, 600, 600));
 	overlays.back().setVisible(true);
@@ -283,7 +287,9 @@ void beginGame()
 
 	//set the state of the game
 	currentState = IN_GAME;
+*/
 }
+
 
 void exitGame()
 {
@@ -314,8 +320,10 @@ void resetBoard()
 	updateCurrentWord();
 }
 
+
 void submitWord()
 {
+/*
 	//submit and score the word
 	int wordScore;
 	wordScore = gameBoard->submitWord();
@@ -326,7 +334,10 @@ void submitWord()
 	//update the score and current word
 	updateScore();
 	updateCurrentWord();
+*/
 }
+
+
 int main(int argc, char argv[]){
 	GameFramework framework = GameFramework::Instance();
 	//display the beginning screen
