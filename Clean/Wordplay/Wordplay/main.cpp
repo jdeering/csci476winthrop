@@ -350,6 +350,7 @@ int main(int argc, char argv[]){
 
 	//begin the game loop
 	framework.gameFunc(returnRunning);
+	framework.gameLoop();
 
 	//clean up
 	overlays.back().~GFSprite();
