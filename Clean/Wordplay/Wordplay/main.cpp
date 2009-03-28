@@ -24,7 +24,7 @@ void dialogueClickHandler(int x, int y, void (*yesFunction)(), void (*noFunction
 
 void masterClickHandler(int button, int state, int x, int y)
 {
-
+	cout<<"enter click handler"<<endl;
 	//1 is clicked, not worrying about which button for the purposes of this game
 	if (state == 1){
 
@@ -339,6 +339,7 @@ void submitWord()
 
 
 int main(int argc, char argv[]){
+	cout<<"In main"<<endl;
 	GameFramework framework = GameFramework::Instance();
 	//display the beginning screen
 	overlays.push_back(framework.createSprite("intro", 0, 0, 600, 600));
@@ -347,10 +348,14 @@ int main(int argc, char argv[]){
 	//set the correct click handler
 	//this needs to be fixed to have more parameters
 	framework.mouseFunc(masterClickHandler);
-
+	cout<<"click handler declared"<<endl;
+	
 	//begin the game loop
 	framework.gameFunc(returnRunning);
+	cout<<"game function defined"<<endl;
+	
 	framework.gameLoop();
+	cout<<"game loop exited";
 
 	//clean up
 	overlays.back().~GFSprite();
