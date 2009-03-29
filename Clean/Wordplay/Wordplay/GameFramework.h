@@ -44,6 +44,7 @@ enum PROTOCOL_OPCODES
 #include "GFText.h"
 #include "GFAudio.h"
 #include "windows.h"
+#include <sstream>
 
 class /*SINGLETON*/ GameFramework
 {
@@ -113,12 +114,13 @@ class /*SINGLETON*/ GameFramework
 		static int const INDEX_TABLE_SIZE = 1000;
 	
 		/* COMMUNICATION DETAILS */
-		//HANDLE stdinFW, stdoutFW;
+		HANDLE stdinFW, stdoutFW;
 		char _msgBuffer[GFW_BUFFER_SIZE];
 		
 		/* CLEANUP METHODS */
 		void _clrBuffer();
 		void _getMessages();
+		void _parseMessage(std::stringstream&);
 
 		/* OBJECT LIST SIZES */
 		static int const GFS_MAX, GFSL, GFSU;
