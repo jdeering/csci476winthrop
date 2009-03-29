@@ -1,6 +1,5 @@
 #include <iostream>
 #include <algorithm>
-//#include <winalleg.h>
 
 #include "GameFramework.h"
 
@@ -20,6 +19,10 @@ GameFramework::GameFramework()
 
 	/* EMPTY THE INDEX TABLE */
 	memset(_index_table, INDEX_AVAIL, INDEX_TABLE_SIZE * sizeof(int));
+
+	/* SET INPUT/OUTPUT HANDLES */
+	stdoutFW = GetStdHandle(STD_OUTPUT_HANDLE); 
+    stdinFW = GetStdHandle(STD_INPUT_HANDLE); 
 
 	/* COUNT OF GF OBJECTS THAT HAVE BEEN CREATED */
 	gft_count = 0; gfa_count = 0; gfs_count = 0;
@@ -57,40 +60,81 @@ void GameFramework::sendMessage(char* buffer)
 
 void GameFramework::_getMessages()
 {
-	/* SIZE OF BUFFER DATA READ */
-	int readSize, p1, p2, p3, p4;
-
-	/* CHECK TO SEE IF THERE ARE MESSAGES REMAINING IN THE BUFFER */
-	//while (ReadFile(stdinFW, _msgBuffer, GFW_BUFFER_SIZE, &readSize, NULL))
+	DWORD bytesRead, bytesAvail;
+	std::stringstream msgStream;
+	char *message;
+	msgStream.clear();
+	PeekNamedPipe(stdinFW, _msgBuffer, GFW_BUFFER_SIZE, &bytesRead, &bytesAvail, NULL);
+	if (bytesRead != 0)
 	{
-		/* MESSAGE OPCODE */
-		int opcode;
+		_clrBuffer();
+		if (bytesAvail > GFW_BUFFER_SIZE)
+		{
+			while (bytesRead >= GFW_BUFFER_SIZE)
+			{
+				_clrBuffer();
+				// input handle, buffer, max message size, DWORD for bytesRead
+				ReadFile(stdinFW, _msgBuffer, GFW_BUFFER_SIZE, &bytesRead, NULL);  //read the stdout pipe
+				msgStream.write(_msgBuffer, bytesRead); // copy message to stringstream
+				_parseMessage(msgStream);
+			}
+		}
+		else 
+		{
+			// input handle, buffer, max message size, DWORD for bytesRead
+			ReadFile(stdinFW, _msgBuffer, GFW_BUFFER_SIZE, &bytesRead, NULL);
+			msgStream.write(_msgBuffer, bytesRead); // copy message to stringstream
+			_parseMessage(msgStream);
+		}
+	}
+	_clrBuffer(); // clears incMessage
+}
+
+void GameFramework::_parseMessage(std::stringstream &msgStream)
+{
+	/* SIZE OF BUFFER DATA READ */
+	int p1, p2, p3, p4;
+
+	/* MESSAGE OPCODE */
+	int opcode;
+	int scan_ret; 
+	char message[GFW_BUFFER_SIZE];
+	while(!msgStream.eof())
+	{
+		memset(message, 0, GFW_BUFFER_SIZE);
+		msgStream.getline(message, GFW_BUFFER_SIZE);
+		opcode = 0;
 
 		/* SCAN FOR THE OPCODE */
-		sscanf(_msgBuffer, "%d", &opcode);
-
+		scan_ret = sscanf(message, "%d", &opcode);
+		if(!opcode || scan_ret != 1) 
+		{ 
+			continue; 
+		}
+		
 		switch(opcode)
 		{
 			case MOUSE_LOCATION_UPDATE:
-				sscanf(_msgBuffer, "%*d %d %d", &mouseX, &mouseY);
+				sscanf(message, "%*d %d %d", &mouseX, &mouseY);
 				break;
 
 			case MOUSE_STATE_CHANGE:
 				if (!cb_MH) return;
 
-				sscanf(_msgBuffer, "%*d %d %d %d %d", &p1, &p2, &p3, &p4);
-				cb_MH(p1, p2, p3, p4); break;
+				sscanf(message, "%*d %d %d %d %d", &p1, &p2, &p3, &p4);
+				cb_MH(p1, p2, p3, p4); 
+				break;
 				
 			case MOUSE_SPRITE_CLICK:
-				if (!cb_MH) return;
+				if (!cb_SH) return;
 
-				sscanf(_msgBuffer, "%*d %d %d %d", &p1, &p2, &p3);
+				sscanf(message, "%*d %d %d %d", &p1, &p2, &p3);
 				cb_SH(p1, p2, getSprite(p3)); break;
 
 			case KEY_STATE_CHANGE:
 				if (!cb_KH) return;
 
-				sscanf(_msgBuffer, "%*d %d %d", &p1, &p2);
+				sscanf(message, "%*d %d %d", &p1, &p2);
 				cb_KH(p1, p2); break;
 		}
 	}
