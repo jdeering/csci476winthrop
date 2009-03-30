@@ -355,7 +355,7 @@ int main(int argc, char argv[]){
 	cout<<"game function defined"<<endl;
 	
 	framework.gameLoop();
-	cout<<"game loop exited";
+	cout<<"game loop exited"<< endl;
 
 	//clean up
 	overlays.back().~GFSprite();
