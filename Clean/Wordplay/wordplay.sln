@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Wordplay", "Wordplay\Wordplay.vcproj", "{91F3B9E5-7A18-4069-AC22-DBC97F878DA0}"
 EndProject
 Global
