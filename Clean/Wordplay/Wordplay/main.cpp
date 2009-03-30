@@ -5,6 +5,7 @@
 
 void dialogueClickHandler(int x, int y, void (*yesFunction)(), void (*noFunction)())
 {
+	/*
 	//if the user clicks yes
 	if (x > 50 && x < 200 && y < 400 && y > 450 )
 	{
@@ -18,42 +19,53 @@ void dialogueClickHandler(int x, int y, void (*yesFunction)(), void (*noFunction
 		//call the no function
 		noFunction();
 	}
+	*/
 }
-
-
 
 void masterClickHandler(int button, int state, int x, int y)
 {
-	cout<<"enter click handler"<<endl;
+	cout<<"master: x:"<<x<<" y:"<<y<<endl;
+	cout<<currentState<<endl;
 	//1 is clicked, not worrying about which button for the purposes of this game
 	if (state == 1){
 
 		//dependent on status, choose the correct click handler
 		if (currentState == CHOOSE_LEVEL)
 		{
+			cout<<"in if 1"<<endl;
 			introClickHandler(x,y);
 		}
 		else if (currentState == INSTRUCTIONS_1)
 		{
+			cout<<"in if 2"<<endl;
 			instructionsClickHandler(x, y, 1);
 		}
 		else if (currentState == INSTRUCTIONS_2)
 		{
+			cout<<"in if 3"<<endl;
 			instructionsClickHandler (x, y, 2);
 		}
 		else if (currentState == IN_GAME)
 		{
+			cout<<"in if 4"<<endl;
 			inGameClickHandler(x,y);
 		}
 		else if (currentState == DIALOGUE_EXIT)
 		{
+			cout<<"in if 5"<<endl;
 			dialogueClickHandler(x, y, exitGame, endDialogue);
 		}
 		else if (currentState == DIALOGUE_RESET)
 		{
+			cout<<"in if 6"<<endl;
 			dialogueClickHandler(x,y, resetBoard, endDialogue);
 		}
+		else{
+			cout<<"bleh."<<endl;
+		}
 	}
+
+	cout<<"done with click handler"<<endl;
 }
 
 void introClickHandler(int x, int y)
@@ -65,7 +77,6 @@ void introClickHandler(int x, int y)
 	//if it's in the right y-value for a level button
 	if(y > 400 && y < 575)
 	{
-
 		//decide which level it is, and select that level
 		if(x > 20 && x < 145)
 		{
@@ -92,10 +103,12 @@ void introClickHandler(int x, int y)
 			//construct the gameboard and the dictionary
 			makeDictionary();
 			constructBoard(gameLevel);
-
+			cout<<"about to show instructions"<<endl;
 			showInstructions(gameLevel, 1);		//that 1 tells us to show the first page of the instructions
 		}
 	}
+	cout<<"x: "<<x<<" y: "<<y<<endl;
+	cout<<"gl:"<<gameLevel<<endl;
 }
 
 void instructionsClickHandler(int x, int y, int instructionsPage){
@@ -110,8 +123,7 @@ void instructionsClickHandler(int x, int y, int instructionsPage){
 		//if it's the previous button
 		else if(x > 40 && x < 170 && y > 505 && y < 550)
 		{
-//			showInstructions(gameBoard->returnLevel(), 1);
-			showInstructions(1,1);
+			showInstructions(gameBoard->returnLevel(), 1);
 		}
 	}
 
@@ -120,14 +132,15 @@ void instructionsClickHandler(int x, int y, int instructionsPage){
 		//if it's the 'next' button
 		if (x > 420 && x < 545 && y > 505 && y < 550)
 		{
-//			showInstructions(gameBoard->returnLevel(), 2);
-			showInstructions(1,1);
+			showInstructions(gameBoard->returnLevel(), 2);
 		}
 	}
 }
 
 void inGameClickHandler(int x, int y)
 {
+/*
+
 	//if it's anywhere in the board, let it be handled there
 	if(x >= 25 && x <= 475 && y > 25 && y <=475)
 	{
@@ -152,6 +165,7 @@ void inGameClickHandler(int x, int y)
 	{
 		dialogueBox("end");
 	}
+	*/
 }
 void gameboardClickHandler(int x, int y){
 	//handle inside of the gameboard
@@ -159,6 +173,7 @@ void gameboardClickHandler(int x, int y){
 }
 void dialogueBox(string name)
 {
+	/*
 	//clear out the screen
 	removeAllButGameboard();
 
@@ -180,15 +195,17 @@ void dialogueBox(string name)
 	//display the dialogue screen
 	overlays.push_back(framework.createSprite(assetName, 0, 0, 600, 600));
 	overlays.back().setVisible(true);
+	*/
 }
 
 void showInstructions(int gameLevel, int page)
 {
+	cout<<"here in showinstructions"<<endl;
+
 	//clear out the screen
 	removeAllButGameboard();
 
 	string assetName;
-
 	//construct the asset name based on the game level and the page number
 	switch (gameLevel)
 	{
@@ -206,7 +223,15 @@ void showInstructions(int gameLevel, int page)
 			break;
 	}
 
-	assetName += page;
+	switch (page){
+		case 1:
+			assetName += "1";
+			break;
+		case 2:
+			assetName += "2";
+			break;
+	}
+	cout<<assetName<<endl;
 
 	//and display it
 	overlays.push_back(framework.createSprite(assetName, 0, 0, 600, 600));
@@ -236,11 +261,13 @@ void removeAllButGameboard()
 
 void endDialogue()
 {
+	/*
 	//remove the dialogue box
 	removeAllButGameboard();
 
 	//reset the game state back to gameplay
 	currentState = IN_GAME;
+	*/
 }
 
 void updateScore()
@@ -253,22 +280,17 @@ void updateCurrentWord()
 	/////api
 }
 
-
-
-
 void constructBoard(int level)
 {
 	//make the new gameboard dependent on the level passed in and the new user dictionary
-//	gameBoard = new Board(level, userDictionary);
+	gameBoard = new Board(level, userDictionary);
 }
 
 void makeDictionary()
 {
 	//make a new user dictionary
-//	userDictionary = new Dictionary("dictionary.txt");
-
+	userDictionary = new Dictionary("dictionary.txt");
 }
-
 
 void beginGame()
 {
@@ -344,6 +366,7 @@ int main(int argc, char argv[]){
 	//display the beginning screen
 	overlays.push_back(framework.createSprite("intro", 0, 0, 600, 600));
 	overlays.back().setVisible(true);
+	currentState = CHOOSE_LEVEL;
 
 	//set the correct click handler
 	//this needs to be fixed to have more parameters

@@ -29,7 +29,7 @@
 			<Tool
 				Name="VCCustomBuildTool"
 				Description="Moving executable..."
-				CommandLine="&#x0D;&#x0A;"
+				CommandLine="move C:\Users\Lauren\Desktop\wordplay\Clean\Wordplay\debug\Wordplay.exe C:\Users\Lauren\Desktop\wordplay\Main\modules\Wordplay&#x0D;&#x0A;"
 				Outputs="out.txt"
 			/>
 			<Tool
