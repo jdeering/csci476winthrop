@@ -16,9 +16,9 @@ enum GameStatus {CHOOSE_LEVEL, INSTRUCTIONS_1, INSTRUCTIONS_2, IN_GAME, DIALOGUE
 GameStatus currentState = CHOOSE_LEVEL;
 GameFramework framework = GameFramework::Instance();
 vector <GFSprite> overlays;
-//GFText * gScore;
+GFText * gScore;
 int score;
-//GFText * currentWord;
+GFText * currentWord;
 bool gameRunning = true;
 
 void masterClickHandler(int x, int y);

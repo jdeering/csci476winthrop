@@ -30,6 +30,8 @@
 <image ref="intro" file="images/chooselevel.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
 <image ref="endDialogue" file="images/endgame.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
 <image ref="resetDialogue" file="images/reset.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="background" file="images/background.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+
 
 <image ref="easy_1" file="images/easy_1.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
 <image ref="medium_1" file="images/medium_1.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>

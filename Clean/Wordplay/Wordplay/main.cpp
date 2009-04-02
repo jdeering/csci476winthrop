@@ -24,7 +24,7 @@ void dialogueClickHandler(int x, int y, void (*yesFunction)(), void (*noFunction
 
 void masterClickHandler(int button, int state, int x, int y)
 {
-	cout<<"master: x:"<<x<<" y:"<<y<<endl;
+	//cout<<"master: x:"<<x<<" y:"<<y<<endl;
 	cout<<currentState<<endl;
 	//1 is clicked, not worrying about which button for the purposes of this game
 	if (state == 1){
@@ -32,22 +32,22 @@ void masterClickHandler(int button, int state, int x, int y)
 		//dependent on status, choose the correct click handler
 		if (currentState == CHOOSE_LEVEL)
 		{
-			cout<<"in if 1"<<endl;
+			//cout<<"in if 1"<<endl;
 			introClickHandler(x,y);
 		}
 		else if (currentState == INSTRUCTIONS_1)
 		{
-			cout<<"in if 2"<<endl;
+			//cout<<"in if 2"<<endl;
 			instructionsClickHandler(x, y, 1);
 		}
 		else if (currentState == INSTRUCTIONS_2)
 		{
-			cout<<"in if 3"<<endl;
+			//cout<<"in if 3"<<endl;
 			instructionsClickHandler (x, y, 2);
 		}
 		else if (currentState == IN_GAME)
 		{
-			cout<<"in if 4"<<endl;
+			//cout<<"in if 4"<<endl;
 			inGameClickHandler(x,y);
 		}
 		else if (currentState == DIALOGUE_EXIT)
@@ -65,12 +65,13 @@ void masterClickHandler(int button, int state, int x, int y)
 		}
 	}
 
-	cout<<"done with click handler"<<endl;
+	//cout<<"done with click handler"<<endl;
 }
 
 void introClickHandler(int x, int y)
 {
-
+	//cout<<"in intro"<<endl;
+	//cout<<"coords: x is "<<x<<" and y is "<<y<<endl;
 	//this will hold the game level the user selects
 	int gameLevel = -1;
 
@@ -80,6 +81,7 @@ void introClickHandler(int x, int y)
 		//decide which level it is, and select that level
 		if(x > 20 && x < 145)
 		{
+			//cout<<"in 1"<<endl;
 			gameLevel = 1;
 		}
 		else if (x > 165 && x < 290)
@@ -101,14 +103,14 @@ void introClickHandler(int x, int y)
 			//go ahead and show instructions for that level
 
 			//construct the gameboard and the dictionary
-			makeDictionary();
+			cout<<"before dictionary"<<endl;
+			//makeDictionary();
+			cout<<"before board"<<endl;
 			constructBoard(gameLevel);
 			cout<<"about to show instructions"<<endl;
 			showInstructions(gameLevel, 1);		//that 1 tells us to show the first page of the instructions
 		}
 	}
-	cout<<"x: "<<x<<" y: "<<y<<endl;
-	cout<<"gl:"<<gameLevel<<endl;
 }
 
 void instructionsClickHandler(int x, int y, int instructionsPage){
@@ -117,6 +119,7 @@ void instructionsClickHandler(int x, int y, int instructionsPage){
 		//if it's the begin game button	
 		if(x > 335 && x < 550 && y > 505 && y < 550)
 		{
+			cout<<"we've clicked on begin game"<<endl;
 			beginGame();
 		}
 
@@ -231,7 +234,7 @@ void showInstructions(int gameLevel, int page)
 			assetName += "2";
 			break;
 	}
-	cout<<assetName<<endl;
+	cout<<"after page: "<<assetName<<endl;
 
 	//and display it
 	overlays.push_back(framework.createSprite(assetName, 0, 0, 600, 600));
@@ -294,22 +297,28 @@ void makeDictionary()
 
 void beginGame()
 {
-/*
-	//display the background
-	overlays.push_back(framework.createSprite("background", 0, 0, 600, 600));
-	overlays.back().setVisible(true);
+	cout<<"in begingame"<<endl;
+	removeAllButGameboard();
 
 	//display the gameboard
 	gameBoard->displayBoard();
+	cout<<"gameboard displayed"<<endl;
+
+	//display the background
+	//overlays.push_back(framework.createSprite("background", 0, 0, 600, 600));
+	//overlays.back().setVisible(true);
+	cout<<"background displayed"<<endl;
 
 	//display the user score and current word text fields
 	//GFText& createTextFromString(std::string, int, int, int);
-	currentWord = &framework.createTextFromString("",35,535,40);
-	gScore = &framework.createTextFromString("0", 490, 315, 20);
+//	currentWord = &framework.createTextFromString("",35,535,40);
+//	gScore = &framework.createTextFromString("0", 490, 315, 20);
+	cout<<"text displayed"<<endl;
 
 	//set the state of the game
 	currentState = IN_GAME;
-*/
+
+	cout<<"all done"<<endl;
 }
 
 
