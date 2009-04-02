@@ -122,6 +122,11 @@ void GameFramework::_parseMessage(std::stringstream &msgStream)
 				if (!cb_MH) return;
 
 				sscanf(message, "%*d %d %d %d %d", &p1, &p2, &p3, &p4);
+				std::cout << "Received : " << message << std::endl;
+				std::cout << "Button : " << p1 << std::endl;
+				std::cout << "State : " << p2 << std::endl;
+				std::cout << "X : " << p3 << std::endl;
+				std::cout << "Y : " << p4 << std::endl;
 				cb_MH(p1, p2, p3, p4); 
 				break;
 				
