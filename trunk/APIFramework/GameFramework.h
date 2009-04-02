@@ -23,6 +23,7 @@ enum PROTOCOL_OPCODES
 	SPRITE_SET_ANIMATION		= 308,
 	SPRITE_SET_FRAME			= 309,
 	SPRITE_MOVE_TO				= 310,
+	SPRITE_CHANGE_BITMAP		= 311,
 	
 	/* TEXT OPCODES */
 	TEXT_CREATE_FROM_ASSET		= 401,
@@ -43,10 +44,8 @@ enum PROTOCOL_OPCODES
 #include "GFSprite.h"
 #include "GFText.h"
 #include "GFAudio.h"
-#include "../Allegro Headers/allegro.h"
-#include "../Allegro Headers/winalleg.h"
-#define ALLEGRO_AND_MFC
-#define ALLEGRO_NO_MAGIC_MAIN
+#include "windows.h"
+#include <sstream>
 
 class /*SINGLETON*/ GameFramework
 {
@@ -116,12 +115,13 @@ class /*SINGLETON*/ GameFramework
 		static int const INDEX_TABLE_SIZE = 1000;
 	
 		/* COMMUNICATION DETAILS */
-		//HANDLE stdinFW, stdoutFW;
+		HANDLE stdinFW, stdoutFW;
 		char _msgBuffer[GFW_BUFFER_SIZE];
 		
 		/* CLEANUP METHODS */
 		void _clrBuffer();
 		void _getMessages();
+		void _parseMessage(std::stringstream&);
 
 		/* OBJECT LIST SIZES */
 		static int const GFS_MAX, GFSL, GFSU;
