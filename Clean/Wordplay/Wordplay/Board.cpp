@@ -30,7 +30,7 @@ Board::Board(int lvl, Dictionary * d)
 		{
 			boardset[m][n].x = m;
 			boardset[m][n].y = n;
-			boardset[m][n].tileObj = new Tile();
+			//boardset[m][n].tileObj = new Tile();
 		}
 	}
 }
@@ -43,8 +43,8 @@ void Board::displayBoard()
 	{
 		for (int j = 0; j < 9; ++j)
 		{
-			cout<<"letter: "<<boardset[i][j].tileObj->getLetter()<<endl;
-			boardset[i][j].tileObj->showTile( (25 + 50 * i), (25 + 50 * j) );
+			//cout<<"letter: "<<boardset[i][j].tileObj->getLetter()<<endl;
+			//boardset[i][j].tileObj->showTile( (25 + 50 * i), (25 + 50 * j) );
 		}
 	}
 }

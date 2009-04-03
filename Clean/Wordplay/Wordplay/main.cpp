@@ -301,18 +301,18 @@ void beginGame()
 	removeAllButGameboard();
 
 	//display the gameboard
-	gameBoard->displayBoard();
+	//gameBoard->displayBoard();
 	cout<<"gameboard displayed"<<endl;
 
 	//display the background
-	//overlays.push_back(framework.createSprite("background", 0, 0, 600, 600));
-	//overlays.back().setVisible(true);
+	overlays.push_back(framework.createSprite("background", 0, 0, 600, 600));
+	overlays.back().setVisible(true);
 	cout<<"background displayed"<<endl;
 
 	//display the user score and current word text fields
 	//GFText& createTextFromString(std::string, int, int, int);
-//	currentWord = &framework.createTextFromString("",35,535,40);
-//	gScore = &framework.createTextFromString("0", 490, 315, 20);
+	currentWord = &framework.createTextFromString("ddd",35,535,40);
+	gScore = &framework.createTextFromString("0", 490, 315, 20);
 	cout<<"text displayed"<<endl;
 
 	//set the state of the game
