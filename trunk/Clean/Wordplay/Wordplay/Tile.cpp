@@ -30,10 +30,10 @@ Tile::Tile()
 	assetName = assetName + letter;
 	cout<<"assetName: "<<assetName<<endl;
 	GameFramework gf = GameFramework::Instance();
-	relatedSprite = &gf.createSprite(assetName,0,0,50,50);
+	//relatedSprite = &gf.createSprite(assetName,0,0,50,50);
 
 	//make the sprite invisible
-	relatedSprite->setVisible(false);
+	//relatedSprite->setVisible(false);
 //	cout<<"set invisible"<<endl;
 	//the letter is not yet selected
 	bool selected = false;
