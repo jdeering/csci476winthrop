@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 	while(fw->isActive())
 	{
 		// Set framerate to about 30 fps
-		//rest_callback(33, Update);
+		rest_callback(33, Update);
 		fw->MainLoop();
 	}
 

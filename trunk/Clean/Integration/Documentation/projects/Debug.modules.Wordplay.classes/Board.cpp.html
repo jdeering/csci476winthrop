@@ -1,0 +1,286 @@
+<HTML>
+<HEAD>
+<TITLE>
+Board.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">/*
+Lauren Cairco
+26 February 2009
+CSCI 476 Project
+
+Board.cpp
+
+This class is for use with the Wordplay game module. It's the implementation for Board.h.
+All the function details are found here.
+
+*/</font>
+
+<font color="blue">#include</font> <font color="maroon">"Board.h"</font>
+
+<font color="green">//////////////////////////////</font>
+<font color="green">//  construction & display  //</font>
+<font color="green">//////////////////////////////</font>
+
+<font color="green">//accepts and sets game level and pointer to the dictionary to be used to check words</font>
+Board<font color="black">:</font><font color="black">:</font>Board<font color="black">(</font><font color="blue">int</font> lvl, Dictionary <font color="black">*</font> d<font color="black">)</font>
+<font color="black">{</font>   
+    gameLevel <font color="black">=</font> lvl;
+    userDictionary <font color="black">=</font> d;
+<font color="black">}</font>
+
+<font color="green">//displays the board</font>
+<font color="blue">void</font> Board<font color="black">:</font><font color="black">:</font>displayBoard<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">//display each tile in the array in its appropriate position</font>
+    <font color="blue">for</font> <font color="black">(</font><font color="blue">int</font> i <font color="black">=</font> <font color="maroon">0</font>; i <font color="black">&#60;</font> <font color="maroon">9</font>; <font color="black">+</font><font color="black">+</font>i<font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">for</font> <font color="black">(</font><font color="blue">int</font> j <font color="black">=</font> <font color="maroon">0</font>; j <font color="black">&#60;</font> <font color="maroon">9</font>; <font color="black">+</font><font color="black">+</font>j<font color="black">)</font>
+        <font color="black">{</font>
+            boardset<font color="black">[</font>i<font color="black">]</font><font color="black">[</font>j<font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>showTile<font color="black">(</font> <font color="black">(</font><font color="maroon">25</font> <font color="black">+</font> <font color="maroon">50</font> <font color="black">*</font> i<font color="black">)</font>, <font color="black">(</font><font color="maroon">25</font> <font color="black">+</font> <font color="maroon">50</font> <font color="black">*</font> j<font color="black">)</font> <font color="black">)</font>;
+        <font color="black">}</font>
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">//////////////////////////////////</font>
+<font color="green">//  actions on individual tiles //</font>
+<font color="green">//////////////////////////////////</font>
+
+<font color="green">//handles all the clicks within the board area</font>
+<font color="blue">void</font> Board<font color="black">:</font><font color="black">:</font>clickHandler<font color="black">(</font><font color="blue">int</font> x, <font color="blue">int</font> y<font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">//figure out which tile object the user clicked on</font>
+    x <font color="black">=</font> x <font color="maroon">-25</font>;
+    x <font color="black">=</font> <font color="blue">int</font><font color="black">(</font><font color="black">(</font>x <font color="black">-</font><font color="black">(</font>x % <font color="maroon">50</font><font color="black">)</font><font color="black">)</font> <font color="black">/</font> <font color="maroon">50</font><font color="black">)</font>;
+    y <font color="black">=</font> y <font color="maroon">-25</font>;
+    y <font color="black">=</font> <font color="blue">int</font><font color="black">(</font><font color="black">(</font>y <font color="black">-</font><font color="black">(</font>y % <font color="maroon">50</font><font color="black">)</font><font color="black">)</font> <font color="black">/</font> <font color="maroon">50</font><font color="black">)</font>;
+
+    <font color="green">//now that we have our x and y positions, we start dealing with the tile that's in that array subscript</font>
+    <font color="green">//first, if it's selected, we need to deselect it and any letters that follow it in the word</font>
+    <font color="blue">if</font> <font color="black">(</font>boardset<font color="black">[</font>x<font color="black">]</font><font color="black">[</font>y<font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        removeLetter<font color="black">(</font>boardset<font color="black">[</font>x<font color="black">]</font><font color="black">[</font>y<font color="black">]</font><font color="black">)</font>;
+    <font color="black">}</font>
+    <font color="green">//if it's not selected</font>
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        <font color="blue">bool</font> validMove <font color="black">=</font> <font color="blue">false</font>;
+
+        <font color="green">//check to see if it's a valid move</font>
+        <font color="green">//this is level dependent</font>
+        <font color="blue">switch</font><font color="black">(</font>gameLevel<font color="black">)</font>
+        <font color="black">{</font>
+            <font color="green">//for levels one and two</font>
+            <font color="blue">case</font> <font color="maroon">1</font><font color="black">:</font>
+            <font color="blue">case</font> <font color="maroon">2</font><font color="black">:</font>
+                <font color="green">//allow for any neighboring tile (cardinal directions as well as diagonals)</font>
+                <font color="green">//check to make sure it is selected, and it is the end of the word</font>
+                <font color="blue">if</font> <font color="black">(</font><font color="black">(</font>boardset<font color="black">[</font>x<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">[</font>y<font color="black">+</font><font color="maroon">1</font><font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">[</font>y<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">)</font> <font color="black">|</font><font color="black">|</font>
+                    <font color="black">(</font>boardset<font color="black">[</font>x<font color="maroon">-1</font><font color="black">]</font><font color="black">[</font>y<font color="maroon">-1</font><font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="maroon">-1</font><font color="black">]</font><font color="black">[</font>y<font color="maroon">-1</font><font color="black">]</font><font color="black">)</font> <font color="black">|</font><font color="black">|</font>
+                    <font color="black">(</font>boardset<font color="black">[</font>x<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">[</font>y<font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">[</font>y<font color="black">]</font><font color="black">)</font> <font color="black">|</font><font color="black">|</font>
+                    <font color="black">(</font>boardset<font color="black">[</font>x<font color="maroon">-1</font><font color="black">]</font><font color="black">[</font>y<font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="maroon">-1</font><font color="black">]</font><font color="black">[</font>y<font color="black">]</font><font color="black">)</font> <font color="black">|</font><font color="black">|</font>
+                    <font color="black">(</font>boardset<font color="black">[</font>x<font color="black">]</font><font color="black">[</font>y<font color="black">+</font><font color="maroon">1</font><font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="black">]</font><font color="black">[</font>y<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">)</font> <font color="black">|</font><font color="black">|</font>
+                    <font color="black">(</font>boardset<font color="black">[</font>x<font color="black">]</font><font color="black">[</font>y<font color="maroon">-1</font><font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="black">]</font><font color="black">[</font>y<font color="maroon">-1</font><font color="black">]</font><font color="black">)</font> <font color="black">|</font><font color="black">|</font>
+                    <font color="black">(</font>boardset<font color="black">[</font>x<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">[</font>y<font color="maroon">-1</font><font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">[</font>y<font color="maroon">-1</font><font color="black">]</font><font color="black">)</font> <font color="black">|</font><font color="black">|</font>
+                    <font color="black">(</font>boardset<font color="black">[</font>x<font color="maroon">-1</font><font color="black">]</font><font color="black">[</font>y<font color="black">+</font><font color="maroon">1</font><font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="maroon">-1</font><font color="black">]</font><font color="black">[</font>y<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">)</font> 
+                    <font color="black">)</font>
+                <font color="black">{</font>
+                    validMove <font color="black">=</font> <font color="blue">true</font>;
+                <font color="black">}</font>
+
+                <font color="blue">break</font>;
+
+            <font color="green">//for levels three and four</font>
+            <font color="blue">case</font> <font color="maroon">3</font><font color="black">:</font>
+            <font color="blue">case</font> <font color="maroon">4</font><font color="black">:</font>
+                <font color="green">//allow for any tile in cardinal direction</font>
+                <font color="blue">if</font> <font color="black">(</font><font color="black">(</font>boardset<font color="black">[</font>x<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">[</font>y<font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">[</font>y<font color="black">]</font><font color="black">)</font> <font color="black">|</font><font color="black">|</font>
+                    <font color="black">(</font>boardset<font color="black">[</font>x<font color="maroon">-1</font><font color="black">]</font><font color="black">[</font>y<font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="maroon">-1</font><font color="black">]</font><font color="black">[</font>y<font color="black">]</font><font color="black">)</font> <font color="black">|</font><font color="black">|</font>
+                    <font color="black">(</font>boardset<font color="black">[</font>x<font color="black">]</font><font color="black">[</font>y<font color="black">+</font><font color="maroon">1</font><font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="black">]</font><font color="black">[</font>y<font color="black">+</font><font color="maroon">1</font><font color="black">]</font><font color="black">)</font> <font color="black">|</font><font color="black">|</font>
+                    <font color="black">(</font>boardset<font color="black">[</font>x<font color="black">]</font><font color="black">[</font>y<font color="maroon">-1</font><font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>isSelected<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="black">&</font>boardset<font color="black">[</font>x<font color="black">]</font><font color="black">[</font>y<font color="maroon">-1</font><font color="black">]</font><font color="black">)</font> 
+                    <font color="black">)</font>
+                <font color="black">{</font>
+                    validMove <font color="black">=</font> <font color="blue">true</font>;
+                <font color="black">}</font>
+                <font color="blue">break</font>;
+        <font color="black">}</font>
+
+        <font color="green">//if we've decided it's a valid move</font>
+        <font color="blue">if</font> <font color="black">(</font>validMove<font color="black">)</font><font color="black">{</font>
+            <font color="green">//add the letter to the word</font>
+            addLetter<font color="black">(</font>boardset<font color="black">[</font>x<font color="black">]</font><font color="black">[</font>y<font color="black">]</font><font color="black">)</font>;
+        <font color="black">}</font>
+
+        <font color="green">//otherwise ignore the click</font>
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">//add the letter passed in to the current word</font>
+<font color="blue">void</font> Board<font color="black">:</font><font color="black">:</font>addLetter<font color="black">(</font>TileItem <font color="black">&</font>t<font color="black">)</font>
+<font color="black">{</font>
+    currentWord.push_back<font color="black">(</font><font color="black">&</font>t<font color="black">)</font>;
+    <font color="green">//change the word's appearance to indicate whether it's a submittable word or not</font>
+    checkWord<font color="black">(</font><font color="black">)</font>;
+    changeAppearance<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">//remove the letter passed in from the word, and any letters following it</font>
+<font color="green">//works recursively</font>
+<font color="blue">void</font> Board<font color="black">:</font><font color="black">:</font>removeLetter<font color="black">(</font>TileItem <font color="black">&</font> toRemove<font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">//unselect the top letter</font>
+    currentWord.at<font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font> <font color="maroon">-1</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>tileObj<font color="black">-</font><font color="black">&#62;</font>unhighlight<font color="black">(</font><font color="black">)</font>;
+
+    <font color="green">//recursively remove the letters in the word until we reach the letter the user clicked on </font>
+    <font color="blue">if</font> <font color="black">(</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>tileObj <font color="black">!</font><font color="black">=</font> toRemove.tileObj<font color="black">)</font>
+    <font color="black">{</font>       
+        currentWord.pop_back<font color="black">(</font><font color="black">)</font>;
+
+        <font color="green">//go with the next tile</font>
+        removeLetter<font color="black">(</font>toRemove<font color="black">)</font>;
+    <font color="black">}</font>
+    <font color="green">//if we've found it, remove & stop recursing</font>
+    <font color="blue">else</font><font color="black">{</font>
+        currentWord.pop_back<font color="black">(</font><font color="black">)</font>;
+
+        <font color="green">//change our word's appearance to reflect its valididty</font>
+        checkWord<font color="black">(</font><font color="black">)</font>;
+        changeAppearance<font color="black">(</font><font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">//////////////////////////////////////</font>
+<font color="green">//  dealing with the selected word  //</font>
+<font color="green">//////////////////////////////////////</font>
+
+<font color="green">//change the appearance of the word on the basis of whether it's valid or not</font>
+<font color="blue">void</font> Board<font color="black">:</font><font color="black">:</font>changeAppearance<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">//if it's a word, highlight it as valid</font>
+    <font color="blue">if</font> <font color="black">(</font>isWord<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">for</font> <font color="black">(</font><font color="blue">int</font> i <font color="black">=</font> <font color="maroon">0</font>; i <font color="black">&#60;</font> <font color="black">(</font><font color="blue">signed</font><font color="black">)</font>currentWord.size<font color="black">(</font><font color="black">)</font>; <font color="black">+</font><font color="black">+</font>i<font color="black">)</font>
+            currentWord.at<font color="black">(</font>i<font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>tileObj<font color="black">-</font><font color="black">&#62;</font>highlightValid<font color="black">(</font><font color="black">)</font>;
+    <font color="black">}</font>
+    <font color="green">//otherwise highlight it as not valid</font>
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        <font color="blue">for</font> <font color="black">(</font><font color="blue">int</font> i <font color="black">=</font> <font color="maroon">0</font>; i <font color="black">&#60;</font> <font color="black">(</font><font color="blue">signed</font><font color="black">)</font>currentWord.size<font color="black">(</font><font color="black">)</font>; <font color="black">+</font><font color="black">+</font>i<font color="black">)</font>
+            currentWord.at<font color="black">(</font>i<font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>tileObj<font color="black">-</font><font color="black">&#62;</font>highlightInvalid<font color="black">(</font><font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">//checks the current word against the dictionary and submits if it's valid</font>
+<font color="green">//returns 10 * wordlength * levelnumber for the score</font>
+<font color="blue">int</font> Board<font color="black">:</font><font color="black">:</font>submitWord<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">int</font> wordScore <font color="black">=</font> <font color="maroon">0</font>;
+
+    <font color="green">//check to make sure the word is valid</font>
+    <font color="blue">if</font> <font color="black">(</font>isWord<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        <font color="green">//score the word before we get rid of it</font>
+        <font color="green">//scoring is dependent on level</font>
+        wordScore <font color="black">=</font> returnWord<font color="black">(</font><font color="black">)</font>.length<font color="black">(</font><font color="black">)</font> <font color="black">*</font> gameLevel <font color="black">*</font> <font color="maroon">10</font>;
+
+        <font color="green">//remove & replace the letters we just used</font>
+        replaceLetters<font color="black">(</font><font color="black">)</font>;
+    <font color="black">}</font>
+
+    <font color="green">//if it's not, ignore it, you'll return 0</font>
+
+    <font color="green">//return the score for the word</font>
+    <font color="blue">return</font> wordScore;
+<font color="black">}</font>
+
+
+<font color="green">//replaces the letters that are in the current word with new letters, method depends on level</font>
+<font color="green">//should be called when the word is submitted</font>
+<font color="blue">void</font> Board<font color="black">:</font><font color="black">:</font>replaceLetters<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">//now, delete all those tiles and, dependent on level, replace appropriately</font>
+    <font color="blue">switch</font> <font color="black">(</font>gameLevel<font color="black">)</font>
+    <font color="black">{</font>
+            
+            <font color="green">//for levels one, two, and three, the tiles "fall" into place</font>
+        <font color="blue">case</font> <font color="maroon">1</font><font color="black">:</font>
+        <font color="blue">case</font> <font color="maroon">2</font><font color="black">:</font>
+        <font color="blue">case</font> <font color="maroon">3</font><font color="black">:</font>
+            <font color="blue">while</font> <font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+            <font color="black">{</font>
+                
+                <font color="green">//fill in from top</font>
+                <font color="blue">if</font> <font color="black">(</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>y <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+                <font color="black">{</font>
+                    <font color="green">//drop blocks down until the only blank one remaining is at top</font>
+                    <font color="blue">for</font> <font color="black">(</font><font color="blue">int</font> i <font color="black">=</font> <font color="maroon">0</font>; i <font color="black">&#60;</font> currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>y; i<font color="black">+</font><font color="black">+</font><font color="black">)</font><font color="black">{</font>
+                        boardset<font color="black">[</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>x<font color="black">]</font><font color="black">[</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>y <font color="black">+</font> i<font color="black">]</font> <font color="black">=</font> boardset<font color="black">[</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>x<font color="black">]</font><font color="black">[</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>y <font color="black">+</font> <font color="maroon">1</font><font color="black">]</font>;
+                        boardset<font color="black">[</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>x<font color="black">]</font><font color="black">[</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>y <font color="black">+</font> <font color="maroon">1</font><font color="black">]</font>.tileObj<font color="black">-</font><font color="black">&#62;</font>dropDown<font color="black">(</font><font color="black">)</font>;
+                    <font color="black">}</font>
+                <font color="black">}</font>
+                Tile <font color="black">*</font> nT;
+                nT <font color="black">=</font> <font color="blue">new</font> Tile<font color="black">(</font><font color="black">)</font>;
+            
+                nT<font color="black">-</font><font color="black">&#62;</font>slideFromTop<font color="black">(</font><font color="black">(</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>x<font color="black">)</font> <font color="black">*</font> <font color="maroon">50</font> <font color="black">+</font> <font color="maroon">25</font>, <font color="black">(</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>y<font color="black">)</font> <font color="black">*</font> <font color="maroon">50</font> <font color="black">+</font> <font color="maroon">25</font><font color="black">)</font>;
+                
+                <font color="green">//fill in the top block with a new letter</font>
+                boardset<font color="black">[</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>x<font color="black">]</font><font color="black">[</font><font color="maroon">0</font><font color="black">]</font>.tileObj <font color="black">=</font> nT;
+
+                currentWord.pop_back<font color="black">(</font><font color="black">)</font>;
+            <font color="black">}</font>
+            
+            <font color="blue">break</font>;
+            
+            <font color="green">//for level four, the tiles are simply replaced with new tiles that are generated</font>
+        <font color="blue">case</font> <font color="maroon">4</font><font color="black">:</font>
+            <font color="blue">while</font> <font color="black">(</font>currentWord.size<font color="black">(</font><font color="black">)</font><font color="black">)</font><font color="black">{</font>
+                Tile <font color="black">*</font> nT;
+                nT <font color="black">=</font> <font color="blue">new</font> Tile<font color="black">(</font><font color="black">)</font>;
+                boardset<font color="black">[</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>x<font color="black">]</font><font color="black">[</font>currentWord.back<font color="black">(</font><font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>y<font color="black">]</font>.tileObj <font color="black">=</font> nT;
+
+                currentWord.pop_back<font color="black">(</font><font color="black">)</font>;
+            <font color="black">}</font>
+        <font color="blue">break</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">//checks the word to see if it's in the dictionary or not</font>
+<font color="blue">void</font> Board<font color="black">:</font><font color="black">:</font>checkWord<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    validWord <font color="black">=</font> userDictionary<font color="black">-</font><font color="black">&#62;</font>search<font color="black">(</font>returnWord<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">//////////////////////////////</font>
+<font color="green">//  returning properties    //</font>
+<font color="green">//////////////////////////////</font>
+
+<font color="green">//returns whether the word is valid or not</font>
+<font color="blue">bool</font> Board<font color="black">:</font><font color="black">:</font>isWord<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">return</font> validWord;
+<font color="black">}</font>
+
+<font color="green">//returns the current word as a string</font>
+std<font color="black">:</font><font color="black">:</font>string Board<font color="black">:</font><font color="black">:</font>returnWord<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>string currentString <font color="black">=</font> <font color="maroon">""</font>;
+
+    <font color="green">//go through the vector of tiles, putting all the letters into a string</font>
+    <font color="blue">for</font> <font color="black">(</font><font color="blue">int</font> i <font color="black">=</font> <font color="maroon">0</font>; i <font color="black">&#60;</font> <font color="black">(</font><font color="blue">signed</font><font color="black">)</font>currentWord.size<font color="black">(</font><font color="black">)</font>; <font color="black">+</font><font color="black">+</font>i<font color="black">)</font><font color="black">{</font>
+        currentString <font color="black">+</font><font color="black">=</font> currentWord.at<font color="black">(</font>i<font color="black">)</font><font color="black">-</font><font color="black">&#62;</font>tileObj<font color="black">-</font><font color="black">&#62;</font>getLetter<font color="black">(</font><font color="black">)</font>;
+    <font color="black">}</font>
+
+    <font color="green">//return the resultant string</font>
+    <font color="blue">return</font> currentString;
+<font color="black">}</font>
+
+<font color="green">//returns the board level</font>
+<font color="blue">int</font> Board<font color="black">:</font><font color="black">:</font>returnLevel<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">return</font> gameLevel;
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>

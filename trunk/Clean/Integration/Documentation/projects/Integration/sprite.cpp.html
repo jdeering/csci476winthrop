@@ -1,0 +1,305 @@
+<HTML>
+<HEAD>
+<TITLE>
+sprite.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#include</font> <font color="maroon">"sprite.h"</font>
+
+<font color="green">/******************************************************
+    Default Constructor
+******************************************************/</font>
+Sprite<font color="black">:</font><font color="black">:</font>Sprite<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    box.SetPosition<font color="black">(</font><font color="maroon">0</font>, <font color="maroon">0</font><font color="black">)</font>;
+    box.SetSize<font color="black">(</font><font color="maroon">0</font>, <font color="maroon">0</font><font color="black">)</font>;
+    numFrames <font color="black">=</font> <font color="maroon">1</font>;
+    currFrame <font color="black">=</font> <font color="maroon">0</font>;
+    visible <font color="black">=</font> <font color="blue">true</font>;
+    moving <font color="black">=</font> <font color="blue">false</font>;
+    animating <font color="black">=</font> <font color="blue">false</font>;
+    alive <font color="black">=</font> <font color="blue">true</font>;
+    rest <font color="black">=</font> <font color="maroon">0</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Constructor
+
+    @param spriteName The name of the sprite.
+    @param x The initial x coordinate of the sprite
+    @param y The initial y coordinate of the sprite
+    @param w The initial width of the sprite in pixels
+    @param h The initial height of the sprite in pixels
+******************************************************/</font>
+Sprite<font color="black">:</font><font color="black">:</font>Sprite<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string imageRef, <font color="blue">int</font> x <font color="black">=</font> <font color="maroon">0</font>, <font color="blue">int</font> y <font color="black">=</font> <font color="maroon">0</font>, <font color="blue">int</font> w <font color="black">=</font> <font color="maroon">0</font>, <font color="blue">int</font> h <font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+<font color="black">{</font>
+    fileRefName <font color="black">=</font> imageRef;
+    numFrames <font color="black">=</font> <font color="maroon">1</font>;
+    currFrame <font color="black">=</font> <font color="maroon">0</font>;
+    box.SetPosition<font color="black">(</font>x, y<font color="black">)</font>;
+    box.SetSize<font color="black">(</font>w, h<font color="black">)</font>;
+    visible <font color="black">=</font> <font color="blue">true</font>;
+    moving <font color="black">=</font> <font color="blue">false</font>;
+    animating <font color="black">=</font> <font color="blue">false</font>;
+    alive <font color="black">=</font> <font color="blue">true</font>;
+    rest <font color="black">=</font> <font color="maroon">0</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Deconstructor
+******************************************************/</font>
+Sprite<font color="black">:</font><font color="black">:</font>~Sprite<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Toggles animation of the sprite
+    and sets the frame rate
+
+    @param delay The number of ticks to wait before moving to
+                  the next frame. Higher numbers yield slower
+                  animations. 0 or less will turn animation off.
+******************************************************/</font>
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>SetAnimation<font color="black">(</font><font color="blue">int</font> delay <font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>delay <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+    <font color="black">{</font>
+        frameDelay <font color="black">=</font> delay;
+        animating <font color="black">=</font> <font color="blue">true</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the rate at which to animate the sprite
+
+    @param delay The number of ticks to wait before moving to
+                  the next frame. Higher numbers yield slower
+                  animations. 0 will turn animation off.
+******************************************************/</font>
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>SetFrameDelay<font color="black">(</font><font color="blue">int</font> delay<font color="black">)</font>
+<font color="black">{</font>
+    frameDelay <font color="black">=</font> delay;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Toggles whether or not the sprite is alive.
+
+    @param val &#60;code&#62;true&#60;/code&#62; to have the sprite drawn,
+                 &#60;code&#62;false&#60;/code&#62; to have it not drawn
+******************************************************/</font>
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>SetAlive<font color="black">(</font><font color="blue">bool</font> val<font color="black">)</font>
+<font color="black">{</font>
+    alive <font color="black">=</font> val;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    @return &#60;code&#62;true&#60;/code&#62; if the sprite is being animated,
+              &#60;code&#62;false&#60;/code&#62; otherwise
+******************************************************/</font>
+<font color="blue">bool</font> Sprite<font color="black">:</font><font color="black">:</font>isAnimating<font color="black">(</font><font color="black">)</font><font color="black">{</font> <font color="blue">return</font> animating; <font color="black">}</font>
+
+<font color="green">/******************************************************
+    @return &#60;code&#62;true&#60;/code&#62; if the sprite is being drawn,
+              &#60;code&#62;false&#60;/code&#62; otherwise
+******************************************************/</font>
+<font color="blue">bool</font> Sprite<font color="black">:</font><font color="black">:</font>isAlive<font color="black">(</font><font color="black">)</font><font color="black">{</font> <font color="blue">return</font> alive; <font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the current animation frame to draw.
+
+    @param frame The index of the frame to draw
+    @return &#60;code&#62;true&#60;/code&#62; if the frame index is valid, 
+            &#60;code&#62;false&#60;/code&#62; otherwise.
+******************************************************/</font>
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>SetFrame<font color="black">(</font><font color="blue">int</font> frame<font color="black">)</font>
+<font color="black">{</font>
+    currFrame <font color="black">=</font> frame;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the position of the sprite on the screen.
+
+    @param x The x coordinate of the position
+    @param y The y coordinate of the position
+******************************************************/</font>
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>SetPosition<font color="black">(</font><font color="blue">int</font> x , <font color="blue">int</font> y<font color="black">)</font>
+<font color="black">{</font>
+    box.SetPosition<font color="black">(</font>x, y<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the width and height of the sprite.
+
+    @param w The width of the sprite
+    @param h The height of the sprite
+******************************************************/</font>
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>SetSize<font color="black">(</font><font color="blue">int</font> w, <font color="blue">int</font> h<font color="black">)</font>
+<font color="black">{</font>
+    box.SetSize<font color="black">(</font>w, h<font color="black">)</font>;
+<font color="black">}</font>
+
+
+<font color="green">/******************************************************
+    Sets a sprite in motion until it reaches its destination.
+
+    @param x The x coordinate being moved to
+    @param y The y coordinate being moved to
+    @param speed The number of pixels to move per tick (0 to stop movement)
+******************************************************/</font>
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>MoveTo<font color="black">(</font><font color="blue">int</font> x, <font color="blue">int</font> y, <font color="blue">int</font> s<font color="black">)</font>
+<font color="black">{</font>
+    new_x <font color="black">=</font> x;
+    new_y <font color="black">=</font> y;
+    speed <font color="black">=</font> s;
+    moving <font color="black">=</font> <font color="blue">true</font>;
+    <font color="blue">if</font><font color="black">(</font>speed <font color="black">&#60;</font> <font color="maroon">0</font><font color="black">)</font>
+        speed <font color="black">=</font> <font color="maroon">0</font> <font color="black">-</font>speed;
+    <font color="blue">if</font><font color="black">(</font>speed <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+        moving <font color="black">=</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Updates the sprite's location and animation.
+
+    @param img The sprite image being drawn
+    @param dest The screen bitmap on which to draw the sprite
+******************************************************/</font>
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>Update<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>alive<font color="black">)</font>
+    <font color="black">{</font>
+        NextFrame<font color="black">(</font><font color="black">)</font>;
+        MovePosition<font color="black">(</font><font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Moves to the next frame of animation. If looping is
+    enabled, the animation is restarted once the last frame
+    has been rendered, otherwise animating is stopped.
+******************************************************/</font>
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>NextFrame<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>animating<font color="black">)</font>
+    <font color="black">{</font>
+        currFrame<font color="black">+</font><font color="black">+</font>;
+        <font color="blue">if</font><font color="black">(</font>currFrame <font color="black">&#62;</font><font color="black">=</font> numFrames<font color="black">)</font>
+        <font color="black">{</font>
+            <font color="blue">if</font><font color="black">(</font>loops<font color="black">)</font>
+                currFrame <font color="black">=</font> <font color="maroon">0</font>; <font color="green">// Start frames over</font>
+            <font color="blue">else</font>
+            <font color="black">{</font>
+                currFrame<font color="black">-</font><font color="black">-</font>; <font color="green">// Reset to last valid frame</font>
+                animating <font color="black">=</font> <font color="blue">false</font>;
+            <font color="black">}</font>
+        <font color="black">}</font>
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Draws the sprite in its current location.
+
+    @param image The sprite image being drawn
+    @param dest The screen bitmap on which to draw the sprite
+******************************************************/</font>
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>Draw<font color="black">(</font>BITMAP <font color="black">*</font>frame, BITMAP <font color="black">*</font>buffer<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>visible<font color="black">)</font>
+    masked_blit<font color="black">(</font>frame, buffer, <font color="maroon">0</font>, <font color="maroon">0</font>, box.GetPositionX<font color="black">(</font><font color="black">)</font>, box.GetPositionY<font color="black">(</font><font color="black">)</font>,
+        box.GetWidth<font color="black">(</font><font color="black">)</font>, box.GetHeight<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Uses values specified in MoveTo() to change the position
+    of the sprite.
+******************************************************/</font>
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>MovePosition<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>moving <font color="black">&</font><font color="black">&</font> rest <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+    <font color="black">{</font>
+        rest <font color="black">=</font> speed;
+        <font color="blue">if</font><font color="black">(</font>new_x <font color="black">&#62;</font> box.GetPositionX<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+        <font color="black">{</font>
+            box.SetPosition<font color="black">(</font>box.GetPositionX<font color="black">(</font><font color="black">)</font><font color="black">+</font>speed, box.GetPositionY<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+            <font color="blue">if</font><font color="black">(</font>new_x <font color="black">&#60;</font><font color="black">=</font> box.GetPositionX<font color="black">(</font><font color="black">)</font><font color="black">)</font> box.SetPosition<font color="black">(</font>new_x, box.GetPositionY<font color="black">(</font><font color="black">)</font><font color="black">)</font>; <font color="green">// Prevents wobbling</font>
+        <font color="black">}</font>
+        <font color="blue">if</font><font color="black">(</font>new_x <font color="black">&#60;</font> box.GetPositionX<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+        <font color="black">{</font>
+            box.SetPosition<font color="black">(</font>box.GetPositionX<font color="black">(</font><font color="black">)</font><font color="black">-</font>speed, box.GetPositionY<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+            <font color="blue">if</font><font color="black">(</font>new_x <font color="black">&#62;</font><font color="black">=</font> box.GetPositionX<font color="black">(</font><font color="black">)</font><font color="black">)</font> box.SetPosition<font color="black">(</font>new_x, box.GetPositionY<font color="black">(</font><font color="black">)</font><font color="black">)</font>; <font color="green">// Prevents wobbling</font>
+        <font color="black">}</font>
+        
+        <font color="blue">if</font><font color="black">(</font>new_y <font color="black">&#62;</font> box.GetPositionY<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+        <font color="black">{</font>
+            box.SetPosition<font color="black">(</font>box.GetPositionX<font color="black">(</font><font color="black">)</font>, box.GetPositionY<font color="black">(</font><font color="black">)</font><font color="black">+</font>speed<font color="black">)</font>;
+            <font color="blue">if</font><font color="black">(</font>new_y <font color="black">&#60;</font><font color="black">=</font> box.GetPositionY<font color="black">(</font><font color="black">)</font><font color="black">)</font> box.SetPosition<font color="black">(</font>box.GetPositionX<font color="black">(</font><font color="black">)</font>, new_y<font color="black">)</font>; <font color="green">// Prevents wobbling</font>
+        <font color="black">}</font>
+        <font color="blue">if</font><font color="black">(</font>new_y <font color="black">&#60;</font> box.GetPositionY<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+        <font color="black">{</font>
+            box.SetPosition<font color="black">(</font>box.GetPositionX<font color="black">(</font><font color="black">)</font>, box.GetPositionY<font color="black">(</font><font color="black">)</font><font color="black">-</font>speed<font color="black">)</font>;
+            <font color="blue">if</font><font color="black">(</font>new_y <font color="black">&#62;</font><font color="black">=</font> box.GetPositionY<font color="black">(</font><font color="black">)</font><font color="black">)</font> box.SetPosition<font color="black">(</font>box.GetPositionX<font color="black">(</font><font color="black">)</font>, new_y<font color="black">)</font>; <font color="green">// Prevents wobbling</font>
+        <font color="black">}</font>
+        
+        <font color="blue">if</font><font color="black">(</font>new_y <font color="black">=</font><font color="black">=</font> box.GetPositionY<font color="black">(</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> new_x <font color="black">=</font><font color="black">=</font> box.GetPositionX<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+        <font color="black">{</font>
+            moving <font color="black">=</font> <font color="blue">false</font>;
+            speed <font color="black">=</font> <font color="maroon">0</font>;
+        <font color="black">}</font>
+    <font color="black">}</font>
+    <font color="blue">if</font><font color="black">(</font>moving <font color="black">&</font><font color="black">&</font> rest <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+    <font color="black">{</font>
+        rest<font color="black">-</font><font color="black">-</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">int</font> Sprite<font color="black">:</font><font color="black">:</font>GetFrameNum<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">return</font> currFrame;
+<font color="black">}</font>
+
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>SetFrameCount<font color="black">(</font><font color="blue">int</font> fCount<font color="black">)</font>
+<font color="black">{</font>
+    numFrames <font color="black">=</font> fCount;
+<font color="black">}</font>
+
+<font color="blue">int</font> Sprite<font color="black">:</font><font color="black">:</font>GetWidth<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">return</font> box.GetWidth<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">int</font> Sprite<font color="black">:</font><font color="black">:</font>GetHeight<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">return</font> box.GetHeight<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>SetVisible<font color="black">(</font><font color="blue">bool</font> in<font color="black">)</font>
+<font color="black">{</font>
+    visible <font color="black">=</font> in;
+<font color="black">}</font>
+
+<font color="blue">bool</font> Sprite<font color="black">:</font><font color="black">:</font>isVisible<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">return</font> visible;
+<font color="black">}</font>
+
+
+<font color="blue">bool</font> Sprite<font color="black">:</font><font color="black">:</font>isColliding<font color="black">(</font>BoundingBox <font color="black">&</font>other_box<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">return</font> box.isColliding<font color="black">(</font>other_box<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">bool</font> Sprite<font color="black">:</font><font color="black">:</font>isColliding<font color="black">(</font>Sprite <font color="black">&</font>other_sprite<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">return</font> box.isColliding<font color="black">(</font>other_sprite.box<font color="black">)</font>;
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Sprite<font color="black">:</font><font color="black">:</font>ChangeBitmap<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string ref<font color="black">)</font>
+<font color="black">{</font>
+    fileRefName <font color="black">=</font> ref;
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>

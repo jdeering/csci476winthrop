@@ -1,0 +1,95 @@
+<HTML>
+<HEAD>
+<TITLE>
+Tile.h
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">/*
+Lauren Cairco
+26 February 2009
+CSCI 476 Project
+
+Tile.h
+
+This class is for use with the Wordplay game module.
+It requires the game framework header to be imported because it deals with everything to
+do with the creation and display of the letter tiles on the game board.
+It also requires the STL string class to deal with its sprite attributes
+
+DATA ITEMS:
+char letter
+    contains the character letter of the character the tile represents
+bool selected
+    true if the letter is selected, false if it is not selected
+GFSprite * relatedSprite
+    holds a pointer to the sprite that is associated with this tile
+
+FUNCTIONS:
+Tile (constructor)
+    Makes a new tile by generating a random letter, setting up the letter's sprite attributes,
+    and setting the 'selected' attribute to false
+char generateLetter
+    returns a character based on the probability distribution of letters in the English language
+    a private function, only used in the Tile constructor
+
+char getLetter
+    returns the letter the tile represents
+bool isSelected
+    returns whether the tile is selected or not
+GFSprite * returnSprite
+    returns the pointer to the related sprite
+
+highlightValid
+highlightInvalid
+unhighlight
+    changes the background color of the tile by changing the frame of its sprite
+
+showTile(x,y)
+    displays the tile with its top left corner at (x,y)
+dropDown
+    moves the tile down 50px from its location
+slideFromTop(x,y)
+    slides a tile down from the top of the screen to the specified coordinates
+
+= overload
+    allows for one tile to be assigned to another tile by copying over all its attributes
+
+*/</font>
+
+<font color="blue">#ifndef</font> TILE_H
+<font color="blue">#define</font> TILE_H
+<font color="blue">#include</font> <font color="maroon">&#60;string&#62;</font>
+<font color="blue">#include</font> <font color="maroon">"../../../../APIFramework/GameFramework.h"</font>
+
+<font color="blue">class</font> Tile
+<font color="black">{</font>
+    <font color="blue">public</font><font color="black">:</font>
+        Tile<font color="black">(</font><font color="black">)</font>;
+        <font color="blue">char</font> getLetter<font color="black">(</font><font color="black">)</font>;
+        <font color="blue">bool</font> isSelected<font color="black">(</font><font color="black">)</font>;
+        GFSprite <font color="black">*</font> returnSprite<font color="black">(</font><font color="black">)</font>;
+
+        <font color="blue">void</font> highlightValid<font color="black">(</font><font color="black">)</font>;
+        <font color="blue">void</font> highlightInvalid<font color="black">(</font><font color="black">)</font>;
+        <font color="blue">void</font> unhighlight<font color="black">(</font><font color="black">)</font>;
+
+        <font color="blue">void</font> showTile<font color="black">(</font><font color="blue">int</font>, <font color="blue">int</font><font color="black">)</font>;
+        <font color="blue">void</font> dropDown<font color="black">(</font><font color="black">)</font>;
+        <font color="blue">void</font> slideFromTop<font color="black">(</font><font color="blue">int</font>, <font color="blue">int</font><font color="black">)</font>;
+
+        Tile <font color="black">&</font> <font color="blue">operator</font><font color="black">=</font><font color="black">(</font>Tile <font color="black">&</font> rhs<font color="black">)</font>;   
+
+    <font color="blue">private</font><font color="black">:</font>
+        <font color="blue">char</font> letter;
+        <font color="blue">bool</font> selected;
+        GFSprite <font color="black">*</font> relatedSprite;
+
+        <font color="blue">char</font> generateLetter<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>;
+<font color="blue">#endif</font>
+
+</PRE>
+</BODY>
+</HTML>

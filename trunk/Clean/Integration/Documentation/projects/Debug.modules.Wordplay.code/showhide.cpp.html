@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+<TITLE>
+showhide.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#ifndef</font> SHOWHIDE_CPP
+<font color="blue">#define</font> SHOWHIDE_CPP
+<font color="blue">#include</font> <font color="maroon">"globals.h"</font>
+
+<font color="blue">void</font> dialogueBox<font color="black">(</font>string <font color="blue">name</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">//clear out the screen</font>
+    removeAllButGameboard<font color="black">(</font><font color="black">)</font>;
+
+    string assetName;
+    <font color="green">//construct asset name based on the parameter passed in, and set the game sate</font>
+    <font color="blue">if</font> <font color="black">(</font><font color="blue">name</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">"reset"</font><font color="black">)</font>
+    <font color="black">{</font>
+        assetName <font color="black">=</font> <font color="maroon">"reset"</font>;    
+        currentState <font color="black">=</font> DIALOGUE_RESET;
+    <font color="black">}</font>
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font><font color="blue">name</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">"end"</font><font color="black">)</font>
+    <font color="black">{</font>
+        assetName <font color="black">=</font> <font color="maroon">"endgame"</font>;
+        currentState <font color="black">=</font> DIALOGUE_EXIT;
+    <font color="black">}</font>
+
+    assetName <font color="black">+</font><font color="black">=</font> <font color="maroon">".bmp"</font>;
+
+    <font color="green">//display the dialogue screen</font>
+    overlays.push_back<font color="black">(</font>framework.createSprite<font color="black">(</font>assetName, <font color="maroon">0</font>, <font color="maroon">0</font>, <font color="maroon">600</font>, <font color="maroon">600</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> showInstructions<font color="black">(</font><font color="blue">int</font> gameLevel, <font color="blue">int</font> page<font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">//clear out the screen</font>
+    removeAllButGameboard<font color="black">(</font><font color="black">)</font>;
+
+    string assetName;
+
+    <font color="green">//construct the asset name based on the game level and the page number</font>
+    <font color="blue">switch</font> <font color="black">(</font>gameLevel<font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">case</font> <font color="maroon">1</font><font color="black">:</font>
+            assetName <font color="black">=</font> <font color="maroon">"easy_"</font>;
+            <font color="blue">break</font>;
+        <font color="blue">case</font> <font color="maroon">2</font><font color="black">:</font>
+            assetName <font color="black">=</font> <font color="maroon">"medium_"</font>;
+            <font color="blue">break</font>;
+        <font color="blue">case</font> <font color="maroon">3</font><font color="black">:</font>
+            assetName <font color="black">=</font> <font color="maroon">"hard_"</font>;
+            <font color="blue">break</font>;
+        <font color="blue">case</font> <font color="maroon">4</font><font color="black">:</font>
+            assetName <font color="black">=</font> <font color="maroon">"challenge_"</font>;
+            <font color="blue">break</font>;
+    <font color="black">}</font>
+
+    assetName <font color="black">+</font><font color="black">=</font> page;
+
+    <font color="green">//and display it</font>
+    overlays.push_back<font color="black">(</font>framework.createSprite<font color="black">(</font>assetName, <font color="maroon">0</font>, <font color="maroon">0</font>, <font color="maroon">600</font>, <font color="maroon">600</font><font color="black">)</font><font color="black">)</font>;
+
+    <font color="green">//set the game state to be in the instructions state</font>
+    <font color="blue">switch</font> <font color="black">(</font>page<font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">case</font> <font color="maroon">1</font><font color="black">:</font>
+            currentState <font color="black">=</font> INSTRUCTIONS_1;
+            <font color="blue">break</font>;
+        <font color="blue">case</font> <font color="maroon">2</font><font color="black">:</font>
+            currentState <font color="black">=</font> INSTRUCTIONS_2;
+            <font color="blue">break</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">//remove any sprites that are currently up on the screen besides the game board</font>
+<font color="blue">void</font> removeAllButGameboard<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">while</font> <font color="black">(</font>overlays.size<font color="black">(</font><font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+    <font color="black">{</font>
+        framework.removeSprite<font color="black">(</font>overlays.back<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        overlays.pop_back<font color="black">(</font><font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> endDialogue<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">//remove the dialogue box</font>
+    removeAllButGameboard<font color="black">(</font><font color="black">)</font>;
+
+    <font color="green">//reset the game state back to gameplay</font>
+    currentState <font color="black">=</font> IN_GAME;
+<font color="black">}</font>
+
+<font color="blue">void</font> updateScore<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">//api</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> updateCurrentWord<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">/////api</font>
+<font color="black">}</font>
+
+<font color="blue">#endif</font>
+</PRE>
+</BODY>
+</HTML>

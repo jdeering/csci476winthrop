@@ -1,0 +1,136 @@
+<HTML>
+<HEAD>
+<TITLE>
+main.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#include</font> <font color="maroon">"engine.h"</font>
+<font color="blue">#include</font> <font color="maroon">&#60;iostream&#62;</font>
+
+<font color="blue">#define</font> FULLSCREEN <font color="maroon">0</font>
+
+Framework<font color="black">*</font> fw;
+
+<font color="blue">void</font> LaunchLogin<font color="black">(</font><font color="black">)</font>;
+
+<font color="blue">void</font> Update<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    fw<font color="black">-</font><font color="black">&#62;</font>MessageLoop<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+END_OF_FUNCTION<font color="black">(</font>Update<font color="black">)</font>
+
+<font color="blue">int</font> main<font color="black">(</font><font color="blue">int</font> argc, <font color="blue">char</font><font color="black">*</font> argv<font color="black">[</font><font color="black">]</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font> <font color="black">(</font>FAILED<font color="black">(</font><font color="black">:</font><font color="black">:</font>CoInitialize<font color="black">(</font>NULL<font color="black">)</font><font color="black">)</font><font color="black">)</font>
+        <font color="blue">return</font> FALSE;
+
+    <font color="blue">if</font> <font color="black">(</font>allegro_init<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        printf<font color="black">(</font><font color="maroon">"Allegro could not be initialized. Application Terminating."</font><font color="black">)</font>;
+        <font color="blue">return</font> <font color="maroon">1</font>;
+    <font color="black">}</font>
+
+    <font color="blue">if</font> <font color="black">(</font>install_timer<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Failed to install timer. Application Terminating."</font><font color="black">)</font>;
+        <font color="blue">return</font> <font color="maroon">1</font>;
+    <font color="black">}</font>
+    LOCK_FUNCTION<font color="black">(</font>Update<font color="black">)</font>;
+
+    std<font color="black">:</font><font color="black">:</font>string user <font color="black">=</font> <font color="maroon">"Anonymous"</font>;
+    <font color="green">// Get username</font>
+    <font color="blue">if</font><font color="black">(</font>argc <font color="black">&#62;</font> <font color="maroon">1</font><font color="black">)</font>
+        user <font color="black">=</font> argv<font color="black">[</font><font color="maroon">1</font><font color="black">]</font>;
+
+   install_keyboard<font color="black">(</font><font color="black">)</font>; 
+   install_mouse<font color="black">(</font><font color="black">)</font>;
+
+    <font color="green">/* set a graphics mode sized 800x600 */</font>  
+    <font color="blue">int</font> mode;
+    <font color="blue">if</font><font color="black">(</font><font color="black">!</font>FULLSCREEN<font color="black">)</font>
+        mode <font color="black">=</font> GFX_AUTODETECT_WINDOWED;
+    <font color="blue">else</font>
+        mode <font color="black">=</font> GFX_AUTODETECT_FULLSCREEN;
+    set_color_depth<font color="black">(</font><font color="maroon">16</font><font color="black">)</font>;
+    <font color="blue">if</font> <font color="black">(</font>set_gfx_mode<font color="black">(</font>mode, <font color="maroon">800</font>, <font color="maroon">600</font>, <font color="maroon">0</font>, <font color="maroon">0</font><font color="black">)</font> <font color="black">!</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Unable to set graphic mode.\n%s\n\nApplication terminating."</font>, allegro_error<font color="black">)</font>;
+        <font color="blue">return</font> <font color="maroon">1</font>;
+    <font color="black">}</font> 
+
+    show_mouse<font color="black">(</font>screen<font color="black">)</font>;
+
+    fw <font color="black">=</font> Framework<font color="black">:</font><font color="black">:</font>Instance<font color="black">(</font>user<font color="black">)</font>;
+
+    <font color="blue">while</font><font color="black">(</font>fw<font color="black">-</font><font color="black">&#62;</font>isActive<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        <font color="green">// Set framerate to about 30 fps</font>
+        rest_callback<font color="black">(</font><font color="maroon">33</font>, Update<font color="black">)</font>;
+        fw<font color="black">-</font><font color="black">&#62;</font>MainLoop<font color="black">(</font><font color="black">)</font>;
+    <font color="black">}</font>
+
+    <font color="green">// Uninitialize all Allegro devices</font>
+    fw<font color="black">-</font><font color="black">&#62;</font>~Framework<font color="black">(</font><font color="black">)</font>;
+    remove_mouse<font color="black">(</font><font color="black">)</font>;
+    remove_keyboard<font color="black">(</font><font color="black">)</font>;
+    remove_timer<font color="black">(</font><font color="black">)</font>;
+    <font color="black">:</font><font color="black">:</font>CoUninitialize<font color="black">(</font><font color="black">)</font>;
+
+    LaunchLogin<font color="black">(</font><font color="black">)</font>;
+
+    <font color="blue">return</font> EXIT_SUCCESS;
+<font color="black">}</font>
+
+END_OF_MAIN<font color="black">(</font><font color="black">)</font>
+
+
+<font color="blue">void</font> LaunchLogin<font color="black">(</font><font color="black">)</font>
+<font color="green">// Create a child process that uses the previously created pipes for STDIN and STDOUT.</font>
+<font color="black">{</font> 
+    TCHAR szCmdline<font color="black">[</font><font color="black">]</font><font color="black">=</font>TEXT<font color="black">(</font><font color="maroon">"LoginGUI.exe"</font><font color="black">)</font>;
+   PROCESS_INFORMATION piProcInfo;
+   STARTUPINFO siStartInfo;
+   BOOL bSuccess <font color="black">=</font> FALSE; 
+ 
+<font color="green">// Set up members of the PROCESS_INFORMATION structure. </font>
+ 
+       ZeroMemory<font color="black">(</font> <font color="black">&</font>piProcInfo, <font color="blue">sizeof</font><font color="black">(</font>PROCESS_INFORMATION<font color="black">)</font> <font color="black">)</font>;
+ 
+<font color="green">// Set up members of the STARTUPINFO structure. </font>
+<font color="green">// This structure specifies the STDIN and STDOUT handles for redirection.</font>
+ 
+   ZeroMemory<font color="black">(</font> <font color="black">&</font>siStartInfo, <font color="blue">sizeof</font><font color="black">(</font>STARTUPINFO<font color="black">)</font> <font color="black">)</font>;
+   siStartInfo.cb <font color="black">=</font> <font color="blue">sizeof</font><font color="black">(</font>STARTUPINFO<font color="black">)</font>; 
+   siStartInfo.dwFlags <font color="black">|</font><font color="black">=</font> STARTF_USESTDHANDLES;
+
+<font color="green">// Create the child process. </font>
+    
+   bSuccess <font color="black">=</font> CreateProcess<font color="black">(</font>NULL, 
+      szCmdline,     <font color="green">// command line </font>
+      NULL,          <font color="green">// process security attributes </font>
+      NULL,          <font color="green">// primary thread security attributes </font>
+      TRUE,          <font color="green">// handles are inherited </font>
+      <font color="maroon">0</font>,             <font color="green">// creation flags </font>
+      NULL,          <font color="green">// use parent's environment </font>
+      NULL,          <font color="green">// use parent's current directory </font>
+      <font color="black">&</font>siStartInfo,  <font color="green">// STARTUPINFO pointer </font>
+      <font color="black">&</font>piProcInfo<font color="black">)</font>;  <font color="green">// receives PROCESS_INFORMATION </font>
+   
+   <font color="green">// If an error occurs, exit the application. </font>
+   <font color="blue">if</font> <font color="black">(</font> <font color="black">!</font> bSuccess <font color="black">)</font> 
+      allegro_message<font color="black">(</font><font color="maroon">"CreateProcess failed"</font><font color="black">)</font>;
+   <font color="blue">else</font> 
+   <font color="black">{</font>
+      <font color="green">// Close handles to the child process and its primary thread.</font>
+      <font color="green">// Some applications might keep these handles to monitor the status</font>
+      <font color="green">// of the child process, for example. </font>
+
+      CloseHandle<font color="black">(</font>piProcInfo.hProcess<font color="black">)</font>;
+      CloseHandle<font color="black">(</font>piProcInfo.hThread<font color="black">)</font>;
+   <font color="black">}</font>
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>

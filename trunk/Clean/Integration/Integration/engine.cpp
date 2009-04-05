@@ -180,7 +180,7 @@ void Framework::LoadText()
 void Framework::UpdateSprites()
 {
 	scare_mouse();
-	clear_to_color(buffer, makecol(0, 0, 255));
+	clear_to_color(buffer, makecol(0, 0, 0));
 	sprites.DrawSprites(buffer);
 	unscare_mouse();
 }
@@ -721,13 +721,29 @@ void Framework::CreateTextFromRef(char *msg)
 
 void Framework::CreateTextFromString(char *msg)
 {
+	char c;
+	char *currStr = "";
 	int code, length, x, y;
-	std::string refName, string;
+	std::string refName;
 	//sscanf(msg, "%*d %s %d %d %d", refName, &length, &x, &y);
 	std::stringstream stream;
 	stream << msg; // put msg into stream
-	stream >> code >> refName >> length >> x >> y;
-	string = stream.str();
+	stream >> code >> refName >> length >> x >> y;	
+
+	// get code
+	stream.get(c);
+	//for(int i = 0; i < 4; i++)
+	//{
+	//	while(c != ' ')
+	//	{
+	//		stream.get(c);
+	//	}
+	//	stream.get(c);
+	//}
+
+	char *string = new char[length+1];
+
+	stream.getline(string, length+1);
 	textObjects.AddText(refName, string, x, y, true);
 }
 

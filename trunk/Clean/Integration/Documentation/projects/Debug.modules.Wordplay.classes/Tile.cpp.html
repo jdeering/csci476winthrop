@@ -1,0 +1,166 @@
+<HTML>
+<HEAD>
+<TITLE>
+Tile.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">/*
+Lauren Cairco
+26 February 2009
+CSCI 476 Project
+
+Tile.cpp
+
+This file is implementation of Tile.h, the Tile class for use in the Wordplay game module.
+Functions are described in the .h file.
+
+*/</font>
+<font color="blue">#include</font> <font color="maroon">"Tile.h"</font>
+
+<font color="green">//////////////////////////////</font>
+<font color="green">// constructors & utilities //</font>
+<font color="green">//////////////////////////////</font>
+
+<font color="green">//default constructor</font>
+Tile<font color="black">:</font><font color="black">:</font>Tile<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">//generate a tile based on letter distribution</font>
+    letter <font color="black">=</font> generateLetter<font color="black">(</font><font color="black">)</font>;
+
+    <font color="green">//get the correct sprite based on the letter we just generated</font>
+    std<font color="black">:</font><font color="black">:</font>string assetName <font color="black">=</font> letter <font color="black">+</font> <font color="maroon">"_img"</font>;
+    GameFramework gf <font color="black">=</font> GameFramework<font color="black">:</font><font color="black">:</font>Instance<font color="black">(</font><font color="black">)</font>;
+    relatedSprite <font color="black">=</font> <font color="black">&</font>gf.createSprite<font color="black">(</font>assetName,<font color="maroon">0</font>,<font color="maroon">0</font>,<font color="maroon">50</font>,<font color="maroon">50</font><font color="black">)</font>;      <font color="green">//still can't fix this line :(</font>
+
+    <font color="green">//make the sprite invisible</font>
+    relatedSprite<font color="black">-</font><font color="black">&#62;</font>setVisible<font color="black">(</font><font color="blue">false</font><font color="black">)</font>;
+
+    <font color="green">//the letter is not yet selected</font>
+    <font color="blue">bool</font> selected <font color="black">=</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">//returns a letter that's been generated based on the probability of distribution</font>
+<font color="green">//of letters in the English language</font>
+<font color="blue">char</font> Tile<font color="black">:</font><font color="black">:</font>generateLetter<font color="black">(</font><font color="black">)</font><font color="black">{</font>
+    <font color="green">//generate random number between 0 and 100 (double precision)</font>
+    <font color="blue">int</font> leftDecimal <font color="black">=</font> <font color="black">(</font>rand<font color="black">(</font><font color="black">)</font> % <font color="maroon">100</font><font color="black">)</font>;
+    <font color="blue">double</font> rightDecimal <font color="black">=</font> <font color="black">(</font>rand<font color="black">(</font><font color="black">)</font> % <font color="maroon">1000</font><font color="black">)</font> <font color="black">/</font> <font color="maroon">1000</font>.<font color="maroon">00</font>;
+    <font color="blue">double</font> n <font color="black">=</font> leftDecimal <font color="black">+</font> rightDecimal;  
+
+    <font color="green">//depending on where it is in the distribution, return a letter</font>
+    <font color="green">//distribution based on http://www.csm.astate.edu/~rossa/datasec/frequency.html</font>
+    <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">8</font>.<font color="maroon">167</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'a'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">9</font>.<font color="maroon">659</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'b'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">12</font>.<font color="maroon">441</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'c'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">16</font>.<font color="maroon">694</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'d'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">29</font>.<font color="maroon">396</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'e'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">31</font>.<font color="maroon">624</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'f'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">33</font>.<font color="maroon">639</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'g'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">39</font>.<font color="maroon">733</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'h'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">46</font>.<font color="maroon">729</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'i'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">46</font>.<font color="maroon">882</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'j'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">47</font>.<font color="maroon">654</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'k'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">51</font>.<font color="maroon">679</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'l'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">54</font>.<font color="maroon">085</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'m'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">60</font>.<font color="maroon">834</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'n'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">68</font>.<font color="maroon">341</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'o'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">70</font>.<font color="maroon">27</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'p'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">70</font>.<font color="maroon">365</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'q'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">76</font>.<font color="maroon">352</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'r'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">82</font>.<font color="maroon">679</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'s'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">91</font>.<font color="maroon">735</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'t'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">94</font>.<font color="maroon">493</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'u'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">95</font>.<font color="maroon">471</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'v'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">97</font>.<font color="maroon">831</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'w'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">97</font>.<font color="maroon">981</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'x'</font>;
+    <font color="blue">else</font> <font color="blue">if</font> <font color="black">(</font>n <font color="black">&#60;</font> <font color="maroon">99</font>.<font color="maroon">955</font><font color="black">)</font> <font color="blue">return</font> <font color="maroon">'y'</font>;
+    <font color="blue">else</font> <font color="blue">return</font> <font color="maroon">'z'</font>;
+<font color="black">}</font>
+
+<font color="green">//overload of = opreator allows us to assign one tile to another</font>
+Tile <font color="black">&</font>Tile<font color="black">:</font><font color="black">:</font><font color="blue">operator</font><font color="black">=</font> <font color="black">(</font>Tile <font color="black">&</font> rhs<font color="black">)</font>
+<font color="black">{</font>
+    letter <font color="black">=</font> rhs.getLetter<font color="black">(</font><font color="black">)</font>;
+    selected <font color="black">=</font> rhs.isSelected<font color="black">(</font><font color="black">)</font>;
+    relatedSprite <font color="black">=</font> rhs.returnSprite<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">return</font> <font color="black">*</font><font color="blue">this</font>;
+<font color="black">}</font>
+
+
+
+
+<font color="green">//////////////////////////////////</font>
+<font color="green">//      attribute returning     //</font>
+<font color="green">//////////////////////////////////</font>
+
+<font color="green">//returns the letter the tile represents</font>
+<font color="blue">char</font> Tile<font color="black">:</font><font color="black">:</font>getLetter<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">return</font> letter;
+<font color="black">}</font>
+
+<font color="green">//returns whether the tile is selected or not</font>
+<font color="blue">bool</font> Tile<font color="black">:</font><font color="black">:</font>isSelected<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">return</font> selected;
+<font color="black">}</font>
+
+<font color="green">//returns pointer to the related sprite</font>
+GFSprite <font color="black">*</font> Tile<font color="black">:</font><font color="black">:</font>returnSprite<font color="black">(</font><font color="black">)</font><font color="black">{</font>
+    <font color="blue">return</font> relatedSprite;
+<font color="black">}</font>
+
+<font color="green">//////////////////////////////////</font>
+<font color="green">//      display functions       //</font>
+<font color="green">//////////////////////////////////</font>
+
+<font color="green">//places the tile at the given xy coordinates</font>
+<font color="green">//used to show the tile initially</font>
+<font color="blue">void</font> Tile<font color="black">:</font><font color="black">:</font>showTile<font color="black">(</font><font color="blue">int</font> x, <font color="blue">int</font> y<font color="black">)</font>
+<font color="black">{</font>
+    relatedSprite<font color="black">-</font><font color="black">&#62;</font>setVisible<font color="black">(</font><font color="blue">true</font><font color="black">)</font>;
+    relatedSprite<font color="black">-</font><font color="black">&#62;</font>setSpritePosition<font color="black">(</font>x,y<font color="black">)</font>;
+    <font color="green">//show the letter as unselected</font>
+    relatedSprite<font color="black">-</font><font color="black">&#62;</font>setSpriteFrame<font color="black">(</font><font color="maroon">0</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">//this is used to slide a tile to the position just below it</font>
+<font color="green">//so we just move down in the y direction 50 px</font>
+<font color="blue">void</font> Tile<font color="black">:</font><font color="black">:</font>dropDown<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">//final parameter is how much time it should take moving there in milliseconds</font>
+    relatedSprite<font color="black">-</font><font color="black">&#62;</font>moveTo<font color="black">(</font>relatedSprite<font color="black">-</font><font color="black">&#62;</font>_x, relatedSprite<font color="black">-</font><font color="black">&#62;</font>_y <font color="black">+</font> <font color="maroon">50</font>, <font color="maroon">500</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">//this is used to slide a tile from the top of the screen</font>
+<font color="green">//to the specified spot</font>
+<font color="blue">void</font> Tile<font color="black">:</font><font color="black">:</font>slideFromTop<font color="black">(</font><font color="blue">int</font> x, <font color="blue">int</font> y<font color="black">)</font>
+<font color="black">{</font>
+    showTile<font color="black">(</font>x, <font color="maroon">0</font><font color="black">)</font>;
+    <font color="green">//slide to position we want</font>
+    relatedSprite<font color="black">-</font><font color="black">&#62;</font>moveTo<font color="black">(</font>x,y,<font color="maroon">500</font><font color="black">)</font>;
+
+<font color="black">}</font>
+
+<font color="green">//show the tile as highlighted and as part of a valid word</font>
+<font color="blue">void</font> Tile<font color="black">:</font><font color="black">:</font>highlightValid<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    relatedSprite<font color="black">-</font><font color="black">&#62;</font>setSpriteFrame<font color="black">(</font><font color="maroon">1</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">//show the tile as highlighted and not a part of a valid word</font>
+<font color="blue">void</font> Tile<font color="black">:</font><font color="black">:</font>highlightInvalid<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    relatedSprite<font color="black">-</font><font color="black">&#62;</font>setSpriteFrame<font color="black">(</font><font color="maroon">2</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">//show the tile as unselected</font>
+<font color="blue">void</font> Tile<font color="black">:</font><font color="black">:</font>unhighlight<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    relatedSprite<font color="black">-</font><font color="black">&#62;</font>setSpriteFrame<font color="black">(</font><font color="maroon">0</font><font color="black">)</font>;
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>

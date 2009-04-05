@@ -11,12 +11,20 @@
 
 #define MAX_MESSAGE_SIZE 512
 
+/**********************************
+	Struct to hold information for
+	game icons used in the main menu.
+**********************************/
 typedef struct
 {
 	int width, height;
 	std::string path; 
 }Icon;
 
+/**********************************
+	Struct to hold all information needed
+	to load a game's assets when launched.
+**********************************/
 typedef struct
 {
 	std::string name;
@@ -25,6 +33,10 @@ typedef struct
 	Icon icon;
 }Game;
 
+/**********************************
+	Struct to control the volume and
+	text-to-speech options.
+**********************************/
 typedef struct
 {
 	int VOLUME;

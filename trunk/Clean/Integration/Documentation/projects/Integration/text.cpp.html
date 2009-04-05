@@ -1,0 +1,108 @@
+<HTML>
+<HEAD>
+<TITLE>
+text.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#include</font> <font color="maroon">"text.h"</font>
+
+<font color="green">/******************************************************
+    Default Constructor
+******************************************************/</font>
+Text<font color="black">:</font><font color="black">:</font>Text<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    pVoice <font color="black">=</font> NULL;
+    x <font color="black">=</font> <font color="maroon">0</font>; 
+    y <font color="black">=</font> <font color="maroon">0</font>; 
+    visible <font color="black">=</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Default Destructor
+******************************************************/</font>
+Text<font color="black">:</font><font color="black">:</font>~Text<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>pVoice<font color="black">)</font>
+    <font color="black">{</font>
+        pVoice<font color="black">-</font><font color="black">&#62;</font>Release<font color="black">(</font><font color="black">)</font>;
+        pVoice <font color="black">=</font> NULL;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Loads the values for the &#60;code&#62;Text&#60;/code&#62; object
+
+    @param txt The string to be displayed and/or read for the text object
+    @param x_ The x coordinate of the text object
+    @param y_ The y coordinate of the text object
+    @param vis &#60;code&#62;true&#60;/code&#62; if the text object should be visible, &#60;code&#62;false&#60;/code&#62; otherwise
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>LoadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string txt, <font color="blue">int</font> x_, <font color="blue">int</font> y_, <font color="blue">bool</font> vis<font color="black">)</font>
+<font color="black">{</font>
+    text <font color="black">=</font> txt;
+    x <font color="black">=</font> x_;
+    y <font color="black">=</font> y_;
+    visible <font color="black">=</font> vis;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Reads the string associated with the object using
+    Windows text-to-speech
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>ReadText<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>   
+    <font color="blue">const</font> std<font color="black">:</font><font color="black">:</font>wstring str<font color="black">(</font>text.begin<font color="black">(</font><font color="black">)</font>, text.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    HRESULT hr <font color="black">=</font> CoCreateInstance<font color="black">(</font>CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, <font color="black">(</font><font color="blue">void</font> <font color="black">*</font><font color="black">*</font><font color="black">)</font><font color="black">&</font>pVoice<font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font> SUCCEEDED<font color="black">(</font> hr <font color="black">)</font> <font color="black">)</font>
+    <font color="black">{</font>
+        hr <font color="black">=</font> pVoice<font color="black">-</font><font color="black">&#62;</font>SetRate<font color="black">(</font><font color="maroon">0</font><font color="black">)</font>;
+        hr <font color="black">=</font> pVoice<font color="black">-</font><font color="black">&#62;</font>Speak<font color="black">(</font>str.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">0</font>, NULL<font color="black">)</font>;
+        pVoice<font color="black">-</font><font color="black">&#62;</font>Release<font color="black">(</font><font color="black">)</font>;
+        pVoice <font color="black">=</font> NULL;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Displays the text on the specified BITMAP if it is
+    visible and reads the text if specified to do so.
+
+    @param read &#60;code&#62;true&#60;/code&#62; if text-to-speech should be used, &#60;code&#62;false&#60;/code&#62; otherwise
+    @param dest Allegro BITMAP on which to display the text
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>ShowText<font color="black">(</font><font color="blue">bool</font> read, BITMAP <font color="black">*</font>dest<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>visible<font color="black">)</font>
+    <font color="black">{</font>
+        textout_ex<font color="black">(</font>dest, font, text.c_str<font color="black">(</font><font color="black">)</font>, x, y, makecol<font color="black">(</font><font color="maroon">255</font>, <font color="maroon">255</font>, <font color="maroon">255</font><font color="black">)</font>, <font color="maroon">0</font><font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font>read<font color="black">)</font>
+        ReadText<font color="black">(</font><font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the new position of the text on screen to (x,y)
+
+    @param x_ New x coordinate of the text position
+    @param y_ New y coordinate of the text position
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>SetPosition<font color="black">(</font><font color="blue">int</font> x_, <font color="blue">int</font> y_<font color="black">)</font>
+<font color="black">{</font>
+    x <font color="black">=</font> x_;
+    y <font color="black">=</font> y_;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Changes the text string for the object to the specified
+    value.
+
+    @param txt The new &#60;code&#62;string&#60;/code&#62; to associate with the object 
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>ChangeText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string txt<font color="black">)</font>
+<font color="black">{</font>
+    text <font color="black">=</font> txt;
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>
