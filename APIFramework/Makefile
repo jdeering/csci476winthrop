@@ -1,6 +1,6 @@
 # creates the API library for the game framework
 
-LIB_NAME=libgfw.a
+LIB_NAME=libgfw.dll
 LIB_OBJS=GameFramework.o GFSprite.o GFText.o GFAudio.o
 
 CPP=g++

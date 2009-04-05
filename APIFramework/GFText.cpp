@@ -12,23 +12,20 @@ GFText::~GFText() { };
 
 void GFText::setTextPosition(int x, int y)
 { 
-	sprintf(_msgBuffer, "%d %d %d %d", TEXT_CHANGE_LOCATION, _ref, x, y); 
-	GameFramework::Instance().sendMessage(_msgBuffer);
-	_clrBuffer();
+	sprintf(GameFramework::_msgBuffer, "%d %d %d %d", TEXT_CHANGE_LOCATION, _ref, x, y); 
+	GameFramework::sendMessage();
 };
 
 void GFText::setVisible(bool f)
 { 
-	sprintf(_msgBuffer, "%d %d %d", TEXT_VISIBILITY_CHANGE, _ref, f); 
-	GameFramework::Instance().sendMessage(_msgBuffer);
-	_clrBuffer();
+	sprintf(GameFramework::_msgBuffer, "%d %d %d", TEXT_VISIBILITY_CHANGE, _ref, f); 
+	GameFramework::sendMessage();
 };
 
 void GFText::setContent(std::string content)
 { 
-	sprintf(_msgBuffer, "%d %d %s", TEXT_CHANGE_CONTENT, _ref, content.c_str()); 
-	GameFramework::Instance().sendMessage(_msgBuffer);
-	_clrBuffer();
+	sprintf(GameFramework::_msgBuffer, "%d %d %s", TEXT_CHANGE_CONTENT, _ref, content.c_str()); 
+	GameFramework::sendMessage();
 };
 
 /* PRINT FUNCTION */

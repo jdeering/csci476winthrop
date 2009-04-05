@@ -3,40 +3,6 @@
 
 #include "GameFramework.h"
 
-GameFramework& GameFramework::Instance()
-{
-	static GameFramework inst;
-	return inst;
-}
-	
-GameFramework::GameFramework()
-{
-	/* EMPTY THE BUFFER */
-	_clrBuffer();
-	
-	/* INITIAL SCORE */
-	score = 0ULL;
-
-	/* EMPTY THE INDEX TABLE */
-	memset(_index_table, INDEX_AVAIL, INDEX_TABLE_SIZE * sizeof(int));
-
-	/* SET INPUT/OUTPUT HANDLES */
-	stdoutFW = GetStdHandle(STD_OUTPUT_HANDLE); 
-    stdinFW = GetStdHandle(STD_INPUT_HANDLE); 
-
-	/* COUNT OF GF OBJECTS THAT HAVE BEEN CREATED */
-	gft_count = 0; gfa_count = 0; gfs_count = 0;
-
-	/* ITERATION VALUES FOR GF OBJECTS */
-	gfti = GFTL; gfai = GFAL; gfsi = GFSL;
-}
-
-GameFramework::~GameFramework()
-{
-	/* EMPTY THE BUFFER */
-	_clrBuffer();
-}
-
 void GameFramework::_clrBuffer()
 { memset(_msgBuffer, 0, GFW_BUFFER_SIZE); };
 
@@ -55,16 +21,18 @@ void GameFramework::gameFunc(bool (*f)())
 void GameFramework::gameLoop()
 { if (cb_GL) do { _getMessages(); } while(cb_GL()); }
 
-void GameFramework::sendMessage(char* buffer)
-{ std::cout << buffer << std::endl; };
+void GameFramework::sendMessage()
+{ std::cout << _msgBuffer << '\0' << std::endl; };
 
 void GameFramework::_getMessages()
 {
 	DWORD bytesRead, bytesAvail;
 	std::stringstream msgStream;
 	char *message;
+	
 	msgStream.clear();
 	PeekNamedPipe(stdinFW, _msgBuffer, GFW_BUFFER_SIZE, &bytesRead, &bytesAvail, NULL);
+	
 	if (bytesRead != 0)
 	{
 		_clrBuffer();
@@ -99,6 +67,7 @@ void GameFramework::_parseMessage(std::stringstream &msgStream)
 	int opcode;
 	int scan_ret; 
 	char message[GFW_BUFFER_SIZE];
+	
 	while(!msgStream.eof())
 	{
 		memset(message, 0, GFW_BUFFER_SIZE);
@@ -162,7 +131,7 @@ GFSprite& GameFramework::createSprite(std::string aname, int x, int y, int w, in
 	sprintf(_msgBuffer, "%d %d %s %d %d %d %d", SPRITE_CREATE, gfsi, aname.c_str(), x, y, w, h);
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
-	sendMessage(_msgBuffer);
+	sendMessage();
 
 	/* FIND THE NEXT AVAILABLE INDEX */
 	while (_index_table[gfsi] == INDEX_TAKEN)
@@ -195,7 +164,7 @@ GFSprite& GameFramework::createSprite(std::string aname, int x, int y)
 	sprintf(_msgBuffer, "%d %d %s %d %d", SPRITE_CREATE_FROM_ASSET, gfsi, aname.c_str(), x, y);
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
-	sendMessage(_msgBuffer);
+	sendMessage();
 
 	/* FIND THE NEXT AVAILABLE INDEX */
 	while (_index_table[gfsi] == INDEX_TAKEN)
@@ -223,7 +192,7 @@ void GameFramework::removeSprite(GFSprite &s)
 		sprintf(_msgBuffer, "%d %d", SPRITE_REMOVE, s._ref);
 
 		/* SEND THE MESSAGE TO THE FRAMEWORK */
-		sendMessage(_msgBuffer);
+		sendMessage();
 
 		/* REMOVE THE OFFENDING OBJECT */
 		_gfs.remove(s);
@@ -248,7 +217,7 @@ GFText& GameFramework::createTextFromAsset(std::string aname, int size, int x, i
 	sprintf(_msgBuffer, "%d %d %d %d %d %s", TEXT_CREATE_FROM_ASSET, gfti, size, x, y, aname.c_str());
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
-	sendMessage(_msgBuffer);
+	sendMessage();
 
 	/* FIND THE NEXT AVAILABLE INDEX */
 	while (_index_table[gfti] == INDEX_TAKEN)
@@ -277,7 +246,7 @@ GFText& GameFramework::createTextFromString(std::string str, int size, int x, in
 	sprintf(_msgBuffer, "%d %d %d %d %d %s", TEXT_CREATE_FROM_STRING, gfti, size, x, y, str.c_str());
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
-	sendMessage(_msgBuffer);
+	sendMessage();
 
 	/* CREATE THE OBJECT */
 	_gft.push_back(GFText(gfti, x, y));
@@ -305,7 +274,7 @@ void GameFramework::removeText(GFText &t)
 		sprintf(_msgBuffer, "%d %d", TEXT_REMOVE, t._ref);
 
 		/* SEND THE MESSAGE TO THE FRAMEWORK */
-		sendMessage(_msgBuffer);
+		sendMessage();
 
 		/* REMOVE THE OFFENDING OBJECT */
 		_gft.remove(t);
@@ -330,7 +299,7 @@ GFAudio& GameFramework::createAudio(std::string aname)
 	sprintf(_msgBuffer, "%d %d %s", AUDIO_CREATE, gfai, aname.c_str());
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
-	sendMessage(_msgBuffer);
+	sendMessage();
 
 	/* FIND THE NEXT AVAILABLE INDEX */
 	while (_index_table[gfai] == INDEX_TAKEN)
@@ -358,7 +327,7 @@ void GameFramework::removeAudio(GFAudio &a)
 		sprintf(_msgBuffer, "%d %d", AUDIO_REMOVE, a._ref);
 
 		/* SEND THE MESSAGE TO THE FRAMEWORK */
-		sendMessage(_msgBuffer);
+		sendMessage();
 
 		/* REMOVE THE OFFENDING OBJECT */
 		_gfa.remove(a);
@@ -402,6 +371,16 @@ GFAudio& GameFramework::getAudioObj(int r)
 	return (i == _gfa.end() ? (GFAudio&)GFAudio::null : *i);
 };
 
+/* FUNCTION POINTERS */
+void (*GameFramework::cb_KH)(int, int) = NULL;
+void (*GameFramework::cb_MH)(int, int, int, int) = NULL;
+void (*GameFramework::cb_SH)(int, int, GFSprite&) = NULL;
+bool (*GameFramework::cb_GL)() = NULL;
+
+/* MOUSE VALUES */
+int GameFramework::mouseX;
+int GameFramework::mouseY;
+
 /* MAXIMUM NUMBER OF OBJECTS */
 int const GameFramework::GFT_MAX =  50;
 int const GameFramework::GFA_MAX =  50;
@@ -412,6 +391,16 @@ int const GameFramework::GFTL =   0;
 int const GameFramework::GFAL = 100;
 int const GameFramework::GFSL = 200;
 
+/* SPRITE COUNT */
+int GameFramework::gft_count = 0;
+int GameFramework::gfa_count = 0;
+int GameFramework::gfs_count = 0;
+
+/* ITERATION VALUES FOR GF OBJECTS */
+int GameFramework::gfti = GameFramework::GFTL;
+int GameFramework::gfai = GameFramework::GFAL;
+int GameFramework::gfsi = GameFramework::GFSL;
+
 /* UPPER BOUND FOR OBJECT INDEXES */
 int const GameFramework::GFTU = GameFramework::GFTL + GameFramework::GFT_MAX;
 int const GameFramework::GFAU = GameFramework::GFAL + GameFramework::GFA_MAX;
@@ -420,3 +409,13 @@ int const GameFramework::GFSU = GameFramework::GFSL + GameFramework::GFS_MAX;
 /* VALUES FOR THE INDEX TABLE */
 int const GameFramework::INDEX_AVAIL = 0;
 int const GameFramework::INDEX_TAKEN = 1;
+
+HANDLE GameFramework::stdinFW = GetStdHandle(STD_INPUT_HANDLE);
+HANDLE GameFramework::stdoutFW = GetStdHandle(STD_OUTPUT_HANDLE);
+
+char GameFramework::_msgBuffer[GameFramework::GFW_BUFFER_SIZE] = {0};
+int GameFramework::_index_table[GameFramework::INDEX_TABLE_SIZE] = {GameFramework::INDEX_AVAIL};
+
+std::list<GFSprite> GameFramework::_gfs;
+std::list<GFText> GameFramework::_gft;
+std::list<GFAudio> GameFramework::_gfa;
