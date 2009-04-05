@@ -12,23 +12,20 @@ GFAudio::~GFAudio() { };
 
 void GFAudio::play()
 { 
-	sprintf(_msgBuffer, "%d %d", AUDIO_PLAY, _ref); 
-	GameFramework::Instance().sendMessage(_msgBuffer);
-	_clrBuffer();
+	sprintf(GameFramework::_msgBuffer, "%d %d", AUDIO_PLAY, _ref); 
+	GameFramework::sendMessage();
 };
 
 void GFAudio::stop()
 { 
-	sprintf(_msgBuffer, "%d %d", AUDIO_STOP, _ref); 
-	GameFramework::Instance().sendMessage(_msgBuffer);
-	_clrBuffer();
+	sprintf(GameFramework::_msgBuffer, "%d %d", AUDIO_STOP, _ref); 
+	GameFramework::sendMessage();
 };
 
 void GFAudio::setLoopCount(int loops)
 { 
-	sprintf(_msgBuffer, "%d %d %d", AUDIO_SET_LOOP_COUNT, _ref, loops); 
-	GameFramework::Instance().sendMessage(_msgBuffer);
-	_clrBuffer();
+	sprintf(GameFramework::_msgBuffer, "%d %d %d", AUDIO_SET_LOOP_COUNT, _ref, loops); 
+	GameFramework::sendMessage();
 };
 
 /* PRINT FUNCTION */

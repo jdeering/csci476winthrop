@@ -39,6 +39,8 @@ enum PROTOCOL_OPCODES
 	AUDIO_PLAY					= 503,
 	AUDIO_SET_LOOP_COUNT		= 504,
 	AUDIO_STOP					= 505,
+	
+	/* MISCELLANEOUS OPCODES */
 };
 
 #include "GFSprite.h"
@@ -47,81 +49,73 @@ enum PROTOCOL_OPCODES
 #include "windows.h"
 #include <sstream>
 
-class /*SINGLETON*/ GameFramework
+/* STATIC */ class GameFramework
 {
-	public:
-		
-		/* SCORE */
-		unsigned long long int score;
-		
-		/* PUBLIC DESTRUCTOR */
-		~GameFramework();
-
-		/* SINGLETON INSTANCE METHOD */
-		static GameFramework& Instance();
-		
-		/* SEND A MESSAGE (FROM OTHER CLASSES) */
-		void sendMessage(char*);
-		
-		/* SET CALLBACK FUNCTIONS */
-		// f is function that takes (int -> key, int -> new state)
-		void kybdFunc(void (*f)(int, int));
-		
-		// f is function that takes (int -> button, int -> new state, int -> x, int -> y)
-		void mouseFunc(void (*f)(int, int, int, int));
-		
-		// f is function that takes (int -> key, int -> new state, GFSprite& -> sprite clicked)
-		void spriteClickFunc(void (*f)(int, int, GFSprite&));
-		
-		// f is function that returns bool (true -> continue looping)
-		void gameFunc(bool (*f)());
-
-		/* START LOOP FUNCTION */
-		void gameLoop();
-		
-		/* GRAPHICS FUNCTIONS */
-		
-		// string -> asset name, int -> x, int -> y, int -> width, int -> height
-		GFSprite& createSprite(std::string, int, int, int, int);
-		GFSprite& createSprite(std::string, int, int);
-		void removeSprite(GFSprite&);
-		
-		/* TEXT FUNCTIONS */
-		// string -> asset name, 
-		GFText& createTextFromAsset(std::string, int, int, int);
-		GFText& createTextFromString(std::string, int, int, int);
-		void removeText(GFText&);
-		
-		/* AUDIO FUNCTIONS */
-		GFAudio& createAudio(std::string);
-		void removeAudio(GFAudio&);
-
-		/* MOUSE POSITION */
-		int mouseX, mouseY;
-		
-		/* GETTER FUNCTIONS */
-		GFSprite& getSprite(int r);
-		GFText& getTextObj(int r);
-		GFAudio& getAudioObj(int r);
-		
-	protected:
-	
-		/* PROTECTED CONSTRUCTORS */
-		GameFramework();
-		
 	private:
 	
 		static int const GFW_BUFFER_SIZE = 512;
 		static int const INDEX_TABLE_SIZE = 1000;
 	
+	public:
+		
+		/* SCORE */
+		static unsigned long long int score;
+		
+		/* SEND A MESSAGE (FROM OTHER CLASSES) */
+		static char _msgBuffer[GFW_BUFFER_SIZE];
+		static void sendMessage();
+		
+		/* SET CALLBACK FUNCTIONS */
+		// f is function that takes (int -> key, int -> new state)
+		static void kybdFunc(void (*f)(int, int));
+		
+		// f is function that takes (int -> button, int -> new state, int -> x, int -> y)
+		static void mouseFunc(void (*f)(int, int, int, int));
+		
+		// f is function that takes (int -> key, int -> new state, GFSprite& -> sprite clicked)
+		static void spriteClickFunc(void (*f)(int, int, GFSprite&));
+		
+		// f is function that returns bool (true -> continue looping)
+		static void gameFunc(bool (*f)());
+
+		/* START LOOP FUNCTION */
+		static void gameLoop();
+		
+		/* GRAPHICS FUNCTIONS */
+		
+		// string -> asset name, int -> x, int -> y, int -> width, int -> height
+		static GFSprite& createSprite(std::string, int, int, int, int);
+		static GFSprite& createSprite(std::string, int, int);
+		static void removeSprite(GFSprite&);
+		
+		/* TEXT FUNCTIONS */
+		// string -> asset name, 
+		static GFText& createTextFromAsset(std::string, int, int, int);
+		static GFText& createTextFromString(std::string, int, int, int);
+		static void removeText(GFText&);
+		
+		/* AUDIO FUNCTIONS */
+		static GFAudio& createAudio(std::string);
+		static void removeAudio(GFAudio&);
+
+		/* MOUSE POSITION */
+		static int mouseX, mouseY;
+		
+		/* GETTER FUNCTIONS */
+		static GFSprite& getSprite(int r);
+		static GFText& getTextObj(int r);
+		static GFAudio& getAudioObj(int r);
+		
+	private:
+	
 		/* COMMUNICATION DETAILS */
-		HANDLE stdinFW, stdoutFW;
-		char _msgBuffer[GFW_BUFFER_SIZE];
+		static HANDLE stdinFW, stdoutFW;
+		
+		static void _getMessages();
+		static void _parseMessage(std::stringstream&);
 		
 		/* CLEANUP METHODS */
-		void _clrBuffer();
-		void _getMessages();
-		void _parseMessage(std::stringstream&);
+		static void _clrBuffer();
 
 		/* OBJECT LIST SIZES */
 		static int const GFS_MAX, GFSL, GFSU;
@@ -129,24 +123,24 @@ class /*SINGLETON*/ GameFramework
 		static int const GFA_MAX, GFAL, GFAU;
 
 		/* OBJECT COUNTS AND INDICES */
-		int gfs_count, gfsi;
-		int gft_count, gfti;
-		int gfa_count, gfai;
+		static int gfs_count, gfsi;
+		static int gft_count, gfti;
+		static int gfa_count, gfai;
 
 		/* INDEX TABLE */
-		int _index_table[INDEX_TABLE_SIZE];
+		static int _index_table[INDEX_TABLE_SIZE];
 		static int const INDEX_TAKEN;
 		static int const INDEX_AVAIL;
 
 		/* FUNCTION POINTERS */
-		void (*cb_KH)(int, int);		// CALLBACK - KYBD
-		void (*cb_MH)(int, int, int, int);	// CALLBACK - MOUSE
-		void (*cb_SH)(int, int, GFSprite&);	// CALLBACK - SPRITE CLICK
-		bool (*cb_GL)();			// GAME LOOP
+		static void (*cb_KH)(int, int);				// CALLBACK - KYBD
+		static void (*cb_MH)(int, int, int, int);	// CALLBACK - MOUSE
+		static void (*cb_SH)(int, int, GFSprite&);	// CALLBACK - SPRITE CLICK
+		static bool (*cb_GL)();						// GAME LOOP
 
 		/* OBJECT LISTS (FOR DESTRUCTION) */
-		std::list<GFSprite> 	_gfs;
-		std::list<GFText> 	_gft;
-		std::list<GFAudio> 	_gfa;
+		static std::list<GFSprite> 	_gfs;
+		static std::list<GFText> 	_gft;
+		static std::list<GFAudio> 	_gfa;
 };
 

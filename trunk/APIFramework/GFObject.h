@@ -17,10 +17,4 @@ class GFObject
 	
 		/* REFERENCE NUMBER FOR FRAMEWORK */
 		int _ref;
-		
-		static int const GFW_BUFFER_SIZE = 512;
-		char _msgBuffer[GFW_BUFFER_SIZE];
-
-		void _clrBuffer()
-		{ memset(_msgBuffer, 0, GFW_BUFFER_SIZE); }; 
 };
