@@ -1,25 +1,53 @@
+/*
+Jason Deering
+
+audio_handler.h
+
+This class is for use in the Framework.
+
+Requires including the STL map as a container.
+
+The AudioHandler class is responsible for the playing of all audio, except text-to-speech.
+
+
+DATA ITEMS
+	map<string, Audio> samples - container for all active instances of the Audio class
+	int volume - the current volume at which to play audio samples
+	bool muted - whether or not sound is currently muted
+	int numSamples - number of audio samples in the container
+
+FUNCTIONS
+	void SetVolume(int volume) - sets the volume to the parameter's value
+	Mute() - mutes all sounds
+	Unmute() - unmutes sounds
+	bool AddSample(std::string refName, SAMPLE* sample, bool loop) - adds the audio sample to the container
+				with the specified loop value; returns true for success, false for failure.
+	bool RemoveSample(std::string refName) - removes the audio sample from the container
+				returns true for success, false for failure.
+	bool PlaySample(std::string refName, int volume) - plays the sample in the container at key refName at the specified volume
+	void StopSample(std::string refName) - stops the playing of the sample at key refName
+	void ResetLoopFlag(std::string refName, int loop) - sets the loop value for the sample at key refName
+	void ResetVolume(int volume) - resets the volume to the parameter's value for all samples that are currently playing
+
+*/
+
 #ifndef _AUDIO_HANDLER_H
 #define _AUDIO_HANDLER_H
 
 #include "globals.h"
 #include "audio.h"
-#define PAN 128
-#define FREQ 1000
-#define MAX_VOLUME 255
-#define MIN_VOLUME 0
 
 class AudioHandler
 {
 private:
 	std::map<std::string, Audio> samples;
 	int volume;
-	bool readText, muted;
+	bool muted;
 	int numSamples;
 public:
 	AudioHandler();
 	~AudioHandler();
 	void SetVolume(int volume);
-	void SetReadText(bool read);
 	void Mute();
 	void Unmute();
 	bool AddSample(std::string refName, SAMPLE* sample, bool loop);

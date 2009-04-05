@@ -1,0 +1,113 @@
+<HTML>
+<HEAD>
+<TITLE>
+audio.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#include</font> <font color="maroon">"audio.h"</font>
+
+<font color="green">/******************************************************
+    Default Constructor
+******************************************************/</font>
+Audio<font color="black">:</font><font color="black">:</font>Audio<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    playing <font color="black">=</font> <font color="blue">false</font>;
+    loop <font color="black">=</font> <font color="blue">false</font>;
+    sample <font color="black">=</font> NULL;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Default Destructor
+******************************************************/</font>
+Audio<font color="black">:</font><font color="black">:</font>~Audio<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    playing <font color="black">=</font> <font color="blue">false</font>;
+    loop <font color="black">=</font> <font color="blue">false</font>;
+    destroy_sample<font color="black">(</font>sample<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Constructor
+
+    @param sam Allegro audio SAMPLE associated with the object.
+    @param loops Sets the loop flag
+******************************************************/</font>
+Audio<font color="black">:</font><font color="black">:</font>Audio<font color="black">(</font>SAMPLE<font color="black">*</font> sam, <font color="blue">bool</font> loops<font color="black">)</font>
+<font color="black">{</font>
+    sample <font color="black">=</font> sam;
+    loop <font color="black">=</font> loops;
+    Stop<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Loads the sample at the specified file location.
+
+    @param file Path to the audio file to load.
+    @param loops Sets the loop flag
+******************************************************/</font>
+<font color="blue">void</font> Audio<font color="black">:</font><font color="black">:</font>LoadSample<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>file, <font color="blue">bool</font> loops<font color="black">)</font>
+<font color="black">{</font>
+    sample <font color="black">=</font> load_sample<font color="black">(</font>file<font color="black">)</font>;
+    loop <font color="black">=</font> loops;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Stops the sample if it is currently playing.
+******************************************************/</font>
+<font color="blue">void</font> Audio<font color="black">:</font><font color="black">:</font>Stop<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    stop_sample<font color="black">(</font>sample<font color="black">)</font>;
+    playing <font color="black">=</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Plays the sample at the specified volume.
+
+    @param volume The volume at which to play the sample (0 to 255).
+    @return The voice the sample is being played on.
+******************************************************/</font>
+<font color="blue">int</font> Audio<font color="black">:</font><font color="black">:</font>Play<font color="black">(</font><font color="blue">int</font> volume<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>loop<font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">if</font><font color="black">(</font><font color="black">!</font>playing<font color="black">)</font>
+        <font color="black">{</font>           
+            playing <font color="black">=</font> <font color="blue">true</font>;
+            <font color="blue">return</font> play_sample<font color="black">(</font>sample, volume, PAN, FREQ, loop<font color="black">)</font>;
+        <font color="black">}</font>
+        <font color="blue">return</font> <font color="maroon">0</font>;
+    <font color="black">}</font>
+    <font color="blue">else</font>
+        <font color="blue">return</font> play_sample<font color="black">(</font>sample, volume, pan, freq, loop<font color="black">)</font>;
+
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Resets the playing sample at the specified volume.
+
+    @param volume The volume to change the sample to (0 to 255).
+******************************************************/</font>
+<font color="blue">void</font> Audio<font color="black">:</font><font color="black">:</font>ResetVolume<font color="black">(</font><font color="blue">int</font> volume<font color="black">)</font>
+<font color="black">{</font>
+    adjust_sample<font color="black">(</font>sample, volume, PAN, FREQ, loop<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Resets the loop flag and volume of a playing sample.
+
+    @param volume The volume to change the sample to (0 to 255).
+    @param set_loop Zero to not loop, non-zero to loop.
+******************************************************/</font>
+<font color="blue">void</font> Audio<font color="black">:</font><font color="black">:</font>ResetLoopFlag<font color="black">(</font><font color="blue">int</font> volume, <font color="blue">int</font> set_loop<font color="black">)</font>
+<font color="black">{</font>   
+    <font color="blue">if</font><font color="black">(</font>set_loop <font color="black">!</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+        loop <font color="black">=</font> <font color="blue">true</font>;
+    <font color="blue">else</font>
+        loop <font color="black">=</font> <font color="blue">false</font>;
+    adjust_sample<font color="black">(</font>sample, volume, PAN, FREQ, loop<font color="black">)</font>;
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>

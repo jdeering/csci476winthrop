@@ -114,7 +114,7 @@ bool BoundingBox::isColliding(const BoundingBox &other)
 	int top[2] = {y, other.y};
 	int right[2] = {x+width, other.x+other.width};
 	int bottom[2] = {y+height, other.y+other.height};
-	colliding = true;
+	bool colliding = true;
 
 	// One is completely above or below the other
 

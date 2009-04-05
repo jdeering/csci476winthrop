@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+<TITLE>
+text.h
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">/*
+Jason Deering
+
+text.h
+
+This class is for use in the Framework.
+
+It requires Allegro header files included for the BITMAP struct.
+
+The text class implements the display and reading of text-to-speech for all 
+text objects, visible or not, that are used in game modules.
+
+
+DATA ITEMS
+    ISpVoice* pVoice - Pointer to Windows speech voice for reading text-to-speech
+    int x - x-coordinate of the text on screen
+    int y - y-coordinate of text on screen
+    bool visible - value set to control whether the text should be displayed and read or only read
+    string text - the string of text that is being displayed and/or read
+
+FUNCTIONS
+    SetPosition(int x, int y) - sets the new on-screen text position to (x,y)
+    LoadText(string txt, , int x, int y, bool visible) - used to load the variables for the current
+                                                            class instance
+    ShowText(bool read, BITMAP* dest) - displays the text onscreen, drawing to the dest BITMAP, and
+                                            reads the associated string if the read parameter is true
+    ReadText() - reads the text using Windows text-to-speech
+    ChangeText(string) - takes a string as input to change the text variable associated with the
+                           class instance
+
+*/</font>
+
+
+<font color="blue">#ifndef</font> _TEXT_H
+<font color="blue">#define</font> _TEXT_H
+
+<font color="blue">#include</font> <font color="maroon">"globals.h"</font>
+
+<font color="blue">class</font> Text
+<font color="black">{</font>
+<font color="blue">private</font><font color="black">:</font>    
+    ISpVoice <font color="black">*</font>pVoice;
+    <font color="blue">int</font> x, y;
+    <font color="blue">bool</font> visible;
+    std<font color="black">:</font><font color="black">:</font>string text;
+<font color="blue">public</font><font color="black">:</font>
+    Text<font color="black">(</font><font color="black">)</font>;
+    ~Text<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> SetPosition<font color="black">(</font><font color="blue">int</font> x_, <font color="blue">int</font> y_<font color="black">)</font>;
+    <font color="blue">void</font> LoadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string txt, <font color="blue">int</font> x_, <font color="blue">int</font> y_, <font color="blue">bool</font> visible<font color="black">)</font>;
+    <font color="blue">void</font> ShowText<font color="black">(</font><font color="blue">bool</font> read, BITMAP <font color="black">*</font>dest<font color="black">)</font>;
+    <font color="blue">void</font> ReadText<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> ChangeText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string txt<font color="black">)</font>;
+<font color="black">}</font>;
+
+
+<font color="blue">#endif</font>
+
+</PRE>
+</BODY>
+</HTML>

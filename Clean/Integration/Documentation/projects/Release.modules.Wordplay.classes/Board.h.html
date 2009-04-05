@@ -1,0 +1,115 @@
+<HTML>
+<HEAD>
+<TITLE>
+Board.h
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">/*
+Lauren Cairco
+26 February 2009
+CSCI 476 Project
+
+Board.h
+
+This class is for use with the Wordplay game module.
+It also requires the STL string and vector classes to deal with some internal stuff.
+The class deals with the layout and click handling of the tiles on the gameboard. It keeps track of
+highlighting the tiles when they need to be highlighted, of submitting words on user request, on keeping
+track of whether the user word is in the dictionary or not. It also fills in the tiles that disappear because
+the word is submitted.
+
+TYPEDEF
+
+struct TileItem
+    holds a pointer to a Tile object (tileObj) and its x and y subscripts in the larger board array
+
+DATA ITEMS
+
+int gameLevel
+    the level of the game that the user chose--passed in as a parameter into the class constructor
+vector &#60;TileItem*&#62; currentWord
+    holds pointers to the tiles that are in the currently formed word
+Dictionary * userDictionary
+    the dictionary to check the words against--passed in as a parameter into the class constructor
+bool validWord
+    holds whether the word is in the dictionary or not
+
+FUNCTIONS
+--Public functions:
+Board(level, Dictionary*)
+    given the game level and dictionary as parameters, sets up (but does not display) the 9x9 game board of tiles
+displayBoard
+    shows the board on the screen
+bool isWord
+    returns whether the word is valid or not (value of validWord)
+int returnLevel
+    returns the level of the game (value of gameLevel)
+string returnWord
+    returns the string of the word the user has been selecting
+int submitWord
+    submits the currently selected word, if it is a valid word; returns the word's score
+clickHandler(x, y)
+    given the x and y coordinates of the click, decides which letter has been clicked and handles it appropriately
+
+--Private functions:
+addLetter(TileItem&)
+    adds the parameter TileItem to the vector of the current word
+removeLetter(TileItem&)
+    removes the tile that's passed in as a parameter, and any letters following it in the current word
+changeAppearance
+    changes the word's appearance to show whether it is an acceptable word or not
+replaceLetters
+    replaces all the letters on the gameboard that have been removed due to the current word being submitted
+checkWord
+    checks whether the word is in the dictionary or not, changing the value of validWord
+*/</font>
+
+<font color="blue">#ifndef</font> BOARD_H
+<font color="blue">#define</font> BOARD_H
+<font color="blue">#include</font> <font color="maroon">&#60;string&#62;</font>
+<font color="blue">#include</font> <font color="maroon">&#60;vector&#62;</font>
+<font color="blue">#include</font> <font color="maroon">"Dictionary.h"</font>
+<font color="blue">#include</font> <font color="maroon">"Tile.h"</font>
+
+<font color="blue">class</font> Board
+<font color="black">{</font>
+    <font color="blue">typedef</font> <font color="blue">struct</font> <font color="black">{</font>
+        Tile <font color="black">*</font> tileObj;
+        <font color="blue">int</font> x;
+        <font color="blue">int</font> y;
+    <font color="black">}</font> TileItem;
+
+    <font color="blue">public</font><font color="black">:</font>
+        Board<font color="black">(</font><font color="blue">int</font>, Dictionary <font color="black">*</font><font color="black">)</font>;       
+        <font color="blue">void</font> displayBoard<font color="black">(</font><font color="black">)</font>;
+        
+        <font color="blue">bool</font> isWord<font color="black">(</font><font color="black">)</font>;
+        <font color="blue">int</font> returnLevel<font color="black">(</font><font color="black">)</font>;
+
+        std<font color="black">:</font><font color="black">:</font>string returnWord<font color="black">(</font><font color="black">)</font>;       
+        <font color="blue">int</font> submitWord<font color="black">(</font><font color="black">)</font>;
+        
+        <font color="blue">void</font> clickHandler<font color="black">(</font><font color="blue">int</font>, <font color="blue">int</font><font color="black">)</font>;
+        
+    <font color="blue">private</font><font color="black">:</font>
+        <font color="blue">int</font> gameLevel;
+
+        TileItem boardset<font color="black">[</font><font color="maroon">9</font><font color="black">]</font><font color="black">[</font><font color="maroon">9</font><font color="black">]</font>;
+        std<font color="black">:</font><font color="black">:</font>vector<font color="black">&#60;</font>TileItem<font color="black">*</font><font color="black">&#62;</font> currentWord;
+        Dictionary <font color="black">*</font> userDictionary;
+        <font color="blue">bool</font> validWord;
+
+        <font color="blue">void</font> addLetter<font color="black">(</font>TileItem <font color="black">&</font><font color="black">)</font>;
+        <font color="blue">void</font> removeLetter<font color="black">(</font>TileItem <font color="black">&</font><font color="black">)</font>;
+        <font color="blue">void</font> checkWord<font color="black">(</font><font color="black">)</font>;
+        <font color="blue">void</font> changeAppearance<font color="black">(</font><font color="black">)</font>;
+    
+        <font color="blue">void</font> replaceLetters<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>;
+<font color="blue">#endif</font>
+
+</PRE>
+</BODY>
+</HTML>

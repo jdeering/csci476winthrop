@@ -1,0 +1,46 @@
+<HTML>
+<HEAD>
+<TITLE>
+Dictionary.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">/*
+Lauren Cairco
+26 February 2009
+CSCI 476 Project
+
+Dictionary.cpp
+For use with the Wordplay game module
+Implementation of Dictionary.h; all the function documentation and includes are found there
+
+*/</font>
+<font color="blue">#include</font> <font color="maroon">"Dictionary.h"</font>
+
+<font color="green">// constructs dictionary based on filename passed in, or the default if no filename is passed into the constructor</font>
+Dictionary<font color="black">:</font><font color="black">:</font>Dictionary<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string filename <font color="black">=</font> <font color="maroon">"dictionary.dat"</font><font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>ifstream inFile<font color="black">(</font>filename.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    
+    std<font color="black">:</font><font color="black">:</font>string tmp;
+    inFile <font color="black">&#62;</font><font color="black">&#62;</font> tmp;
+    
+    <font color="green">// load the file into the vector</font>
+    <font color="blue">while</font> <font color="black">(</font><font color="black">!</font>inFile.eof<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        words.push_back<font color="black">(</font>tmp<font color="black">)</font>;
+        inFile <font color="black">&#62;</font><font color="black">&#62;</font> tmp;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">//returns whether the word is in the dictionary or not</font>
+<font color="blue">bool</font> Dictionary<font color="black">:</font><font color="black">:</font>search<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string s<font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">// binary search through the vector to find out if there's a match using the STL algorithm for binary search</font>
+    <font color="blue">return</font> binary_search<font color="black">(</font>words.begin<font color="black">(</font><font color="black">)</font>, words.end<font color="black">(</font><font color="black">)</font>, s<font color="black">)</font>;
+<font color="black">}</font>
+
+</PRE>
+</BODY>
+</HTML>

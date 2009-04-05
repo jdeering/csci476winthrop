@@ -7,8 +7,6 @@ Sprite::Sprite()
 {
 	box.SetPosition(0, 0);
 	box.SetSize(0, 0);
-	frameColumns = 1;
-	frameRows = 1;
 	numFrames = 1;
 	currFrame = 0;
 	visible = true;
@@ -30,8 +28,6 @@ Sprite::Sprite()
 Sprite::Sprite(std::string imageRef, int x = 0, int y = 0, int w = 0, int h = 0)
 {
 	fileRefName = imageRef;
-	frameColumns = 1;
-	frameRows = 1;
 	numFrames = 1;
 	currFrame = 0;
 	box.SetPosition(x, y);
@@ -56,12 +52,15 @@ Sprite::~Sprite()
 
 	@param delay The number of ticks to wait before moving to
 				  the next frame. Higher numbers yield slower
-				  animations. 0 will turn animation off.
+				  animations. 0 or less will turn animation off.
 ******************************************************/
 void Sprite::SetAnimation(int delay = 0)
 {
-	frameDelay = delay;
-	if(delay) animating = true;
+	if(delay > 0)
+	{
+		frameDelay = delay;
+		animating = true;
+	}
 }
 
 /******************************************************
@@ -247,7 +246,6 @@ void Sprite::MovePosition()
 	}
 }
 
-
 int Sprite::GetFrameNum()
 {
 	return currFrame;
@@ -257,12 +255,6 @@ void Sprite::SetFrameCount(int fCount)
 {
 	numFrames = fCount;
 }
-
-void Sprite::SetColumnCount(int cCount)
-{
-	frameColumns = cCount;
-}
-
 
 int Sprite::GetWidth()
 {

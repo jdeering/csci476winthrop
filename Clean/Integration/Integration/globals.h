@@ -15,9 +15,12 @@
 #define MAXFILES		100
 #define MAXGAMES		4
 #define XOFFSET			200
-#define DEBUG			0
 
-
+// Audio Values
+#define PAN 128
+#define FREQ 1000
+#define MAX_VOLUME 255
+#define MIN_VOLUME 0
 
 
 	/* MOUSE OPCODES */

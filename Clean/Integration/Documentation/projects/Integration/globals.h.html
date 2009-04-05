@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<TITLE>
+globals.h
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#ifndef</font> _GLOBALS_H
+<font color="blue">#define</font> _GLOBALS_H
+<font color="blue">#define</font> ALLEGRO_AND_MFC
+<font color="blue">#define</font> ALLEGRO_NO_MAGIC_MAIN
+
+<font color="blue">#include</font> <font color="maroon">"allegro.h"</font>
+<font color="blue">#include</font> <font color="maroon">"winalleg.h"</font>
+<font color="blue">#include</font> <font color="maroon">"sapi.h"</font>
+<font color="blue">#include</font> <font color="maroon">&#60;iostream&#62;</font>
+<font color="blue">#include</font> <font color="maroon">&#60;string&#62;</font>
+<font color="blue">#include</font> <font color="maroon">&#60;map&#62;</font>
+<font color="blue">#include</font> <font color="maroon">&#60;sstream&#62;</font>
+
+<font color="blue">#define</font> MAXSPRITES      <font color="maroon">500</font>
+<font color="blue">#define</font> MAXFILES        <font color="maroon">100</font>
+<font color="blue">#define</font> MAXGAMES        <font color="maroon">4</font>
+<font color="blue">#define</font> XOFFSET         <font color="maroon">200</font>
+
+<font color="green">// Audio Values</font>
+<font color="blue">#define</font> PAN <font color="maroon">128</font>
+<font color="blue">#define</font> FREQ <font color="maroon">1000</font>
+<font color="blue">#define</font> MAX_VOLUME <font color="maroon">255</font>
+<font color="blue">#define</font> MIN_VOLUME <font color="maroon">0</font>
+
+
+    <font color="green">/* MOUSE OPCODES */</font>
+<font color="blue">#define</font> MOUSE_LOCATION_UPDATE        <font color="maroon">101</font>
+<font color="blue">#define</font> MOUSE_STATE_CHANGE           <font color="maroon">102</font>
+<font color="blue">#define</font> MOUSE_SPRITE_CLICK           <font color="maroon">103</font>
+    
+    <font color="green">/* KEYBOARD OPCODES */</font>
+<font color="blue">#define</font> KEY_STATE_CHANGE             <font color="maroon">201</font>
+    
+    <font color="green">/* SPRITE OPCODES */</font>
+<font color="blue">#define</font> SPRITE_CREATE                <font color="maroon">301</font>
+<font color="blue">#define</font> SPRITE_CREATE_FROM_ASSET     <font color="maroon">302</font>
+<font color="blue">#define</font> SPRITE_REMOVE                <font color="maroon">303</font>
+<font color="blue">#define</font> SPRITE_VISIBILITY_CHANGE     <font color="maroon">304</font>
+<font color="blue">#define</font> SPRITE_SET_SIZE              <font color="maroon">305</font>
+<font color="blue">#define</font> SPRITE_SET_LOCATION          <font color="maroon">306</font>
+<font color="blue">#define</font> SPRITE_SET_FRAME_DELAY       <font color="maroon">307</font>
+<font color="blue">#define</font> SPRITE_SET_ANIMATION         <font color="maroon">308</font>
+<font color="blue">#define</font> SPRITE_SET_FRAME             <font color="maroon">309</font>
+<font color="blue">#define</font> SPRITE_MOVE_TO               <font color="maroon">310</font>
+<font color="blue">#define</font> SPRITE_CHANGE_BITMAP         <font color="maroon">311</font>
+    
+    <font color="green">/* TEXT OPCODES */</font>
+<font color="blue">#define</font> TEXT_CREATE_FROM_ASSET       <font color="maroon">401</font>
+<font color="blue">#define</font> TEXT_CREATE_FROM_STRING      <font color="maroon">402</font>
+<font color="blue">#define</font> TEXT_REMOVE                  <font color="maroon">403</font>
+<font color="blue">#define</font> TEXT_CHANGE_CONTENT          <font color="maroon">404</font>
+<font color="blue">#define</font> TEXT_CHANGE_LOCATION         <font color="maroon">405</font>
+<font color="blue">#define</font> TEXT_VISIBILITY_CHANGE       <font color="maroon">406</font>
+    
+    <font color="green">/* AUDIO OPCODES */</font>
+<font color="blue">#define</font> AUDIO_CREATE                 <font color="maroon">501</font>
+<font color="blue">#define</font> AUDIO_REMOVE                 <font color="maroon">502</font>
+<font color="blue">#define</font> AUDIO_PLAY                   <font color="maroon">503</font>
+<font color="blue">#define</font> AUDIO_SET_LOOP_COUNT         <font color="maroon">504</font>
+<font color="blue">#define</font> AUDIO_STOP                   <font color="maroon">505</font>
+
+<font color="blue">#define</font> SCORE                        <font color="maroon">601</font>
+
+<font color="blue">#endif</font>
+</PRE>
+</BODY>
+</HTML>
