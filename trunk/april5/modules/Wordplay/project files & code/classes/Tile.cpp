@@ -10,6 +10,8 @@ Functions are described in the .h file.
 
 */
 #include "Tile.h"
+#include <iostream>
+using namespace std;
 
 //////////////////////////////
 // constructors & utilities	//
@@ -20,14 +22,18 @@ Tile::Tile()
 {
 	//generate a tile based on letter distribution
 	letter = generateLetter();
+	//cout<<"letter: "<<letter<<endl;
 
 	//get the correct sprite based on the letter we just generated
-	std::string assetName = letter + "_img";
-	relatedSprite = &GameFramework::createSprite(assetName,0,0,50,50);
+	std::string assetName = "";
+	assetName = "letter_";
+	assetName = assetName + letter;
+	cout<<"assetName: "<<assetName<<endl;
+	//relatedSprite = &gf.createSprite(assetName,0,0,50,50);
 
 	//make the sprite invisible
-	relatedSprite->setVisible(false);
-
+	//relatedSprite->setVisible(false);
+//	cout<<"set invisible"<<endl;
 	//the letter is not yet selected
 	bool selected = false;
 }
@@ -79,6 +85,9 @@ Tile &Tile::operator= (Tile & rhs)
 	return *this;
 }
 
+
+
+
 //////////////////////////////////
 //		attribute returning		//
 //////////////////////////////////
@@ -108,10 +117,12 @@ GFSprite * Tile::returnSprite(){
 //used to show the tile initially
 void Tile::showTile(int x, int y)
 {
-	relatedSprite->setVisible(true);
+	cout<<"show at "<<x<<","<<y<<endl;
 	relatedSprite->setSpritePosition(x,y);
+	relatedSprite->setVisible(true);
 	//show the letter as unselected
 	relatedSprite->setSpriteFrame(0);
+
 }
 
 //this is used to slide a tile to the position just below it
