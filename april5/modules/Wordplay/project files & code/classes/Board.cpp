@@ -11,6 +11,8 @@ All the function details are found here.
 */
 
 #include "Board.h"
+#include <iostream>
+using namespace std;
 
 //////////////////////////////
 //	construction & display	//
@@ -21,6 +23,16 @@ Board::Board(int lvl, Dictionary * d)
 {	
 	gameLevel = lvl;
 	userDictionary = d;
+
+	for (int m = 0; m < 9; ++m)
+	{
+		for (int n = 0; n < 9; ++n)
+		{
+			boardset[m][n].x = m;
+			boardset[m][n].y = n;
+			//boardset[m][n].tileObj = new Tile();
+		}
+	}
 }
 
 //displays the board
@@ -31,7 +43,8 @@ void Board::displayBoard()
 	{
 		for (int j = 0; j < 9; ++j)
 		{
-			boardset[i][j].tileObj->showTile( (25 + 50 * i), (25 + 50 * j) );
+			//cout<<"letter: "<<boardset[i][j].tileObj->getLetter()<<endl;
+			//boardset[i][j].tileObj->showTile( (25 + 50 * i), (25 + 50 * j) );
 		}
 	}
 }

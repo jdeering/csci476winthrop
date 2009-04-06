@@ -3,9 +3,9 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include "../Classes/Board.h"
-#include "../Classes/Dictionary.h"
-#include "../Classes/Tile.h"
+#include "../classes/Board.h"
+#include "../classes/Dictionary.h"
+#include "../classes/Tile.h"
 #include <vector>
 #include <string>
 using namespace std;
@@ -14,12 +14,11 @@ Board * gameBoard;
 Dictionary * userDictionary;
 enum GameStatus {CHOOSE_LEVEL, INSTRUCTIONS_1, INSTRUCTIONS_2, IN_GAME, DIALOGUE_EXIT, DIALOGUE_RESET};
 GameStatus currentState = CHOOSE_LEVEL;
-GameFramework framework;
 vector <GFSprite> overlays;
 GFText * gScore;
 int score;
 GFText * currentWord;
-
+bool gameRunning = true;
 
 void masterClickHandler(int x, int y);
 void introClickHandler(int x, int y);
