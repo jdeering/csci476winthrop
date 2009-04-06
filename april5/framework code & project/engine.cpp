@@ -951,11 +951,11 @@ void Framework::ParseMessage(std::stringstream &msgStream)
 		sscanf(message, "%d", &code);
 		if(!code) 
 		{ 
-			//if(strlen(message)) 
-				//printf("Debug Message : %s\n", message); 
+			if(strlen(message)) 
+				printf("Debug Message : %s\n", message); 
 			continue; 
 		}
-		printf("%s\n", message);
+		//printf("%s\n", message);
 		switch(code)
 		{
 			// Sprites
@@ -983,7 +983,7 @@ void Framework::ParseMessage(std::stringstream &msgStream)
 		case AUDIO_STOP	: StopFile(message); break;
 			// Score
 		case SCORE : PostScore(message); break;
-		default :  //printf("Debug Message : %s\n", message); 
+		default :  printf("Debug Message : %s\n", message); 
 			break;
 		}
 	}
