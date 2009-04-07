@@ -12,6 +12,9 @@ All the function details are found here.
 
 #include "Board.h"
 #include <iostream>
+#include <ctime>
+#include <windows.h>
+
 using namespace std;
 
 //////////////////////////////
@@ -23,14 +26,16 @@ Board::Board(int lvl, Dictionary * d)
 {	
 	gameLevel = lvl;
 	userDictionary = d;
-
+	int counter = 0;
 	for (int m = 0; m < 9; ++m)
 	{
 		for (int n = 0; n < 9; ++n)
 		{
 			boardset[m][n].x = m;
 			boardset[m][n].y = n;
-			//boardset[m][n].tileObj = new Tile();
+			boardset[m][n].tileObj = new Tile();
+			//wait
+			Sleep(1);
 		}
 	}
 }
@@ -44,7 +49,8 @@ void Board::displayBoard()
 		for (int j = 0; j < 9; ++j)
 		{
 			//cout<<"letter: "<<boardset[i][j].tileObj->getLetter()<<endl;
-			//boardset[i][j].tileObj->showTile( (25 + 50 * i), (25 + 50 * j) );
+			boardset[i][j].tileObj->showTile( (25 + 50 * i), (25 + 50 * j) );
+			Sleep(3);
 		}
 	}
 }
@@ -61,55 +67,66 @@ void Board::clickHandler(int x, int y)
 	x = int((x - (x % 50)) / 50);
 	y = y - 25;
 	y = int((y - (y % 50)) / 50);
+	
+	cout<<"x: "<<x<<" y: "<<y<<endl;
 
 	//now that we have our x and y positions, we start dealing with the tile that's in that array subscript
 	//first, if it's selected, we need to deselect it and any letters that follow it in the word
 	if (boardset[x][y].tileObj->isSelected())
 	{
+		cout<<"in if"<<endl;	
 		removeLetter(boardset[x][y]);
 	}
 	//if it's not selected
 	else
 	{
+		cout<<"in else"<<endl;
 		bool validMove = false;
 
 		//check to see if it's a valid move
 		//this is level dependent
-		switch(gameLevel)
-		{
-			//for levels one and two
-			case 1:
-			case 2:
-				//allow for any neighboring tile (cardinal directions as well as diagonals)
-				//check to make sure it is selected, and it is the end of the word
-				if ((boardset[x+1][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y+1]) ||
-					(boardset[x-1][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y-1]) ||
-					(boardset[x+1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y]) ||
-					(boardset[x-1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y]) ||
-					(boardset[x][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y+1]) ||
-					(boardset[x][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y-1]) ||
-					(boardset[x+1][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y-1]) ||
-					(boardset[x-1][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y+1]) 
-					)
-				{
-					validMove = true;
-				}
+		if (currentWord.size() == 0){
+			validMove = true;
+			cout<<"in if"<<endl;
+		}
+		else{
+			cout<<"in selse else"<<endl;
+			switch(gameLevel)
+			{
+				//for levels one and two
+				case 1:
+				case 2:
+					//allow for any neighboring tile (cardinal directions as well as diagonals)
+					//check to make sure it is selected, and it is the end of the word
+					if ((boardset[x+1][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y+1]) ||
+						(boardset[x-1][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y-1]) ||
+						(boardset[x+1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y]) ||
+						(boardset[x-1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y]) ||
+						(boardset[x][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y+1]) ||
+						(boardset[x][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y-1]) ||
+						(boardset[x+1][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y-1]) ||
+						(boardset[x-1][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y+1]) 
+						)
+					{
+						validMove = true;
+					}
 
-				break;
+					break;
 
-			//for levels three and four
-			case 3:
-			case 4:
-				//allow for any tile in cardinal direction
-				if ((boardset[x+1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y]) ||
-					(boardset[x-1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y]) ||
-					(boardset[x][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y+1]) ||
-					(boardset[x][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y-1]) 
-					)
-				{
-					validMove = true;
-				}
-				break;
+				//for levels three and four
+				case 3:
+				case 4:
+					//allow for any tile in cardinal direction
+					if ((boardset[x+1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y]) ||
+						(boardset[x-1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y]) ||
+						(boardset[x][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y+1]) ||
+						(boardset[x][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y-1]) 
+						)
+					{
+						validMove = true;
+					}
+					break;
+			}
 		}
 
 		//if we've decided it's a valid move
@@ -127,7 +144,7 @@ void Board::addLetter(TileItem &t)
 {
 	currentWord.push_back(&t);
 	//change the word's appearance to indicate whether it's a submittable word or not
-	checkWord();
+	//checkWord();
 	changeAppearance();
 }
 

@@ -19,6 +19,7 @@ GFText * gScore;
 int score;
 GFText * currentWord;
 bool gameRunning = true;
+GFSprite * background;
 
 void masterClickHandler(int x, int y);
 void introClickHandler(int x, int y);
