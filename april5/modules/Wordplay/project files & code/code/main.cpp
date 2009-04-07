@@ -5,7 +5,6 @@
 
 void dialogueClickHandler(int x, int y, void (*yesFunction)(), void (*noFunction)())
 {
-	/*
 	//if the user clicks yes
 	if (x > 50 && x < 200 && y < 400 && y > 450 )
 	{
@@ -19,12 +18,11 @@ void dialogueClickHandler(int x, int y, void (*yesFunction)(), void (*noFunction
 		//call the no function
 		noFunction();
 	}
-	*/
 }
 
 void masterClickHandler(int button, int state, int x, int y)
 {
-	//cout<<"master: x:"<<x<<" y:"<<y<<endl;
+	cout<<"master: x:"<<x<<" y:"<<y<<endl;
 	cout<<currentState<<endl;
 	//1 is clicked, not worrying about which button for the purposes of this game
 	if (state == 1){
@@ -52,20 +50,15 @@ void masterClickHandler(int button, int state, int x, int y)
 		}
 		else if (currentState == DIALOGUE_EXIT)
 		{
-			cout<<"in if 5"<<endl;
+			//cout<<"in if 5"<<endl;
 			dialogueClickHandler(x, y, exitGame, endDialogue);
 		}
 		else if (currentState == DIALOGUE_RESET)
 		{
-			cout<<"in if 6"<<endl;
+			//cout<<"in if 6"<<endl;
 			dialogueClickHandler(x,y, resetBoard, endDialogue);
 		}
-		else{
-			cout<<"bleh."<<endl;
-		}
 	}
-
-	//cout<<"done with click handler"<<endl;
 }
 
 void introClickHandler(int x, int y)
@@ -142,8 +135,6 @@ void instructionsClickHandler(int x, int y, int instructionsPage){
 
 void inGameClickHandler(int x, int y)
 {
-/*
-
 	//if it's anywhere in the board, let it be handled there
 	if(x >= 25 && x <= 475 && y > 25 && y <=475)
 	{
@@ -168,15 +159,13 @@ void inGameClickHandler(int x, int y)
 	{
 		dialogueBox("end");
 	}
-	*/
 }
 void gameboardClickHandler(int x, int y){
 	//handle inside of the gameboard
-//	gameBoard->clickHandler(x,y);
+	gameBoard->clickHandler(x,y);
 }
 void dialogueBox(string name)
 {
-	/*
 	//clear out the screen
 	removeAllButGameboard();
 
@@ -189,22 +178,17 @@ void dialogueBox(string name)
 	}
 	else if (name == "end")
 	{
-		assetName = "endgame";
+		assetName = "end";
 		currentState = DIALOGUE_EXIT;
 	}
 
-	assetName += ".bmp";
-
 	//display the dialogue screen
-	overlays.push_back(framework.createSprite(assetName, 0, 0, 600, 600));
+	overlays.push_back(GameFramework::createSprite(assetName, 0, 0, 600, 600));
 	overlays.back().setVisible(true);
-	*/
 }
 
 void showInstructions(int gameLevel, int page)
 {
-	cout<<"here in showinstructions"<<endl;
-
 	//clear out the screen
 	removeAllButGameboard();
 
@@ -234,7 +218,6 @@ void showInstructions(int gameLevel, int page)
 			assetName += "2";
 			break;
 	}
-	cout<<"after page: "<<assetName<<endl;
 
 	//and display it
 	overlays.push_back(GameFramework::createSprite(assetName, 0, 0, 600, 600));
@@ -264,13 +247,11 @@ void removeAllButGameboard()
 
 void endDialogue()
 {
-	/*
 	//remove the dialogue box
 	removeAllButGameboard();
 
 	//reset the game state back to gameplay
 	currentState = IN_GAME;
-	*/
 }
 
 void updateScore()
@@ -285,6 +266,9 @@ void updateCurrentWord()
 
 void constructBoard(int level)
 {
+	background = &GameFramework::createSprite("background", 0, 0, 600, 600);
+	background->setVisible(false);
+
 	//make the new gameboard dependent on the level passed in and the new user dictionary
 	gameBoard = new Board(level, userDictionary);
 }
@@ -297,28 +281,21 @@ void makeDictionary()
 
 void beginGame()
 {
-	cout<<"in begingame"<<endl;
 	removeAllButGameboard();
 
-	//display the gameboard
-	//gameBoard->displayBoard();
-	cout<<"gameboard displayed"<<endl;
-
 	//display the background
-	overlays.push_back(GameFramework::createSprite("background", 0, 0, 600, 600));
-	overlays.back().setVisible(true);
-	cout<<"background displayed"<<endl;
+	background->setVisible(true);
+
+	//display the gameboard
+	gameBoard->displayBoard();
 
 	//display the user score and current word text fields
 	//GFText& createTextFromString(std::string, int, int, int);
-	currentWord = &GameFramework::createTextFromString("ddd",35,535,40);
-	gScore = &GameFramework::createTextFromString("0", 490, 315, 20);
-	cout<<"text displayed"<<endl;
+	currentWord = &GameFramework::createTextFromString("current",7,535,40);
+	gScore = &GameFramework::createTextFromString("0", 1, 490, 315);
 
 	//set the state of the game
 	currentState = IN_GAME;
-
-	cout<<"all done"<<endl;
 }
 
 

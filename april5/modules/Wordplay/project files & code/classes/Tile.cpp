@@ -28,14 +28,13 @@ Tile::Tile()
 	std::string assetName = "";
 	assetName = "letter_";
 	assetName = assetName + letter;
-	cout<<"assetName: "<<assetName<<endl;
-	//relatedSprite = &gf.createSprite(assetName,0,0,50,50);
+	relatedSprite = &GameFramework::createSprite(assetName,0,0,50,50);
 
 	//make the sprite invisible
-	//relatedSprite->setVisible(false);
-//	cout<<"set invisible"<<endl;
+	relatedSprite->setVisible(false);
+
 	//the letter is not yet selected
-	bool selected = false;
+	selected = false;
 }
 
 //returns a letter that's been generated based on the probability of distribution
@@ -101,6 +100,7 @@ char Tile::getLetter()
 //returns whether the tile is selected or not
 bool Tile::isSelected()
 {
+	cout<<"in is selected"<<endl;
 	return selected;
 }
 
