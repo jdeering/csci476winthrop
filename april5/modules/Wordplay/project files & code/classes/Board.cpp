@@ -68,59 +68,49 @@ void Board::clickHandler(int x, int y)
 	y = y - 25;
 	y = int((y - (y % 50)) / 50);
 	
-	cout<<"x: "<<x<<" y: "<<y<<endl;
-
 	//now that we have our x and y positions, we start dealing with the tile that's in that array subscript
 	//first, if it's selected, we need to deselect it and any letters that follow it in the word
 	if (boardset[x][y].tileObj->isSelected())
 	{
-		cout<<"in if"<<endl;	
 		removeLetter(boardset[x][y]);
 	}
 	//if it's not selected
 	else
 	{
-		cout<<"in else"<<endl;
 		bool validMove = false;
 
 		//check to see if it's a valid move
 		//this is level dependent
 		if (currentWord.size() == 0){
 			validMove = true;
-			cout<<"in if"<<endl;
 		}
 		else{
-			cout<<"in selse else"<<endl;
 			switch(gameLevel)
 			{
 				//for levels one and two
 				case 1:
 				case 2:
-					//allow for any neighboring tile (cardinal directions as well as diagonals)
-					//check to make sure it is selected, and it is the end of the word
-					if ((boardset[x+1][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y+1]) ||
-						(boardset[x-1][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y-1]) ||
-						(boardset[x+1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y]) ||
-						(boardset[x-1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y]) ||
-						(boardset[x][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y+1]) ||
-						(boardset[x][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y-1]) ||
-						(boardset[x+1][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y-1]) ||
-						(boardset[x-1][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y+1]) 
-						)
-					{
+					if((x > 0 && y > 0) && (&boardset[x-1][y-1] == (void *)currentWord.back()) ||
+						(x > 0) && (&boardset[x-1][y] == (void *)currentWord.back()) ||
+						(y > 0) && (&boardset[x][y-1] == (void *)currentWord.back()) ||
+						(x < 8 && y > 0) && (&boardset[x+1][y-1] == (void *)currentWord.back()) ||
+						(x < 8) && (&boardset[x+1][y] == (void *)currentWord.back()) ||
+						(x > 0 && y < 8) && (&boardset[x-1][y+1] == (void *)currentWord.back()) ||
+						(y < 8) && (&boardset[x][y+1] == (void *)currentWord.back()) ||
+						(x < 8 && y < 8) && (&boardset[x+1][y+1] == (void *)currentWord.back())
+						){
 						validMove = true;
 					}
-
 					break;
 
 				//for levels three and four
 				case 3:
 				case 4:
 					//allow for any tile in cardinal direction
-					if ((boardset[x+1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x+1][y]) ||
-						(boardset[x-1][y].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x-1][y]) ||
-						(boardset[x][y+1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y+1]) ||
-						(boardset[x][y-1].tileObj->isSelected() && currentWord.at(currentWord.size() - 1) == &boardset[x][y-1]) 
+					if ((x > 0) && (&boardset[x-1][y] == (void *)currentWord.back()) ||
+						(y > 0) && (&boardset[x][y-1] == (void *)currentWord.back()) ||
+						(x < 8) && (&boardset[x+1][y] == (void *)currentWord.back()) ||
+						(y < 8) && (&boardset[x][y+1] == (void *)currentWord.back())
 						)
 					{
 						validMove = true;
@@ -143,6 +133,7 @@ void Board::clickHandler(int x, int y)
 void Board::addLetter(TileItem &t)
 {
 	currentWord.push_back(&t);
+	cout<<"added pointer: "<<&t<<endl;
 	//change the word's appearance to indicate whether it's a submittable word or not
 	//checkWord();
 	changeAppearance();
@@ -180,17 +171,27 @@ void Board::removeLetter(TileItem & toRemove)
 //change the appearance of the word on the basis of whether it's valid or not
 void Board::changeAppearance()
 {
+	
+
 	//if it's a word, highlight it as valid
 	if (isWord())
 	{
+		cout<<"highlighting"<<endl;
 		for (int i = 0; i < (signed)currentWord.size(); ++i)
-			currentWord.at(i)->tileObj->highlightValid();
+			if (currentWord.at(i)->tileObj->isSelected() != 2){
+				cout<<"bfor"<<endl;
+				currentWord.at(i)->tileObj->highlightValid();
+				cout<<"aft"<<endl;
+			}
+			Sleep(100);
 	}
 	//otherwise highlight it as not valid
 	else
 	{
+		cout<<"highlighting2"<<endl;
 		for (int i = 0; i < (signed)currentWord.size(); ++i)
-			currentWord.at(i)->tileObj->highlightInvalid();
+			if (currentWord.at(i)->tileObj->isSelected() != 1) currentWord.at(i)->tileObj->highlightInvalid();
+			Sleep(100);
 	}
 }
 
@@ -281,7 +282,8 @@ void Board::checkWord()
 //returns whether the word is valid or not
 bool Board::isWord()
 {
-	return validWord;
+	//return validWord;
+	return true;
 }
 
 //returns the current word as a string

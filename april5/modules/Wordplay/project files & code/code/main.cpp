@@ -22,40 +22,32 @@ void dialogueClickHandler(int x, int y, void (*yesFunction)(), void (*noFunction
 
 void masterClickHandler(int button, int state, int x, int y)
 {
-	cout<<"master: x:"<<x<<" y:"<<y<<endl;
-	cout<<currentState<<endl;
 	//1 is clicked, not worrying about which button for the purposes of this game
 	if (state == 1){
 
 		//dependent on status, choose the correct click handler
 		if (currentState == CHOOSE_LEVEL)
 		{
-			//cout<<"in if 1"<<endl;
 			introClickHandler(x,y);
 		}
 		else if (currentState == INSTRUCTIONS_1)
 		{
-			//cout<<"in if 2"<<endl;
 			instructionsClickHandler(x, y, 1);
 		}
 		else if (currentState == INSTRUCTIONS_2)
 		{
-			//cout<<"in if 3"<<endl;
 			instructionsClickHandler (x, y, 2);
 		}
 		else if (currentState == IN_GAME)
 		{
-			//cout<<"in if 4"<<endl;
 			inGameClickHandler(x,y);
 		}
 		else if (currentState == DIALOGUE_EXIT)
 		{
-			//cout<<"in if 5"<<endl;
 			dialogueClickHandler(x, y, exitGame, endDialogue);
 		}
 		else if (currentState == DIALOGUE_RESET)
 		{
-			//cout<<"in if 6"<<endl;
 			dialogueClickHandler(x,y, resetBoard, endDialogue);
 		}
 	}
@@ -112,7 +104,6 @@ void instructionsClickHandler(int x, int y, int instructionsPage){
 		//if it's the begin game button	
 		if(x > 335 && x < 550 && y > 505 && y < 550)
 		{
-			cout<<"we've clicked on begin game"<<endl;
 			beginGame();
 		}
 
@@ -170,7 +161,7 @@ void dialogueBox(string name)
 	removeAllButGameboard();
 
 	string assetName;
-	//construct asset name based on the parameter passed in, and set the game sate
+	//construct asset name based on the parameter passed in, and set the game state
 	if (name == "reset")
 	{
 		assetName = "reset";	
@@ -247,6 +238,7 @@ void removeAllButGameboard()
 
 void endDialogue()
 {
+	////////////problem here?
 	//remove the dialogue box
 	removeAllButGameboard();
 
@@ -291,8 +283,8 @@ void beginGame()
 
 	//display the user score and current word text fields
 	//GFText& createTextFromString(std::string, int, int, int);
-	currentWord = &GameFramework::createTextFromString("current",7,535,40);
-	gScore = &GameFramework::createTextFromString("0", 1, 490, 315);
+	//currentWord = &GameFramework::createTextFromString("current",7,535,40);
+	//gScore = &GameFramework::createTextFromString("0", 1, 490, 315);
 
 	//set the state of the game
 	currentState = IN_GAME;
@@ -347,7 +339,6 @@ void submitWord()
 
 
 int main(int argc, char argv[]){
-	cout<<"In main"<<endl;
 	//display the beginning screen
 	overlays.push_back(GameFramework::createSprite("intro", 0, 0, 600, 600));
 	overlays.back().setVisible(true);
@@ -356,14 +347,11 @@ int main(int argc, char argv[]){
 	//set the correct click handler
 	//this needs to be fixed to have more parameters
 	GameFramework::mouseFunc(masterClickHandler);
-	cout<<"click handler declared"<<endl;
 	
 	//begin the game loop
 	GameFramework::gameFunc(returnRunning);
-	cout<<"game function defined"<<endl;
 	
 	GameFramework::gameLoop();
-	cout<<"game loop exited"<< endl;
 
 	//clean up
 	overlays.back().~GFSprite();
