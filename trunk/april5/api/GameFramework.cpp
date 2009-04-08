@@ -88,7 +88,7 @@ void GameFramework::_parseMessage(std::stringstream &msgStream)
 				break;
 
 			case MOUSE_STATE_CHANGE:
-				if (!cb_MH) return;
+				if (!cb_MH) break;
 
 				sscanf(message, "%*d %d %d %d %d", &p1, &p2, &p3, &p4);
 				std::cout << "Received : " << message << std::endl;
@@ -100,13 +100,13 @@ void GameFramework::_parseMessage(std::stringstream &msgStream)
 				break;
 				
 			case MOUSE_SPRITE_CLICK:
-				if (!cb_SH) return;
+				if (!cb_SH) break;
 
 				sscanf(message, "%*d %d %d %d", &p1, &p2, &p3);
 				cb_SH(p1, p2, getSprite(p3)); break;
 
 			case KEY_STATE_CHANGE:
-				if (!cb_KH) return;
+				if (!cb_KH) break;
 
 				sscanf(message, "%*d %d %d", &p1, &p2);
 				cb_KH(p1, p2); break;
