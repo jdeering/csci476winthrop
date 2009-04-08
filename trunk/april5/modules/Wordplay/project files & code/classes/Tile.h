@@ -61,7 +61,7 @@ class Tile
 	public:
 		Tile();
 		char getLetter();
-		bool isSelected();
+		int isSelected();
 		GFSprite * returnSprite();
 
 		void highlightValid();
@@ -76,7 +76,7 @@ class Tile
 
 	private:
 		char letter;
-		bool selected;
+		int selected;
 		GFSprite * relatedSprite;
 
 		char generateLetter();

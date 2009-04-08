@@ -98,9 +98,8 @@ char Tile::getLetter()
 }
 
 //returns whether the tile is selected or not
-bool Tile::isSelected()
+int Tile::isSelected()
 {
-	cout<<"in is selected"<<endl;
 	return selected;
 }
 
@@ -146,17 +145,20 @@ void Tile::slideFromTop(int x, int y)
 //show the tile as highlighted and as part of a valid word
 void Tile::highlightValid()
 {
+	selected = 2;
 	relatedSprite->setSpriteFrame(1);
 }
 
 //show the tile as highlighted and not a part of a valid word
 void Tile::highlightInvalid()
 {
+	selected = 1;
 	relatedSprite->setSpriteFrame(2);
 }
 
 //show the tile as unselected
 void Tile::unhighlight()
 {
+	selected=0;
 	relatedSprite->setSpriteFrame(0);
 }
