@@ -21,7 +21,7 @@ GFText * currentWord;
 bool gameRunning = true;
 GFSprite * background;
 
-void masterClickHandler(int x, int y);
+void masterClickHandler(int, int, int, int);
 void introClickHandler(int x, int y);
 void instructionsClickHandler(int x, int y, int instructionsPage);
 void inGameClickHandler(int x, int y);

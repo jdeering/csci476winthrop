@@ -22,7 +22,6 @@ Tile::Tile()
 {
 	//generate a tile based on letter distribution
 	letter = generateLetter();
-	//cout<<"letter: "<<letter<<endl;
 
 	//get the correct sprite based on the letter we just generated
 	std::string assetName = "";

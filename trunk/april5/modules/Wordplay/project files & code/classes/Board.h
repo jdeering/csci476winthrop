@@ -89,7 +89,7 @@ class Board
 		int gameLevel;
 
 		TileItem boardset[9][9];
-		std::vector<TileItem*> currentWord;
+		std::vector<TileItem *> currentWord;
 		Dictionary * userDictionary;
 		bool validWord;
 
