@@ -25,7 +25,7 @@ using namespace std;
 Board::Board(int lvl, Dictionary * d)
 {	
 	gameLevel = lvl;
-	userDictionary = d;
+	/*userDictionary = d;
 	int counter = 0;
 	for (int m = 0; m < 9; ++m)
 	{
@@ -33,11 +33,25 @@ Board::Board(int lvl, Dictionary * d)
 		{
 			boardset[m][n].x = m;
 			boardset[m][n].y = n;
-			boardset[m][n].tileObj = new Tile();
+		//	boardset[m][n].tileObj = new Tile();
+			//wait
+			//Sleep(1);
+		}
+	}
+
+	//debugging
+	cout<<"hey, here's the array's pointers."<<endl;
+
+		for (int m = 0; m < 9; ++m)
+	{
+		for (int n = 0; n < 9; ++n)
+		{
+			cout<<"m: "<<m<<" n: "<<n<<" ptr: "<<(void * )boardset[m][n].tileObj<<endl;
 			//wait
 			Sleep(1);
 		}
 	}
+	*/
 }
 
 //displays the board
@@ -67,7 +81,7 @@ void Board::clickHandler(int x, int y)
 	x = int((x - (x % 50)) / 50);
 	y = y - 25;
 	y = int((y - (y % 50)) / 50);
-	
+	cout<<"x: "<<x<<" y: "<<y<<endl;
 	//now that we have our x and y positions, we start dealing with the tile that's in that array subscript
 	//first, if it's selected, we need to deselect it and any letters that follow it in the word
 	if (boardset[x][y].tileObj->isSelected())
@@ -90,6 +104,7 @@ void Board::clickHandler(int x, int y)
 				//for levels one and two
 				case 1:
 				case 2:
+					cout<<"ptr to currentword.back: "<<(void *)currentWord.back()<<endl;
 					if((x > 0 && y > 0) && (&boardset[x-1][y-1] == (void *)currentWord.back()) ||
 						(x > 0) && (&boardset[x-1][y] == (void *)currentWord.back()) ||
 						(y > 0) && (&boardset[x][y-1] == (void *)currentWord.back()) ||
@@ -130,10 +145,10 @@ void Board::clickHandler(int x, int y)
 }
 
 //add the letter passed in to the current word
-void Board::addLetter(TileItem &t)
+void Board::addLetter(TileItem & t)
 {
-	currentWord.push_back(&t);
-	cout<<"added pointer: "<<&t<<endl;
+	//currentWord.push_back(&t);
+	
 	//change the word's appearance to indicate whether it's a submittable word or not
 	//checkWord();
 	changeAppearance();
@@ -172,7 +187,7 @@ void Board::removeLetter(TileItem & toRemove)
 void Board::changeAppearance()
 {
 	
-
+/*
 	//if it's a word, highlight it as valid
 	if (isWord())
 	{
@@ -193,6 +208,7 @@ void Board::changeAppearance()
 			if (currentWord.at(i)->tileObj->isSelected() != 1) currentWord.at(i)->tileObj->highlightInvalid();
 			Sleep(100);
 	}
+	*/
 }
 
 //checks the current word against the dictionary and submits if it's valid
