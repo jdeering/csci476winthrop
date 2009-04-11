@@ -99,8 +99,8 @@ void Text::ShowText(bool read, BITMAP *dest)
 		return;
 	}
 
-	clear_to_color(tmp, makecol( 255, 0, 255));
-	textout_ex(tmp, font, text.c_str(), 0, 0, color, -1);
+	clear_to_color(tmp, makecol(255, 0, 255));
+	textout_ex(tmp, font, text.c_str(), 0, 0, color, bg_color);
 
 	masked_stretch_blit(tmp, dest, 0, 0, tmp->w, tmp->h, x, y, (int)(tmp->w * multiplier), (int)(tmp->h * multiplier));
 
