@@ -41,6 +41,8 @@ class Text
 private:	
 	ISpVoice *pVoice;
 	int x, y;
+	int size; // height in pixels
+	int color, bg_color; // Foreground and background colors
 	bool visible;
 	std::string text;
 public:
@@ -51,6 +53,9 @@ public:
 	void ShowText(bool read, BITMAP *dest);
 	void ReadText();
 	void ChangeText(std::string txt);
+	void SetSize(int);
+	void SetColor(int r, int g, int b);
+	void SetBackgroundColor(int r, int g, int b);
 };
 
 

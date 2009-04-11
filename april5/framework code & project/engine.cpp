@@ -257,6 +257,8 @@ void Framework::CreateMessagePipes()
 		allegro_message("Error setting handle information.");
 		active = false;
 	}
+	
+	SetNamedPipeHandleState(hStdOut_Parent, PIPE_WAIT, NULL, NULL);
 }
 
 void Framework::LaunchGame(int gameNum)
@@ -512,6 +514,30 @@ void Framework::SetTextPosition(char *msg)
 	textObjects.SetTextPosition(reference, x, y);
 }
 
+void Framework::SetTextSize(char *msg)
+{
+	char reference[10];
+	int size;
+	sscanf(msg, "%*d %s %d", reference, &size);
+	textObjects.SetSize(reference, size);
+}
+
+void Framework::SetTextColor(char *msg)
+{
+	char reference[10];
+	int r, g, b;
+	sscanf(msg, "%*d %s %d %d %d", reference, &r, &g, &b);
+	textObjects.SetColor(reference, r, g, b);
+}
+
+void Framework::SetTextBackgroundColor(char *msg)
+{
+	char reference[10];
+	int r, g, b;
+	sscanf(msg, "%*d %s %d %d %d", reference, &r, &g, &b);
+	textObjects.SetBackgroundColor(reference, r, g, b);
+}
+
 void Framework::ShowText(char *msg)
 {
 	char reference[10];
@@ -568,6 +594,7 @@ void Framework::UpdateMouse()
 		std::string sprite_name = sprites.CheckClicks(mouse.GetPointer());
 		if(x >= 0 && x <= 600 && y >= 0 && y <= 600/* && gameRunning*/) // Game event
 		{
+			std::cout << "Click at ("<< x << "," << y << ")." << std::endl;
 			message.clear();
 			message.str("");
 			message << "102 " << button << " " << state << " " << x << " " << y << std::endl;
@@ -713,9 +740,9 @@ void Framework::CreateGameProcess(std::wstring szCmdline)
 
 void Framework::CreateTextFromRef(char *msg)
 {
-	int length, x, y;
+	int x, y;
 	std::string refName, assetName;
-	sscanf(msg, "%*d %s %d %d %d %s", refName, &length, &x, &y, assetName);
+	sscanf(msg, "%*d %s %d %d %s", refName, &x, &y, assetName);
 	textObjects.AddTextByRef(refName, assetName, x, y, true);
 }
 
@@ -723,9 +750,9 @@ void Framework::CreateTextFromString(char *msg)
 {
 	char c;
 	char *currStr = "";
-	int code, length, x, y;
+	int code, x, y, length;
 	std::string refName;
-	//sscanf(msg, "%*d %s %d %d %d", refName, &length, &x, &y);
+	//sscanf(msg, "%*d %s %d %d %d", refName, &x, &y);
 	std::stringstream stream;
 	stream << msg; // put msg into stream
 	stream >> code >> refName >> length >> x >> y;	
@@ -977,6 +1004,9 @@ void Framework::ParseMessage(std::stringstream &msgStream)
 		case TEXT_CHANGE_CONTENT : ChangeText(message); break;
 		case TEXT_CHANGE_LOCATION : SetTextPosition(message); break;
 		case TEXT_VISIBILITY_CHANGE : ShowText(message); break;
+		case TEXT_SIZE_CHANGE : SetTextSize(message); break;
+		case TEXT_COLOR_CHANGE : SetTextColor(message); break;
+		case TEXT_BGCOLOR_CHANGE : SetTextBackgroundColor(message); break;
 			// Audio
 		case AUDIO_PLAY	: PlayFile(message); break;		 
 		case AUDIO_SET_LOOP_COUNT : ResetLoop(message); break;
