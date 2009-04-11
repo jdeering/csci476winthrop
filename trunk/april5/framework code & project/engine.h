@@ -163,6 +163,10 @@ private:
 	void CreateTextFromString(char *msg);
 	void RemoveText(char *msg);
 	void ChangeText(char *msg);
+	void SetTextSize(char *msg);
+	void SetTextColor(char *msg);
+	void SetTextBackgroundColor(char *msg);
+
 
 	void PlayFile(char *msg);
 	void ResetLoop(char *msg);

@@ -92,11 +92,6 @@ void GameFramework::_parseMessage(std::stringstream &msgStream)
 				if (!cb_MH) break;
 
 				sscanf(message, "%*d %d %d %d %d", &p1, &p2, &p3, &p4);
-				std::cout << "Received : " << message << std::endl;
-				std::cout << "Button : " << p1 << std::endl;
-				std::cout << "State : " << p2 << std::endl;
-				std::cout << "X : " << p3 << std::endl;
-				std::cout << "Y : " << p4 << std::endl;
 				cb_MH(p1, p2, p3, p4); 
 				break;
 				
@@ -201,7 +196,7 @@ void GameFramework::removeSprite(GFSprite &s)
 	/* else WHERE IS YOUR GOD NOW? */
 };
 
-GFText& GameFramework::createTextFromAsset(std::string aname, int size, int x, int y)
+GFText& GameFramework::createTextFromAsset(std::string aname, int x, int y)
 {
 	/* IF WE HAVE ENOUGH TEXT OBJECTS ALREADY, STOP HERE */
 	if (gft_count >= GFT_MAX)
@@ -215,7 +210,7 @@ GFText& GameFramework::createTextFromAsset(std::string aname, int size, int x, i
 	{ std::cerr << "Malformed Asset Name: " << aname << std::endl; return (GFText&)GFText::null; };
 
 	/* CREATE THE MESSAGE BUFFER TO SEND THE DATA TO THE FRAMEWORK */
-	sprintf(_msgBuffer, "%d %d %d %d %d %s", TEXT_CREATE_FROM_ASSET, gfti, size, x, y, aname.c_str());
+	sprintf(_msgBuffer, "%d %d %d %d %s", TEXT_CREATE_FROM_ASSET, gfti, x, y, aname.c_str());
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
 	sendMessage();
@@ -234,7 +229,7 @@ GFText& GameFramework::createTextFromAsset(std::string aname, int size, int x, i
 	return _gft.back();
 }
 
-GFText& GameFramework::createTextFromString(std::string str, int size, int x, int y)
+GFText& GameFramework::createTextFromString(std::string str, int x, int y)
 {
 	/* IF WE HAVE ENOUGH TEXT OBJECTS ALREADY, STOP HERE */
 	if (gft_count >= GFT_MAX)
@@ -244,7 +239,7 @@ GFText& GameFramework::createTextFromString(std::string str, int size, int x, in
 	};
 
 	/* CREATE THE MESSAGE BUFFER TO SEND THE DATA TO THE FRAMEWORK */
-	sprintf(_msgBuffer, "%d %d %d %d %d %s", TEXT_CREATE_FROM_STRING, gfti, size, x, y, str.c_str());
+	sprintf(_msgBuffer, "%d %d %d %d %d %s", TEXT_CREATE_FROM_STRING, gfti, str.length(), x, y, str.c_str());
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
 	sendMessage();
@@ -281,6 +276,46 @@ void GameFramework::removeText(GFText &t)
 		_gft.remove(t);
 	}
 	/* else WHERE IS YOUR GOD NOW? */
+};
+
+void GameFramework::setTextSize(GFText &t, int size)
+{
+	/* SOMETHING IS TERRIBLY WRONG IF THIS CHECK FAILS */
+	if (_index_table[t._ref] == INDEX_TAKEN)
+	{
+		/* INFORM THE FRAMEWORK */
+		sprintf(_msgBuffer, "%d %d %d", TEXT_SIZE_CHANGE, t._ref, size);
+
+		/* SEND THE MESSAGE TO THE FRAMEWORK */
+		sendMessage();
+	}
+	/* else WHERE IS YOUR GOD NOW? */
+};
+
+void GameFramework::setTextColor(GFText &t, int r, int g, int b)
+{
+	/* SOMETHING IS TERRIBLY WRONG IF THIS CHECK FAILS */
+	if (_index_table[t._ref] == INDEX_TAKEN)
+	{
+		/* INFORM THE FRAMEWORK */
+		sprintf(_msgBuffer, "%d %d %d %d %d", TEXT_COLOR_CHANGE, t._ref, r, g, b);
+
+		/* SEND THE MESSAGE TO THE FRAMEWORK */
+		sendMessage();
+	}
+};
+
+void GameFramework::setTextBGColor(GFText &t, int r, int g, int b)
+{
+	/* SOMETHING IS TERRIBLY WRONG IF THIS CHECK FAILS */
+	if (_index_table[t._ref] == INDEX_TAKEN)
+	{
+		/* INFORM THE FRAMEWORK */
+		sprintf(_msgBuffer, "%d %d %d %d %d", TEXT_BGCOLOR_CHANGE, t._ref, r, g, b);
+
+		/* SEND THE MESSAGE TO THE FRAMEWORK */
+		sendMessage();
+	}
 };
 
 GFAudio& GameFramework::createAudio(std::string aname)

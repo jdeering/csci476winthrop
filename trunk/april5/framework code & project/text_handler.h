@@ -25,8 +25,11 @@ PUBLIC FUNCTIONS
 					using a string specified in the XML text asset reference file
 	bool ChangeText(string refName, string textString) - changes the string of the text object at key refName
 	bool RemoveText(string refName) - removes the text object at key refName from the container
-	bool ShowText(string refName, int setVisible, BITMAP *bmp) -
-	void SetTextPosition(string refName, int x, int y) - 
+	bool ShowText(string refName, int setVisible, BITMAP *bmp) - displays the referenced text object
+	void SetTextPosition(string refName, int x, int y) - changes the x,y position of the text object
+	void SetSize(std::string refName, int sz) - changes the pixel size of the text object
+	void SetColor(std::string refName, int r, int g, int b) - changes the foreground color of the text object
+	void SetBackgroundColor(std::string refName, int r, int g, int b) - changes the background color of the text object
 	void SetTTS(bool TTS) - sets the text-to-speech flag
 	void ShowAllVisible(BITMAP* dest) - displays all visible text objects on the dest BITMAP
 
@@ -53,7 +56,10 @@ public:
 	bool ChangeText(std::string refName, std::string textString);
 	bool RemoveText(std::string refName);
 	bool ShowText(std::string refName, int setVisible, BITMAP *bmp);
-	void SetTextPosition(std::string refName, int x, int y);
+	void SetTextPosition(std::string refName, int x, int y);	
+	void SetSize(std::string refName, int sz);
+	void SetColor(std::string refName, int r, int g, int b);
+	void SetBackgroundColor(std::string refName, int r, int g, int b);
 	void SetTTS(bool TTS);
 	void ShowAllVisible(BITMAP* dest);
 };

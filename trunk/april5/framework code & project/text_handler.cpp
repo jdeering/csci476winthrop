@@ -177,7 +177,10 @@ bool TextHandler::ShowText(std::string refName, int setVisible, BITMAP *bmp)
 ******************************************************/
 void TextHandler::SetTextPosition(std::string refName, int x, int y)
 {
-	text[refName].SetPosition(x, y);
+	if(text.count(refName) > 0)
+		text[refName].SetPosition(x, y);
+	else
+		allegro_message("The text object \"%s\" does not exist.", refName.c_str());
 }
 
 /******************************************************
@@ -200,7 +203,10 @@ void TextHandler::SetTTS(bool TTS)
 ******************************************************/
 void TextHandler::ReadText(std::string refName)
 {
-	text[refName].ReadText();
+	if(text.count(refName) > 0)
+		text[refName].ReadText();
+	else
+		allegro_message("The text object \"%s\" does not exist.", refName.c_str());
 }
 
 /******************************************************
@@ -214,4 +220,50 @@ void TextHandler::ShowAllVisible(BITMAP* dest)
 	{
 		i->second.ShowText(readEnabled, dest);
 	}
+}
+
+/******************************************************
+	Changes the pixel size of the text object for display.
+
+	@param refName The key value for the text object.
+	@param sz The pixel size for the text object.	
+******************************************************/
+void TextHandler::SetSize(std::string refName, int sz)
+{
+	if(text.count(refName) > 0)
+		text[refName].SetSize(sz);
+	else
+		allegro_message("The text object \"%s\" does not exist.", refName.c_str());
+}
+
+/******************************************************
+	Changes the foreground color of the text object for display.
+
+	@param refName The key value for the text object.
+	@param r The amount of red (0-255) in the RGB color.	
+	@param g The amount of green (0-255) in the RGB color.
+	@param b The amount of blue (0-255) in the RGB color.
+******************************************************/
+void TextHandler::SetColor(std::string refName, int r, int g, int b)
+{
+	if(text.count(refName) > 0)
+		text[refName].SetColor(r, g, b);
+	else
+		allegro_message("The text object \"%s\" does not exist.", refName.c_str());
+}
+
+/******************************************************
+	Changes the background color of the text object for display.
+
+	@param refName The key value for the text object.
+	@param r The amount of red (0-255) in the RGB color.	
+	@param g The amount of green (0-255) in the RGB color.
+	@param b The amount of blue (0-255) in the RGB color.
+******************************************************/
+void TextHandler::SetBackgroundColor(std::string refName, int r, int g, int b)
+{
+	if(text.count(refName) > 0)
+		text[refName].SetBackgroundColor(r, g, b);
+	else
+		allegro_message("The text object \"%s\" does not exist.", refName.c_str());
 }

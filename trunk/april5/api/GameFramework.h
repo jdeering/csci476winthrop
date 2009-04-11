@@ -32,6 +32,9 @@ enum PROTOCOL_OPCODES
 	TEXT_CHANGE_CONTENT			= 404,
 	TEXT_CHANGE_LOCATION		= 405,
 	TEXT_VISIBILITY_CHANGE		= 406,
+	TEXT_SIZE_CHANGE			= 407,
+	TEXT_COLOR_CHANGE			= 408,
+	TEXT_BGCOLOR_CHANGE			= 409,
 	
 	/* AUDIO OPCODES */
 	AUDIO_CREATE				= 501,
@@ -57,6 +60,8 @@ enum PROTOCOL_OPCODES
 		static int const INDEX_TABLE_SIZE = 1000;
 	
 	public:
+		GameFramework(){ SetNamedPipeHandleState(stdoutFW, PIPE_WAIT, NULL, NULL); } 
+		~GameFramework(){ CloseHandle(stdinFW); CloseHandle(stdoutFW); } 
 		
 		/* SCORE */
 		static unsigned long long int score;
@@ -90,9 +95,12 @@ enum PROTOCOL_OPCODES
 		
 		/* TEXT FUNCTIONS */
 		// string -> asset name, 
-		static GFText& createTextFromAsset(std::string, int, int, int);
-		static GFText& createTextFromString(std::string, int, int, int);
+		static GFText& createTextFromAsset(std::string, int, int);
+		static GFText& createTextFromString(std::string, int, int);
 		static void removeText(GFText&);
+		static void setTextSize(GFText&, int);
+		static void setTextColor(GFText&, int, int, int);
+		static void setTextBGColor(GFText&, int, int, int);
 		
 		/* AUDIO FUNCTIONS */
 		static GFAudio& createAudio(std::string);
