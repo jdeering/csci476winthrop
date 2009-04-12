@@ -2,16 +2,27 @@
 #include <string>
 #include <ctime>
 #include "../../../../api/GameFramework.h"
+#include "../classes/Board.h"
+#include "../classes/Dictionary.h"
+#include "../classes/Tile.h"
 using namespace std;
+
 enum GameStatus {CHOOSE_LEVEL, INSTRUCTIONS_1, INSTRUCTIONS_2, IN_GAME, DIALOGUE_EXIT, DIALOGUE_RESET};
 GameStatus currentState = CHOOSE_LEVEL;
+GFSprite * background;
+
+Dictionary * userDictionary;
+Board * gameBoard;
 
 void masterClickHandler(int, int, int, int);
 void introClickHandler(int x, int y);
 bool returnRunning();
 void showInstructions(int gameLevel, int page);
+void instructionsClickHandler(int x, int y, int instructionsPage);
+void beginGame();
 
 int main(int argc, char argv[]){
+
 	srand(time(0));
 
 	//display the beginning screen
@@ -20,7 +31,6 @@ int main(int argc, char argv[]){
 	currentState = CHOOSE_LEVEL;
 
 	//set the correct click handler
-	//this needs to be fixed to have more parameters
 	GameFramework::mouseFunc(masterClickHandler);
 	
 	//begin the game loop
@@ -28,7 +38,7 @@ int main(int argc, char argv[]){
 	
 	GameFramework::gameLoop();
 
-	return 0;
+	return 0;	
 }
 
 void masterClickHandler(int button, int state, int x, int y)
@@ -43,11 +53,11 @@ void masterClickHandler(int button, int state, int x, int y)
 		}
 		else if (currentState == INSTRUCTIONS_1)
 		{
-			//instructionsClickHandler(x, y, 1);
+			instructionsClickHandler(x, y, 1);
 		}
 		else if (currentState == INSTRUCTIONS_2)
 		{
-			//instructionsClickHandler (x, y, 2);
+			instructionsClickHandler (x, y, 2);
 		}
 		else if (currentState == IN_GAME)
 		{
@@ -66,6 +76,7 @@ void masterClickHandler(int button, int state, int x, int y)
 
 void introClickHandler(int x, int y)
 {
+	cout<<"intro"<<endl;
 	//this will hold the game level the user selects
 	int gameLevel = -1;
 
@@ -94,14 +105,22 @@ void introClickHandler(int x, int y)
 		//as long as they clicked on a level button
 		if (gameLevel != -1){
 			//go ahead and show instructions for that level
-
-			//construct the gameboard and the dictionary
-			cout<<"before dictionary"<<endl;
-			//makeDictionary();
-			cout<<"before board"<<endl;
-			//constructBoard(gameLevel);
-			cout<<"about to show instructions"<<endl;
+			cout<<"here in if"<<endl;
+			//make the dictionary
+			userDictionary = new Dictionary();
+			cout<<"after dictionary"<<endl;
+			//create background
+			background = &GameFramework::createSprite("background", 0, 0, 600, 600);
+			background->setVisible(false);
+			cout<<"after background"<<endl;
+			
+			//create gameboard
+			gameBoard = new Board(gameLevel, userDictionary);
+			cout<<"after gameboard"<<endl;
+				
+			//show instructions
 			showInstructions(gameLevel, 1);		//that 1 tells us to show the first page of the instructions
+			cout<<"after show"<<endl;
 		}
 	}
 }
@@ -114,6 +133,7 @@ bool returnRunning()
 
 void showInstructions(int gameLevel, int page)
 {
+	cout<<"here"<<endl;
 	//clear out the screen
 //	removeAllButGameboard();
 
@@ -157,4 +177,47 @@ void showInstructions(int gameLevel, int page)
 			currentState = INSTRUCTIONS_2;
 			break;
 	}
+}
+
+void instructionsClickHandler(int x, int y, int instructionsPage){
+	//if we're on the second instructions page, there's a begin game and previous page button
+	if (instructionsPage == 2){	
+		//if it's the begin game button	
+		if(x > 335 && x < 550 && y > 505 && y < 550)
+		{
+			beginGame();
+		}
+
+		//if it's the previous button
+		else if(x > 40 && x < 170 && y > 505 && y < 550)
+		{
+			showInstructions(gameBoard->returnLevel(), 1);
+		}
+	}
+
+	//if we're on the first instructions page, there's a next button
+	else{
+		//if it's the 'next' button
+		if (x > 420 && x < 545 && y > 505 && y < 550)
+		{
+			showInstructions(gameBoard->returnLevel(), 2);
+		}
+	}
+}
+
+void beginGame()
+{
+	//display the background
+	background->setVisible(true);
+
+	//display the gameboard
+	//gameBoard->displayBoard();
+
+	//display the user score and current word text fields
+	//GFText& createTextFromString(std::string, int, int, int);
+	//currentWord = &GameFramework::createTextFromString("current",7,535,40);
+	//gScore = &GameFramework::createTextFromString("0", 1, 490, 315);
+
+	//set the state of the game
+	currentState = IN_GAME;
 }

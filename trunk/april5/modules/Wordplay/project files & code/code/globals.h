@@ -10,16 +10,16 @@
 #include <string>
 using namespace std;
 
-Board * gameBoard;
-Dictionary * userDictionary;
+
+
 enum GameStatus {CHOOSE_LEVEL, INSTRUCTIONS_1, INSTRUCTIONS_2, IN_GAME, DIALOGUE_EXIT, DIALOGUE_RESET};
 GameStatus currentState = CHOOSE_LEVEL;
 vector <GFSprite> overlays;
 GFText * gScore;
 int score;
-GFText * currentWord;
 bool gameRunning = true;
-GFSprite * background;
+
+GFText * currentWord;
 
 void masterClickHandler(int, int, int, int);
 void introClickHandler(int x, int y);
