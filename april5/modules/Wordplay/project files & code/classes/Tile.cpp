@@ -30,10 +30,10 @@ Tile::Tile()
 	relatedSprite = &GameFramework::createSprite(assetName,0,0,50,50);
 
 	//make the sprite invisible
-	relatedSprite->setVisible(false);
+	//relatedSprite->setVisible(false);
 
 	//the letter is not yet selected
-	selected = false;
+	selected = 0;
 }
 
 //returns a letter that's been generated based on the probability of distribution

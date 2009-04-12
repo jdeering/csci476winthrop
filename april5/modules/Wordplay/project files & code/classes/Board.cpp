@@ -25,33 +25,20 @@ using namespace std;
 Board::Board(int lvl, Dictionary * d)
 {	
 	gameLevel = lvl;
-	/*userDictionary = d;
+	userDictionary = d;
 	int counter = 0;
 	for (int m = 0; m < 9; ++m)
 	{
 		for (int n = 0; n < 9; ++n)
 		{
+			counter++;
+			cout<<counter<<endl;
 			boardset[m][n].x = m;
 			boardset[m][n].y = n;
-		//	boardset[m][n].tileObj = new Tile();
-			//wait
-			//Sleep(1);
+			boardset[m][n].tileObj = new Tile();
+			Sleep(10);
 		}
 	}
-
-	//debugging
-	cout<<"hey, here's the array's pointers."<<endl;
-
-		for (int m = 0; m < 9; ++m)
-	{
-		for (int n = 0; n < 9; ++n)
-		{
-			cout<<"m: "<<m<<" n: "<<n<<" ptr: "<<(void * )boardset[m][n].tileObj<<endl;
-			//wait
-			Sleep(1);
-		}
-	}
-	*/
 }
 
 //displays the board

@@ -23,31 +23,7 @@ void dialogueClickHandler(int x, int y, void (*yesFunction)(), void (*noFunction
 
 
 
-void instructionsClickHandler(int x, int y, int instructionsPage){
-	//if we're on the second instructions page, there's a begin game and previous page button
-	if (instructionsPage == 2){	
-		//if it's the begin game button	
-		if(x > 335 && x < 550 && y > 505 && y < 550)
-		{
-			beginGame();
-		}
 
-		//if it's the previous button
-		else if(x > 40 && x < 170 && y > 505 && y < 550)
-		{
-			showInstructions(gameBoard->returnLevel(), 1);
-		}
-	}
-
-	//if we're on the first instructions page, there's a next button
-	else{
-		//if it's the 'next' button
-		if (x > 420 && x < 545 && y > 505 && y < 550)
-		{
-			showInstructions(gameBoard->returnLevel(), 2);
-		}
-	}
-}
 
 
 
@@ -137,39 +113,7 @@ void updateCurrentWord()
 	/////api
 }
 
-void constructBoard(int level)
-{
-	background = &GameFramework::createSprite("background", 0, 0, 600, 600);
-	background->setVisible(false);
 
-	//make the new gameboard dependent on the level passed in and the new user dictionary
-	gameBoard = new Board(level, userDictionary);
-}
-
-void makeDictionary()
-{
-	//make a new user dictionary
-	userDictionary = new Dictionary("dictionary.txt");
-}
-
-void beginGame()
-{
-	removeAllButGameboard();
-
-	//display the background
-	background->setVisible(true);
-
-	//display the gameboard
-	gameBoard->displayBoard();
-
-	//display the user score and current word text fields
-	//GFText& createTextFromString(std::string, int, int, int);
-	//currentWord = &GameFramework::createTextFromString("current",7,535,40);
-	//gScore = &GameFramework::createTextFromString("0", 1, 490, 315);
-
-	//set the state of the game
-	currentState = IN_GAME;
-}
 
 
 void exitGame()

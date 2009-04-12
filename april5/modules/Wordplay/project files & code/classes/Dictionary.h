@@ -22,18 +22,18 @@ bool search(string)
 
 #ifndef DICTIONARY_H
 #define DICTIONARY_H
-#include <vector>
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include <vector>
 
 class Dictionary
 {
 	public:
-		Dictionary(std::string);
+		Dictionary();
 		bool search(std::string);
 		
 	private:
-		std::vector <std::string> words;
+		std::vector<std::string> words;
 };
 #endif
