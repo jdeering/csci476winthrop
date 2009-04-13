@@ -247,6 +247,10 @@
 				RelativePath=".\Tile.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\wordplaycontrol.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -331,6 +335,10 @@
 			</File>
 			<File
 				RelativePath=".\Tile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\wordplaycontrol.h"
 				>
 			</File>
 		</Filter>

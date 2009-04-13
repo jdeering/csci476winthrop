@@ -28,11 +28,30 @@ Dictionary::Dictionary()
 		inFile>>s;
 	}
 	std::cout << "Dictionary Loaded." << std::endl;
+	std::cout << "size: "<<words.size()<<std::endl;
+
 }
 
 //returns whether the word is in the dictionary or not
 bool Dictionary::search(std::string s)
 {
-	// binary search through the vector to find out if there's a match using the STL algorithm for binary search
-	return binary_search(words.begin(), words.end(), s);
+//cout<<words.size()<<endl;
+return true;
+/*	// binary search through the vector to find out if there's a match using the STL algorithm for binary search
+	//return binary_search(words.begin(), words.back(), s);
+	//return binary_search(words.begin(), words.end() - 1, s);
+
+	//real binary search here
+	return bSearch(s, 0, words.size());
+	*/
+}
+
+bool Dictionary::bSearch(std::string s, int begin, int end)
+{
+	if (end == begin) return false;
+	if (s == words.at((end - begin) / 2)) return true;
+	else if (s < words.at((end - begin) / 2))
+		bSearch(s, begin, (end - begin) / 2);
+	else if (s > words.at((end - begin) / 2))
+		bSearch(s, (end - begin) / 2, end);
 }
