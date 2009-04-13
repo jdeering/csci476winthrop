@@ -12,9 +12,6 @@ All the function details are found here.
 
 #include "Board.h"
 #include <iostream>
-#include <ctime>
-
-
 
 //////////////////////////////
 //	construction & display	//
@@ -25,17 +22,13 @@ Board::Board(int lvl, Dictionary * d)
 {	
 	gameLevel = lvl;
 	userDictionary = d;
-	int counter = 0;
 	for (int m = 0; m < 9; ++m)
 	{
 		for (int n = 0; n < 9; ++n)
 		{
-			counter++;
-			std::cout<<counter<<std::endl;
 			boardset[m][n].x = m;
 			boardset[m][n].y = n;
 			boardset[m][n].tileObj = new Tile();
-			Sleep(10);
 		}
 	}
 }
@@ -48,9 +41,7 @@ void Board::displayBoard()
 	{
 		for (int j = 0; j < 9; ++j)
 		{
-			//std::cout<<"letter: "<<boardset[i][j].tileObj->getLetter()<<std::endl;
 			boardset[i][j].tileObj->showTile( (25 + 50 * i), (25 + 50 * j) );
-			Sleep(3);
 		}
 	}
 }
@@ -67,7 +58,7 @@ void Board::clickHandler(int x, int y)
 	x = int((x - (x % 50)) / 50);
 	y = y - 25;
 	y = int((y - (y % 50)) / 50);
-	std::cout<<"x: "<<x<<" y: "<<y<<std::endl;
+
 	//now that we have our x and y positions, we start dealing with the tile that's in that array subscript
 	//first, if it's selected, we need to deselect it and any letters that follow it in the word
 	if (boardset[x][y].tileObj->isSelected())
@@ -90,7 +81,6 @@ void Board::clickHandler(int x, int y)
 				//for levels one and two
 				case 1:
 				case 2:
-					std::cout<<"ptr to currentword.back: "<<(void *)currentWord.back()<<std::endl;
 					if((x > 0 && y > 0) && (&boardset[x-1][y-1] == (void *)currentWord.back()) ||
 						(x > 0) && (&boardset[x-1][y] == (void *)currentWord.back()) ||
 						(y > 0) && (&boardset[x][y-1] == (void *)currentWord.back()) ||
@@ -133,10 +123,10 @@ void Board::clickHandler(int x, int y)
 //add the letter passed in to the current word
 void Board::addLetter(TileItem & t)
 {
-	//currentWord.push_back(&t);
+	currentWord.push_back(&t);
 	
 	//change the word's appearance to indicate whether it's a submittable word or not
-	//checkWord();
+	checkWord();
 	changeAppearance();
 }
 
@@ -172,29 +162,20 @@ void Board::removeLetter(TileItem & toRemove)
 //change the appearance of the word on the basis of whether it's valid or not
 void Board::changeAppearance()
 {
-	
-/*
 	//if it's a word, highlight it as valid
 	if (isWord())
 	{
-		std::cout<<"highlighting"<<std::endl;
 		for (int i = 0; i < (signed)currentWord.size(); ++i)
 			if (currentWord.at(i)->tileObj->isSelected() != 2){
-				std::cout<<"bfor"<<std::endl;
 				currentWord.at(i)->tileObj->highlightValid();
-				std::cout<<"aft"<<std::endl;
 			}
-			Sleep(100);
 	}
 	//otherwise highlight it as not valid
 	else
 	{
-		std::cout<<"highlighting2"<<std::endl;
 		for (int i = 0; i < (signed)currentWord.size(); ++i)
 			if (currentWord.at(i)->tileObj->isSelected() != 1) currentWord.at(i)->tileObj->highlightInvalid();
-			Sleep(100);
 	}
-	*/
 }
 
 //checks the current word against the dictionary and submits if it's valid

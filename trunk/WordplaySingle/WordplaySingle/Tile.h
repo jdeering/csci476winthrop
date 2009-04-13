@@ -45,9 +45,6 @@ dropDown
 slideFromTop(x,y)
 	slides a tile down from the top of the screen to the specified coordinates
 
-= overload
-	allows for one tile to be assigned to another tile by copying over all its attributes
-
 */
 
 #ifndef TILE_H
