@@ -148,8 +148,6 @@ void SpriteHandler::DrawSprites(BITMAP *buffer)
 			sprites.erase(i);
 		}
 	}
-	if(temp)
-		destroy_bitmap(temp);
 }
 
 /******************************************************

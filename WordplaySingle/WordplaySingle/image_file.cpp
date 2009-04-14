@@ -7,6 +7,7 @@
 ImageFile::ImageFile()
 {
 	img = NULL;
+	frame = NULL;
 }
 
 /******************************************************
@@ -27,6 +28,7 @@ ImageFile::ImageFile(std::string file, int frame_count, int col_count, int w, in
 	numFrames = frame_count;
 	numCols = col_count;
 	img = load_bitmap(filePath.c_str(), NULL);
+	frame = create_bitmap(frameWidth, frameHeight);
 	if(!img)
 	{
 		allegro_message("Could not find image file reference \"%s\"", file.c_str());
@@ -39,8 +41,12 @@ ImageFile::ImageFile(std::string file, int frame_count, int col_count, int w, in
 ******************************************************/
 ImageFile::~ImageFile()
 {
+	scare_mouse();
 	if(img)
 		destroy_bitmap(img);
+	if(frame)
+		destroy_bitmap(frame);
+	unscare_mouse();
 }
 
 /******************************************************
@@ -57,13 +63,11 @@ BITMAP* ImageFile::GetFrame(int frameNum, int width, int height)
 	{
 		return img;	
 	}
-	BITMAP *retImg;
-	retImg = create_bitmap(frameWidth, frameHeight);
 	int s_x, s_y;
 	s_x = (frameNum % numCols) * frameWidth;
 	s_y = (frameNum / numCols) * frameHeight;	
-	stretch_blit(img, retImg, s_x, s_y, frameWidth, frameHeight, 0, 0, width, height);
-	return retImg;
+	stretch_blit(img, frame, s_x, s_y, frameWidth, frameHeight, 0, 0, width, height);
+	return frame;
 }
 
 /******************************************************

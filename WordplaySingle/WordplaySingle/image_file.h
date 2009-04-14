@@ -32,7 +32,7 @@ FUNCTIONS
 #ifndef _IMAGE_FILE_H
 #define _IMAGE_FILE_H
 
-#include "Allegro Headers/allegro.h"
+#include "allegro.h"
 #include <string>
 
 
@@ -42,7 +42,7 @@ private:
 	std::string filePath;
 	int frameWidth, frameHeight;
 	int numFrames, numCols;
-	BITMAP *img;
+	BITMAP *img, *frame;
 public:
 	ImageFile();
 	~ImageFile();
