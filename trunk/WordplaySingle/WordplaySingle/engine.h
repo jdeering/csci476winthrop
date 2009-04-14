@@ -54,10 +54,10 @@ public:
 	static Framework* Instance(std::string);
 	
 	/* MAIN GAME LOOP */
-	void MainLoop();
+	bool MainLoop();
 
 	/* MESSAGE LOOP FUNCTION */
-	void MessageLoop();
+	bool MessageLoop();
 
 	/* GET FILES FOR MENU ASSETS */
 	void LoadImages(std::string file_name);

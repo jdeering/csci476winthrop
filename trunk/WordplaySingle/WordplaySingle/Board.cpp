@@ -216,134 +216,39 @@ void Board::replaceLetters()
 		case 1:
 		case 2:
 		case 3:
-			//while there are still letters in the word
-			while (currentWord.size())
+			int spacesToDrop;
+
+			for(int i = 0; i < 9; i++) // go through each column
 			{
-				//start with the back
-				//check to see if it's at the top row
-				if (currentWord.back()->y == 0){
-					//if it's at the top row, pop it off the end of the word and replace it
-					Tile * nT;
-					nT = new Tile();
-					GameFramework::removeSprite(*boardset[currentWord.back()->x][currentWord.back()->y].tileObj->returnSprite());
-					boardset[currentWord.back()->x][0].tileObj = nT;
-					boardset[currentWord.back()->x][0].tileObj->showTile(currentWord.back()->x * 50 + 25, currentWord.back()->y * 50 + 25);
-
-					currentWord.pop_back();
-						
-				}
-				//if it's not at the top row, and the one above it is not selected
-				else if (boardset[currentWord.back()->x][currentWord.back()->y - 1].tileObj->isSelected() == 0)
+				spacesToDrop = 0; // reset spaces to drop for next row
+				for(int j = 8; j >= 0; j--) // each row bottom to top
 				{
-					//drop down the tiles above to replace it until we run into one that is also selected
-					bool finished = false;
-					for (int i = currentWord.back()->y - 1; i >= 0 && !finished; --i)
+					if(boardset[i][j].tileObj->isSelected())
 					{
-						//if it's not selected
-						if (boardset[currentWord.back()->x][i].tileObj->isSelected() == 0)
-						{
-							//temporarily holds x value
-							int x = currentWord.back()->x;
-						
-							//delete sprite
-							GameFramework::removeSprite(*boardset[currentWord.back()->x][i + 1].tileObj->returnSprite());
-					
-							//drop down
-							boardset[x][i + 1] = boardset[x][i];
-							boardset[x][i + 1].y += 1;
-							boardset[x][i + 1].tileObj->dropDown();
-							
-							currentWord.pop_back();
-
-							//add the one we just replaced to the back of the word to be replaced
-							//currentWord.push_back(&boardset[x][i]);
-
-
-						}
-						//if it is selected, we're done with this portion
-						else{
-							finished = true;
-							
-							//add the current item in question into the list of tile objects to be taken care of
-							currentWord.push_back(&boardset[currentWord.back()->x][i]);														
-						}
+						// Remove it
+						boardset[i][j].tileObj->unhighlight();
+						GameFramework::removeSprite(*boardset[i][j].tileObj->returnSprite());
+						spacesToDrop++; // add one to spacesToDrop
+					}
+					else // it's not selected, so drop it down spacesToDrop spaces
+					{
+						boardset[i][j + spacesToDrop] = boardset[i][j];
+						boardset[i][j + spacesToDrop].y += spacesToDrop;
+						boardset[i][j + spacesToDrop].tileObj->dropDown(spacesToDrop);
 					}
 				}
-				//if it's not at the top row, and the one above it is selected
-				else
-				{
-					//swap the elements in the array so that we deal with the one above it first,
-					//eventually it will "bubble up" to top
-					
-					//temporarily hold back item
-					TileItem * temp = currentWord.back();
-					currentWord.pop_back();
-					
-					//find the other item
-					bool finished = false;
-					for (int i = 0; i < currentWord.size() && !finished; ++i)
-					{
-						if (currentWord.at(i) == &boardset[currentWord.back()->x][currentWord.back()->y - 1])
-						{
-							finished = true;
-							currentWord.push_back(currentWord.at(i));
-							currentWord.at(i) = temp;
-						}
-					}
-
+				// spacesToDrop now also refers to how many new tiles need to be dropped into the
+				// current column, so drop that many tiles
+				for(int k = spacesToDrop - 1; k >= 0; k--)
+				{		
+					Tile *nT = new Tile();
+					boardset[i][k].tileObj = nT;
+					//boardset[i][k].tileObj->showTile(i * 50 + 25, 25);
+					boardset[i][k].tileObj->slideFromTop(i, k);
 				}
-
 			}
 
-	/*		//first, sort the word based on x-value
-			sortWord();
-
-			//now we have a sorted list with all the items in the same column grouped together
-			//while there are still letters in the word
-			while (currentWord.size())
-			{
-				vector <TileItem*> temp;
-
-				bool finished = false;
-				for (int i = 0; i < currentWord.size() && !finished; i++)
-				{		
-					//if we're done with this list we're finished
-					if (currentWord.size == 1 || (currentWord.at(i) != currentWord.at(i + 1))
-					{
-						temp.push_back(*currentWord.at(i));
-						finished = true;
-					}
-				}
-
-				//so now we have a list of all the tiles that are in one column
-				for (int i = 0; i < 
-
-			}*/
-
-
-		/*	while (currentWord.size())
-			{
-				//fill in from top
-				if (currentWord.back()->y > 0)
-				{
-					//drop blocks down until the only blank one remaining is at top
-					for (int i = 0; i < currentWord.back()->y; i++){
-						boardset[currentWord.back()->x][i + 1] = boardset[currentWord.back()->x][i];
-						boardset[currentWord.back()->x][i + 1].y += 1;
-						boardset[currentWord.back()->x][i].tileObj->dropDown();
-					}
-				}
-				Tile * nT;
-				nT = new Tile();
-			
-				nT->slideFromTop((currentWord.back()->x) * 50 + 25, (currentWord.back()->y) * 50 + 25);
-				
-				//fill in the top block with a new letter
-				boardset[currentWord.back()->x][0].tileObj = nT;
-
-				currentWord.pop_back();
-			}*/
-			
+			currentWord.clear();			
 			break;
 			
 			//for level four, the tiles are simply replaced with new tiles that are generated
@@ -413,11 +318,11 @@ int Board::returnLevel()
 void Board::sortWord()
 {
 	//selection sort: inefficient, but I understand it!
-	
+	int max = currentWord.size();
 	//sort according to y
-	for (int i = 0; i < currentWord.size(); ++i){
+	for (int i = 0; i < max; ++i){
 		int greatest = i;
-		for (int j = i + 1; j < currentWord.size(); ++j){
+		for (int j = i + 1; j < max; ++j){
 			if (currentWord.at(j)->x < currentWord.at(greatest)->x) greatest = j;
 		}
 		TileItem * t = currentWord.at(i);

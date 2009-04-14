@@ -192,11 +192,11 @@ void Framework::UpdateText()
 	textObjects.ShowAllVisible(buffer);
 }
 
-void Framework::MessageLoop()
+bool Framework::MessageLoop()
 {
 	if(key[KEY_ESC] || !active)
 	{
-		//KillModule();
+		//Kill Program
 		active = false;
 	}
 
@@ -210,14 +210,16 @@ void Framework::MessageLoop()
 		//GetMessages();		
 	//}
 	//CheckErrors();
+	return active;
 }
 
-void Framework::MainLoop()
+bool Framework::MainLoop()
 {
-	MessageLoop();
+	bool retVal = MessageLoop();	
 	acquire_screen();
 	blit(buffer, screen, 0, 0, 0, 0, 800, 600);
 	release_screen();
+	return retVal;
 }
 
 void Framework::CreateMessagePipes()

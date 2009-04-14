@@ -23,7 +23,7 @@ void GameFramework::gameFunc(bool (*f)())
 
 void GameFramework::gameLoop()
 //{ if (cb_GL) do { _getMessages();} while(cb_GL()); }
-{ if (cb_GL) do { ENGINE->MainLoop(); } while(cb_GL()); }
+{ if (cb_GL) do {  } while( cb_GL() && ENGINE->MainLoop() ); }
 
 void GameFramework::sendMessage()
 { std::cout << _msgBuffer << '\0' << std::endl; };
