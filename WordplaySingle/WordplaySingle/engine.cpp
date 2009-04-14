@@ -787,12 +787,19 @@ void Framework::RemoveText(char *msg)
 
 void Framework::ChangeText(char *msg)
 {	
-	int code;
-	std::string refName, string;
+	char c;
+	char *currStr = "";
+	int code, length;
+	std::string refName;
 	std::stringstream stream;
 	stream << msg; // put msg into stream
-	stream >> code >> refName;
-	string = stream.str();
+	stream >> code >> refName >> length;	
+
+	stream.get(c); // Get space
+
+	char *string = new char[length+1];
+
+	stream.getline(string, length+1);
 	textObjects.ChangeText(refName, string);
 }
 
