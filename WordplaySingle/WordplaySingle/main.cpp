@@ -100,7 +100,7 @@ void LaunchLogin()
    
    // If an error occurs, exit the application. 
    if ( ! bSuccess ) 
-      allegro_message("CreateProcess failed");
+      allegro_message("Login could not launch.");
    else 
    {
       // Close handles to the child process and its primary thread.

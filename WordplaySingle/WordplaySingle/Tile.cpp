@@ -111,19 +111,18 @@ void Tile::showTile(int x, int y)
 
 //this is used to slide a tile to the position just below it
 //so we just move down in the y direction 50 px
-void Tile::dropDown()
+void Tile::dropDown(int spacesToDrop)
 {
-	//final parameter is how much time it should take moving there in milliseconds
-	relatedSprite->moveTo(relatedSprite->_x, relatedSprite->_y + 50, 1000);
+	relatedSprite->moveTo(relatedSprite->_x, relatedSprite->_y + (50 * spacesToDrop), 20);
 }
 
 //this is used to slide a tile from the top of the screen
-//to the specified spot
+//to the specified spot x-column and y-row
 void Tile::slideFromTop(int x, int y)
 {
-	showTile(x, 0);
+	showTile(x * 50 + 25, 0);
 	//slide to position we want
-	relatedSprite->moveTo(x,y,500);
+	relatedSprite->moveTo(x * 50 + 25, y * 50 + 25, 15);
 
 }
 

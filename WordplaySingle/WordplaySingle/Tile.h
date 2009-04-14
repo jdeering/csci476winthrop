@@ -67,7 +67,7 @@ class Tile
 		void unhighlight();
 
 		void showTile(int, int);
-		void dropDown();
+		void dropDown(int);
 		void slideFromTop(int, int);
 
 		Tile & operator=(Tile & rhs);	
