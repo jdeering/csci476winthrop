@@ -5,6 +5,7 @@
 #include "dictionary.h"
 #include "GameFramework.h"
 #include "GFSprite.h"
+#include <sstream>
 
 enum GameStatus {CHOOSE_LEVEL, INSTRUCTIONS_1, INSTRUCTIONS_2, IN_GAME, DIALOGUE_EXIT, DIALOGUE_RESET};
 static GameStatus currentState;

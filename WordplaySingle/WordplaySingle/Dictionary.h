@@ -36,6 +36,5 @@ class Dictionary
 		
 	private:
 		std::vector<std::string> words;
-		bool bSearch(std::string, int, int);
 };
 #endif

@@ -257,7 +257,6 @@ void WordplayControl::start(){
 	currentState = CHOOSE_LEVEL;
 
 	//display the beginning screen
-	GameFramework::removeSprite(*overlay);
 	overlay = &GameFramework::createSprite("intro",0,0,600,600);
 
 	srand(time(0));
@@ -306,7 +305,14 @@ void WordplayControl::submitWord()
 	//add to the current score
 	score = score + wordScore;
 
+	//convert score to string
+	string strScore;
+	stringstream out;
+	out<<score;
+	strScore = out.str();
+
 	//update the score and current word
 //	updateScore();
-	currentWord->setContent("");
+	currentScore->setContent(strScore);
+	currentWord->setContent(gameBoard->returnWord());
 }
