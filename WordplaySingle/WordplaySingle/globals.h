@@ -6,8 +6,8 @@
 #define ALLEGRO_NO_MAGIC_MAIN
 
 // Allegro and Speech API
-#include "Allegro Headers/allegro.h"
-#include "Allegro Headers/winalleg.h"
+#include "allegro.h"
+#include "winalleg.h"
 #include "sapi.h"
 
 // STL paths

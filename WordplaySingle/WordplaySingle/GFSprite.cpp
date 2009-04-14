@@ -36,7 +36,9 @@ void GFSprite::setSpriteSize(int w, int h)
 
 void GFSprite::setSpritePosition(int x, int y)
 { 
-	sprintf(GameFramework::_msgBuffer, "%d %d %d %d", SPRITE_SET_LOCATION, _ref, x, y);  
+	sprintf(GameFramework::_msgBuffer, "%d %d %d %d", SPRITE_SET_LOCATION, _ref, x, y);
+	_x = x;
+	_y = y;
 	//GameFramework::sendMessage();
 	GameFramework::ENGINE->SetSpriteLocation(GameFramework::_msgBuffer);
 	_clrBuffer(GameFramework::_msgBuffer);
@@ -46,6 +48,8 @@ void GFSprite::moveTo(int x, int y, int speed)
 { 
 	sprintf(GameFramework::_msgBuffer, "%d %d %d %d %d", SPRITE_MOVE_TO, _ref, x, y, speed); 
 	//GameFramework::sendMessage();
+	_x = x;
+	_y = y;
 	GameFramework::ENGINE->MoveSprite(GameFramework::_msgBuffer);
 	_clrBuffer(GameFramework::_msgBuffer);
 };
