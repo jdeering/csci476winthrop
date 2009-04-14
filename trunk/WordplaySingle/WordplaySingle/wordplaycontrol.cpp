@@ -28,11 +28,12 @@ void WordplayControl::masterClickHandler(int button, int state, int x, int y)
 		}
 		else if (currentState == DIALOGUE_EXIT)
 		{
-//			dialogueClickHandler(x, y, exitGame, endDialogue);
+			dialogueClickHandler(x, y, exitGame, endDialogue);
 		}
 		else if (currentState == DIALOGUE_RESET)
 		{
-//			dialogueClickHandler(x,y, resetBoard, endDialogue);
+			cout<<"reset"<<endl;
+			dialogueClickHandler(x,y, reset, endDialogue);
 		}
 	}
 }
@@ -149,7 +150,7 @@ void WordplayControl::gameboardClickHandler(int x, int y){
 void WordplayControl::dialogueClickHandler(int x, int y, void (*yesFunction)(), void (*noFunction)())
 {
 	//if the user clicks yes
-	if (x > 50 && x < 200 && y < 400 && y > 450 )
+	if (x > 50 && x < 200 && y > 400 && y < 450 )
 	{
 		//call the yes function
 		yesFunction();
@@ -305,6 +306,39 @@ void WordplayControl::submitWord()
 	//add to the current score
 	score = score + wordScore;
 
+	updateScoreText();
+}
+
+void WordplayControl::endDialogue()
+{
+	GameFramework::removeSprite(*overlay);
+		
+	//reset the game state back to gameplay
+	currentState = IN_GAME;
+}
+
+void WordplayControl::reset()
+{
+	GameFramework::removeSprite(*overlay);
+
+	gameBoard->reset();
+	score = score - 50;
+	updateScoreText();
+
+	currentState = IN_GAME;
+}
+
+void WordplayControl::exitGame()
+{
+	//send the score back to the framework
+	/////api
+
+	//end game
+	running = false;
+}
+
+void WordplayControl::updateScoreText()
+{
 	//convert score to string
 	string strScore;
 	stringstream out;
@@ -312,7 +346,6 @@ void WordplayControl::submitWord()
 	strScore = out.str();
 
 	//update the score and current word
-//	updateScore();
 	currentScore->setContent(strScore);
 	currentWord->setContent(gameBoard->returnWord());
 }

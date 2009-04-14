@@ -86,6 +86,9 @@ class Board
 		
 		void clickHandler(int, int);
 		
+		void reset();
+
+		
 	private:
 		int gameLevel;
 
@@ -101,5 +104,6 @@ class Board
 	
 		void replaceLetters();
 		void sortWord();
+
 };
 #endif

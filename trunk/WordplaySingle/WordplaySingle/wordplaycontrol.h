@@ -36,11 +36,15 @@ class WordplayControl{
 
 		static void showInstructions(int gameLevel, int page);
 		static void beginGame();
+		
 		static void dialogueBox(string name);
+		static void endDialogue();
+		
 		static void submitWord();
+		static void updateScoreText();
+		static void reset();
 
-	
-
+		static void exitGame();
 };
 
 
