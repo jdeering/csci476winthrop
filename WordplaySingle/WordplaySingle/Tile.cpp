@@ -74,18 +74,6 @@ char Tile::generateLetter(){
 	else return 'z';
 }
 
-//overload of = opreator allows us to assign one tile to another
-Tile &Tile::operator= (Tile & rhs)
-{
-	letter = rhs.getLetter();
-	selected = rhs.isSelected();
-	relatedSprite = rhs.returnSprite();
-	return *this;
-}
-
-
-
-
 //////////////////////////////////
 //		attribute returning		//
 //////////////////////////////////
@@ -118,8 +106,7 @@ void Tile::showTile(int x, int y)
 	relatedSprite->setSpritePosition(x,y);
 	relatedSprite->setVisible(true);
 	//show the letter as unselected
-	relatedSprite->setSpriteFrame(0);
-
+	unhighlight();
 }
 
 //this is used to slide a tile to the position just below it
