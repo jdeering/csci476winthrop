@@ -100,5 +100,6 @@ class Board
 		void changeAppearance();
 	
 		void replaceLetters();
+		void sortWord();
 };
 #endif

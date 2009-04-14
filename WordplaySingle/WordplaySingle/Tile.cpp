@@ -127,7 +127,7 @@ void Tile::showTile(int x, int y)
 void Tile::dropDown()
 {
 	//final parameter is how much time it should take moving there in milliseconds
-	relatedSprite->moveTo(relatedSprite->_x, relatedSprite->_y + 50, 500);
+	relatedSprite->moveTo(relatedSprite->_x, relatedSprite->_y + 50, 1000);
 }
 
 //this is used to slide a tile from the top of the screen
