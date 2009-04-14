@@ -72,14 +72,14 @@ void WordplayControl::introClickHandler(int x, int y)
 			background = &GameFramework::createSprite("background", 0, 0, 600, 600);
 			background->setVisible(false);
 			
+			//make the dictionary
+			userDictionary = new Dictionary();
+			
 			//create gameboard
 			gameBoard = new Board(gameLevel, userDictionary);
 				
 			//show instructions
 			showInstructions(gameLevel, 1);		//that 1 tells us to show the first page of the instructions
-			
-			//make the dictionary
-			userDictionary = new Dictionary();
 		}
 	}
 }
@@ -122,7 +122,7 @@ void WordplayControl::inGameClickHandler(int x, int y)
 	else if(x > 475 && x < 575 && y > 525 && y < 575)
 	{
 		//let the board class handle it through this function
-		//submitWord();
+		submitWord();
 	}
 	
 	//if it's the reset board button
@@ -141,6 +141,9 @@ void WordplayControl::inGameClickHandler(int x, int y)
 void WordplayControl::gameboardClickHandler(int x, int y){
 	//handle inside of the gameboard
 	gameBoard->clickHandler(x,y);
+
+	//update the word if necessary
+	currentWord->setContent(gameBoard->returnWord());
 }
 
 void WordplayControl::dialogueClickHandler(int x, int y, void (*yesFunction)(), void (*noFunction)())
@@ -167,7 +170,7 @@ void WordplayControl::showInstructions(int gameLevel, int page)
 {
 
 	//clear out the screen
-	//GameFramework::removeSprite(overlay);
+	//GameFramework::removeSprite(&overlay);
 
 	std::string assetName;
 	//construct the asset name based on the game level and the page number
@@ -197,7 +200,8 @@ void WordplayControl::showInstructions(int gameLevel, int page)
 	}
 
 	//and display it
-	overlay->setVisible(false);
+	GameFramework::removeSprite((GFSprite &)overlay->overlay*);
+
 	overlay = &GameFramework::createSprite(assetName, 0, 0, 600, 600);
 
 	//set the game state to be in the instructions state
@@ -217,9 +221,8 @@ void WordplayControl::showInstructions(int gameLevel, int page)
 void WordplayControl::beginGame()
 {
 	//kill overlay
-	//overlay->~GFSprite();
-	//GameFramework::removeSprite((GFSprite &)overlay);
-	overlay->setVisible(false);
+	
+	GameFramework::removeSprite((GFSprite &)overlay->overlay*);
 
 	//display the background
 	background->setVisible(true);
@@ -228,9 +231,18 @@ void WordplayControl::beginGame()
 	gameBoard->displayBoard();
 
 	//display the user score and current word text fields
-	//GFText& createTextFromstd::string(std::string, int, int, int);
-	//currentWord = &GameFramework::createTextFromstd::string("current",7,535,40);
-	//gScore = &GameFramework::createTextFromstd::string("0", 1, 490, 315);
+	GFText & cw = GameFramework::createTextFromString("",40,535);
+	GameFramework::setTextSize(cw, 30);
+	GameFramework::setTextColor(cw, 0, 0, 0);
+	cw.setVisible(true);
+
+	currentWord = &cw;
+
+	GFText & cs = GameFramework::createTextFromString("0", 490, 315);
+	GameFramework::setTextSize(cs, 20);
+	GameFramework::setTextColor(cs, 0, 0, 0);
+
+	currentScore = &cs;
 
 	//set the state of the game
 	currentState = IN_GAME;
@@ -245,6 +257,7 @@ void WordplayControl::start(){
 	currentState = CHOOSE_LEVEL;
 
 	//display the beginning screen
+	GameFramework::removeSprite((GFSprite &)overlay->overlay*);
 	overlay = &GameFramework::createSprite("intro",0,0,600,600);
 
 	srand(time(0));
@@ -257,7 +270,6 @@ void WordplayControl::start(){
 	GameFramework::gameFunc(returnRunning);
 	
 	GameFramework::gameLoop();
-
 }
 
 
@@ -268,9 +280,6 @@ void WordplayControl::start(){
 
 void WordplayControl::dialogueBox(string name)
 {
-	//clear out the screen
-	//removeAllButGameboard();
-
 	string assetName;
 	//construct asset name based on the parameter passed in, and set the game state
 	if (name == "reset")
@@ -285,6 +294,19 @@ void WordplayControl::dialogueBox(string name)
 	}
 
 	//display the dialogue screen
-	//overlays.push_back(GameFramework::createSprite(assetName, 0, 0, 600, 600));
-	//overlays.back().setVisible(true);
+	overlay = &GameFramework::createSprite(assetName, 0,0,600,600);
+}
+
+void WordplayControl::submitWord()
+{
+	//submit and score the word
+	int wordScore;
+	wordScore = gameBoard->submitWord();
+
+	//add to the current score
+	score = score + wordScore;
+
+	//update the score and current word
+//	updateScore();
+	currentWord->setContent("");
 }
