@@ -9,9 +9,14 @@
 enum GameStatus {CHOOSE_LEVEL, INSTRUCTIONS_1, INSTRUCTIONS_2, IN_GAME, DIALOGUE_EXIT, DIALOGUE_RESET};
 static GameStatus currentState;
 static GFSprite * background;
-static Dictionary *userDictionary;
+static Dictionary * userDictionary;
 static Board * gameBoard;
 static GFSprite * overlay;
+static GFText * currentWord;
+static GFText * currentScore;
+
+static int score;
+
 static bool running;
 
 class WordplayControl{
@@ -31,6 +36,9 @@ class WordplayControl{
 		static void showInstructions(int gameLevel, int page);
 		static void beginGame();
 		static void dialogueBox(string name);
+		static void submitWord();
+
+	
 
 };
 

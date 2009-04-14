@@ -20,31 +20,26 @@ Dictionary::Dictionary()
 	ifstream inFile;
 	inFile.open("dictionary.txt");
 
-	std::cout << "Dictionary Loading..." << std::endl;
 	std::string s;
 	inFile>>s;
 	while (!inFile.eof()){
 		words.push_back(s);
 		inFile>>s;
 	}
-	std::cout << "Dictionary Loaded." << std::endl;
-	std::cout << "size: "<<words.size()<<std::endl;
-
 }
 
 //returns whether the word is in the dictionary or not
 bool Dictionary::search(std::string s)
 {
-	//cout<<words.size()<<endl;
-	return true;
-/*
+	cout<<"S: "<<s<<endl;
+
 	// binary search through the vector to find out if there's a match using the STL algorithm for binary search
-	return binary_search(words.begin(), words.back(), s);
+	//return binary_search(words.begin(), words.back(), s);
 	return binary_search(words.begin(), words.end(), s);
 
 	//real binary search here
-	return bSearch(s, 0, words.size());
-	*/
+	//return bSearch(s, 0, words.size());
+	
 }
 
 bool Dictionary::bSearch(std::string s, int begin, int end)

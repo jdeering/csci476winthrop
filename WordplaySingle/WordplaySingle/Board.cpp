@@ -22,6 +22,7 @@ Board::Board(int lvl, Dictionary * d)
 {	
 	gameLevel = lvl;
 	userDictionary = d;
+
 	for (int m = 0; m < 9; ++m)
 	{
 		for (int n = 0; n < 9; ++n)
@@ -124,6 +125,8 @@ void Board::clickHandler(int x, int y)
 void Board::addLetter(TileItem & t)
 {
 	currentWord.push_back(&t);
+
+	//update the current word
 	
 	//change the word's appearance to indicate whether it's a submittable word or not
 	checkWord();
@@ -165,6 +168,7 @@ void Board::changeAppearance()
 	//if it's a word, highlight it as valid
 	if (isWord())
 	{
+		cout<<"valid"<<endl;
 		for (int i = 0; i < (signed)currentWord.size(); ++i)
 			if (currentWord.at(i)->tileObj->isSelected() != 2){
 				currentWord.at(i)->tileObj->highlightValid();
@@ -173,6 +177,7 @@ void Board::changeAppearance()
 	//otherwise highlight it as not valid
 	else
 	{
+		cout<<"not"<<endl;
 		for (int i = 0; i < (signed)currentWord.size(); ++i)
 			if (currentWord.at(i)->tileObj->isSelected() != 1) currentWord.at(i)->tileObj->highlightInvalid();
 	}
@@ -216,14 +221,15 @@ void Board::replaceLetters()
 		case 3:
 			while (currentWord.size())
 			{
-				
+				cout<<"position: "<<currentWord.back()->x<<" "<<currentWord.back()->y<<endl;
 				//fill in from top
 				if (currentWord.back()->y > 0)
 				{
 					//drop blocks down until the only blank one remaining is at top
 					for (int i = 0; i < currentWord.back()->y; i++){
-						boardset[currentWord.back()->x][currentWord.back()->y + i] = boardset[currentWord.back()->x][currentWord.back()->y + 1];
-						boardset[currentWord.back()->x][currentWord.back()->y + 1].tileObj->dropDown();
+						//boardset
+						//boardset[currentWord.back()->x][currentWord.back()->y + i] = boardset[currentWord.back()->x][currentWord.back()->y + 1];
+						//boardset[currentWord.back()->x][currentWord.back()->y + i].tileObj->dropDown();
 					}
 				}
 				Tile * nT;
@@ -276,7 +282,7 @@ std::string Board::returnWord()
 
 	//go through the vector of tiles, putting all the letters into a std::string
 	for (int i = 0; i < (signed)currentWord.size(); ++i){
-		currentString += currentWord.at(i)->tileObj->getLetter();
+		currentString += char(currentWord.at(i)->tileObj->getLetter() - 32);
 	}
 
 	//return the resultant std::string
