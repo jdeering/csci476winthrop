@@ -168,7 +168,6 @@ void Board::changeAppearance()
 	//if it's a word, highlight it as valid
 	if (isWord())
 	{
-		cout<<"valid"<<endl;
 		for (int i = 0; i < (signed)currentWord.size(); ++i)
 			if (currentWord.at(i)->tileObj->isSelected() != 2){
 				currentWord.at(i)->tileObj->highlightValid();
@@ -177,7 +176,6 @@ void Board::changeAppearance()
 	//otherwise highlight it as not valid
 	else
 	{
-		cout<<"not"<<endl;
 		for (int i = 0; i < (signed)currentWord.size(); ++i)
 			if (currentWord.at(i)->tileObj->isSelected() != 1) currentWord.at(i)->tileObj->highlightInvalid();
 	}
@@ -219,9 +217,35 @@ void Board::replaceLetters()
 		case 1:
 		case 2:
 		case 3:
+
+			//first, sort the word based on x-value
+			sortWord();
+
+			//now we have a sorted list with all the items in the same column grouped together
+			//while there are still letters in the word
 			while (currentWord.size())
 			{
+				vector <TileItem*> temp;
 
+				bool finished = false;
+				for (int i = 0; i < currentWord.size() && !finished; i++)
+				{		
+					//if we're done with this list we're finished
+					if (currentWord.size == 1 || (currentWord.at(i) != currentWord.at(i + 1))
+					{
+						temp.push_back(*currentWord.at(i));
+						finished = true;
+					}
+				}
+
+				//so now we have a list of all the tiles that are in one column
+				for (int i = 0; i < 
+
+			}
+
+
+		/*	while (currentWord.size())
+			{
 				//fill in from top
 				if (currentWord.back()->y > 0)
 				{
@@ -241,7 +265,7 @@ void Board::replaceLetters()
 				boardset[currentWord.back()->x][0].tileObj = nT;
 
 				currentWord.pop_back();
-			}
+			}*/
 			
 			break;
 			
@@ -250,7 +274,9 @@ void Board::replaceLetters()
 			while (currentWord.size()){
 				Tile * nT;
 				nT = new Tile();
+				GameFramework::removeSprite(*boardset[currentWord.back()->x][currentWord.back()->y].tileObj->returnSprite());
 				boardset[currentWord.back()->x][currentWord.back()->y].tileObj = nT;
+				boardset[currentWord.back()->x][currentWord.back()->y].tileObj->showTile(currentWord.back()->x * 50 + 25, currentWord.back()->y * 50 + 25);
 
 				currentWord.pop_back();
 			}
@@ -261,7 +287,20 @@ void Board::replaceLetters()
 //checks the word to see if it's in the dictionary or not
 void Board::checkWord()
 {
-	validWord = userDictionary->search(returnWord());
+	//check for length requirements
+	switch (gameLevel){
+		case 1:
+		case 2:
+			if (returnWord().length() < 2) validWord = false;
+			else validWord = userDictionary->search(returnWord());
+		break;
+
+		case 3:
+		case 4:
+			if (returnWord().length() < 3) validWord = false;
+			else validWord = userDictionary->search(returnWord());
+		break;
+	}
 }
 
 //////////////////////////////
@@ -292,4 +331,19 @@ std::string Board::returnWord()
 int Board::returnLevel()
 {
 	return gameLevel;
+}
+
+void Board::sortWord(){
+	//selection sort: inefficient, but I understand it!
+	
+	//sort according to y
+	for (int i = 0; i < currentWord.size(); ++i){
+		int greatest = i;
+		for (int j = i + 1; j < currentWord.size(); ++j){
+			if (currentWord.at(j)->x < currentWord.at(greatest)->x) greatest = j;
+		}
+		TileItem * t = currentWord.at(i);
+		currentWord.at(i) = currentWord.at(greatest);
+		currentWord.at(greatest) = t;
+	}
 }
