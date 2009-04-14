@@ -228,13 +228,14 @@ void Board::replaceLetters()
 					//drop blocks down until the only blank one remaining is at top
 					for (int i = 0; i < currentWord.back()->y; i++){
 						boardset[currentWord.back()->x][i + 1] = boardset[currentWord.back()->x][i];
+						boardset[currentWord.back()->x][i + 1].y += 1;
 						boardset[currentWord.back()->x][i].tileObj->dropDown();
 					}
 				}
 				Tile * nT;
 				nT = new Tile();
 			
-				//nT->slideFromTop((currentWord.back()->x) * 50 + 25, (currentWord.back()->y) * 50 + 25);
+				nT->slideFromTop((currentWord.back()->x) * 50 + 25, (currentWord.back()->y) * 50 + 25);
 				
 				//fill in the top block with a new letter
 				boardset[currentWord.back()->x][0].tileObj = nT;

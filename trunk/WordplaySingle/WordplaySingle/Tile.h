@@ -75,7 +75,7 @@ class Tile
 	private:
 		char letter;
 		int selected;
-		GFSprite * relatedSprite;
+		GFSprite *relatedSprite;
 
 		char generateLetter();
 };
