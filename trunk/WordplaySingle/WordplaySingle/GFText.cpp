@@ -28,7 +28,7 @@ void GFText::setVisible(bool f)
 
 void GFText::setContent(std::string content)
 { 
-	sprintf(GameFramework::_msgBuffer, "%d %d %s", TEXT_CHANGE_CONTENT, _ref, content.c_str());  
+	sprintf(GameFramework::_msgBuffer, "%d %d %d %s", TEXT_CHANGE_CONTENT, _ref, content.length(),content.c_str());  
 	//GameFramework::sendMessage();
 	GameFramework::ENGINE->ChangeText(GameFramework::_msgBuffer);
 	_clrBuffer(GameFramework::_msgBuffer);

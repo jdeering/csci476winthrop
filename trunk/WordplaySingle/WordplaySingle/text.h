@@ -37,6 +37,7 @@ FUNCTIONS
 
 #include "globals.h"
 
+
 class Text
 {
 private:	
