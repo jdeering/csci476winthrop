@@ -115,7 +115,6 @@ GFSprite * Tile::returnSprite(){
 //used to show the tile initially
 void Tile::showTile(int x, int y)
 {
-	std::cout<<"show at "<<x<<","<<y<<std::endl;
 	relatedSprite->setSpritePosition(x,y);
 	relatedSprite->setVisible(true);
 	//show the letter as unselected
@@ -145,14 +144,14 @@ void Tile::slideFromTop(int x, int y)
 void Tile::highlightValid()
 {
 	selected = 2;
-	relatedSprite->setSpriteFrame(1);
+	relatedSprite->setSpriteFrame(2);
 }
 
 //show the tile as highlighted and not a part of a valid word
 void Tile::highlightInvalid()
 {
 	selected = 1;
-	relatedSprite->setSpriteFrame(2);
+	relatedSprite->setSpriteFrame(1);
 }
 
 //show the tile as unselected
