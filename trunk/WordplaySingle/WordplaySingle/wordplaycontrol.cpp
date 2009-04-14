@@ -200,7 +200,7 @@ void WordplayControl::showInstructions(int gameLevel, int page)
 	}
 
 	//and display it
-	GameFramework::removeSprite((GFSprite &)overlay->overlay*);
+	GameFramework::removeSprite(*overlay);
 
 	overlay = &GameFramework::createSprite(assetName, 0, 0, 600, 600);
 
@@ -222,7 +222,7 @@ void WordplayControl::beginGame()
 {
 	//kill overlay
 	
-	GameFramework::removeSprite((GFSprite &)overlay->overlay*);
+	GameFramework::removeSprite(*overlay);
 
 	//display the background
 	background->setVisible(true);
@@ -257,7 +257,7 @@ void WordplayControl::start(){
 	currentState = CHOOSE_LEVEL;
 
 	//display the beginning screen
-	GameFramework::removeSprite((GFSprite &)overlay->overlay*);
+	GameFramework::removeSprite(*overlay);
 	overlay = &GameFramework::createSprite("intro",0,0,600,600);
 
 	srand(time(0));
