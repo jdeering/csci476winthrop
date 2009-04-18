@@ -1,0 +1,295 @@
+<HTML>
+<HEAD>
+<TITLE>
+text_handler.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#include</font> <font color="maroon">"text_handler.h"</font>
+
+<font color="green">/******************************************************
+    Default Constructor
+******************************************************/</font>
+TextHandler<font color="black">:</font><font color="black">:</font>TextHandler<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    numObjects <font color="black">=</font> <font color="maroon">0</font>;
+    readEnabled <font color="black">=</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Default Destructor
+******************************************************/</font>
+TextHandler<font color="black">:</font><font color="black">:</font>~TextHandler<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>       
+    text.clear<font color="black">(</font><font color="black">)</font>;
+    numObjects <font color="black">=</font> <font color="maroon">0</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Adds a text object at the specified key value or updates
+    the object currently at that key value.
+
+    @param refName The key value for the text object.
+    @param textstd::string The std::string of the text object.
+    @param x The x coordinate for the text object's position.
+    @param y The y coordinate for the text object's position.
+    @param visible &#60;code&#62;true&#60;/code&#62; if the text object is to be displayed, &#60;code&#62;false&#60;/code&#62; if it only exists to be read
+    @return &#60;code&#62;true&#60;/code&#62; if the text object is successfully added, &#60;code&#62;false&#60;/code&#62; otherwise
+******************************************************/</font>
+<font color="blue">bool</font> TextHandler<font color="black">:</font><font color="black">:</font>AddText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, std<font color="black">:</font><font color="black">:</font>string textString, <font color="blue">int</font> x, <font color="blue">int</font> y, <font color="blue">bool</font> visible<font color="black">)</font>
+<font color="black">{</font>
+    Text temp;
+    <font color="blue">if</font><font color="black">(</font>numObjects <font color="black">&#60;</font> MAXFILES<font color="black">)</font>
+    <font color="black">{</font>
+        temp.LoadText<font color="black">(</font>textString, x, y, visible<font color="black">)</font>;
+        text<font color="black">[</font>refName<font color="black">]</font> <font color="black">=</font> temp;
+        numObjects<font color="black">+</font><font color="black">+</font>;
+        <font color="blue">return</font> <font color="blue">true</font>;
+    <font color="black">}</font>
+    allegro_message<font color="black">(</font><font color="maroon">"Text Object %s could not be added."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="blue">return</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Adds a text object at the specified key value or updates
+    the object currently at that key value.
+
+    @param refName The key value for the text object.
+    @param instd::string The std::string of the text object.
+    @param x The x coordinate for the text object's position.
+    @param y The y coordinate for the text object's position.
+    @param visible &#60;code&#62;true&#60;/code&#62; if the text object is to be displayed, &#60;code&#62;false&#60;/code&#62; if it only exists to be read
+    @return &#60;code&#62;true&#60;/code&#62; if the text object is successfully added, &#60;code&#62;false&#60;/code&#62; otherwise
+******************************************************/</font>
+<font color="blue">bool</font> TextHandler<font color="black">:</font><font color="black">:</font>AddText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">const</font> <font color="blue">char</font><font color="black">*</font> inString, <font color="blue">int</font> x, <font color="blue">int</font> y, <font color="blue">bool</font> visible<font color="black">)</font>
+<font color="black">{</font>
+    Text temp;
+    std<font color="black">:</font><font color="black">:</font>string textString <font color="black">=</font> inString;
+    <font color="blue">if</font><font color="black">(</font>numObjects <font color="black">&#60;</font> MAXFILES<font color="black">)</font>
+    <font color="black">{</font>
+        temp.LoadText<font color="black">(</font>textString, x, y, visible<font color="black">)</font>;
+        text<font color="black">[</font>refName<font color="black">]</font> <font color="black">=</font> temp;
+        numObjects<font color="black">+</font><font color="black">+</font>;
+        <font color="blue">return</font> <font color="blue">true</font>;
+    <font color="black">}</font>
+    allegro_message<font color="black">(</font><font color="maroon">"Text Object %s could not be added."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="blue">return</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Adds a text object at the specified key value or updates
+    the object currently at that key value using the std::string
+    specified at the given asset name in the text XML file.
+
+    @param refName The key value for the text object.
+    @param assetName The asset name at which to get the std::string for the text object.
+    @param x The x coordinate for the text object's position.
+    @param y The y coordinate for the text object's position.
+    @param visible &#60;code&#62;true&#60;/code&#62; if the text object is to be displayed, &#60;code&#62;false&#60;/code&#62; if it only exists to be read
+    @return &#60;code&#62;true&#60;/code&#62; if the text object is successfully added, &#60;code&#62;false&#60;/code&#62; otherwise
+******************************************************/</font>
+<font color="blue">bool</font> TextHandler<font color="black">:</font><font color="black">:</font>AddTextByRef<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, std<font color="black">:</font><font color="black">:</font>string assetName, <font color="blue">int</font> x, <font color="blue">int</font> y, <font color="blue">bool</font> visible<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>numObjects <font color="black">&#60;</font> MAXFILES<font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">if</font><font color="black">(</font>refName <font color="black">!</font><font color="black">=</font> assetName<font color="black">)</font>
+        <font color="black">{</font>
+            text<font color="black">[</font>refName<font color="black">]</font> <font color="black">=</font> text<font color="black">[</font>assetName<font color="black">]</font>;
+            numObjects<font color="black">+</font><font color="black">+</font>;
+            <font color="blue">return</font> <font color="blue">true</font>;
+        <font color="black">}</font>
+        <font color="blue">else</font>
+        <font color="black">{</font>
+            allegro_message<font color="black">(</font><font color="maroon">"Text Object reference already exists."</font><font color="black">)</font>;
+            <font color="blue">return</font> <font color="blue">false</font>;
+        <font color="black">}</font>
+    <font color="black">}</font>
+    allegro_message<font color="black">(</font><font color="maroon">"Text Object %s could not be added."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="blue">return</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Changes the associated std::string for the text object
+    at the specified key value.
+
+    @param refName The key value for the text object.
+    @param textstd::string The new std::string for the text object.
+    @return &#60;code&#62;true&#60;/code&#62; if the text object is successfully updated, &#60;code&#62;false&#60;/code&#62; otherwise
+******************************************************/</font>
+<font color="blue">bool</font> TextHandler<font color="black">:</font><font color="black">:</font>ChangeText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, std<font color="black">:</font><font color="black">:</font>string textString<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>text.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+    <font color="black">{</font>
+        text<font color="black">[</font>refName<font color="black">]</font>.ChangeText<font color="black">(</font>textString<font color="black">)</font>;
+        <font color="blue">return</font> <font color="blue">true</font>;
+    <font color="black">}</font>
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"The text object \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        <font color="blue">return</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Removes the text object at the specified key value.
+
+    @param refName The key value for the text object.
+    @return &#60;code&#62;true&#60;/code&#62; if the text object is successfully removed, &#60;code&#62;false&#60;/code&#62; otherwise
+******************************************************/</font>
+<font color="blue">bool</font> TextHandler<font color="black">:</font><font color="black">:</font>RemoveText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, Text<font color="black">&#62;</font><font color="black">:</font><font color="black">:</font>iterator loc <font color="black">=</font> text.find<font color="black">(</font>refName<font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font>numObjects <font color="black">&#62;</font> <font color="maroon">0</font> <font color="black">&</font><font color="black">&</font> loc <font color="black">!</font><font color="black">=</font> text.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        text.erase<font color="black">(</font>loc<font color="black">)</font>;
+        numObjects<font color="black">-</font><font color="black">-</font>;
+        <font color="blue">return</font> <font color="blue">true</font>;
+    <font color="black">}</font>
+    allegro_message<font color="black">(</font><font color="maroon">"Text Object %s could not be removed."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="blue">return</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Displays and/or reads the text object at the specified key value onto
+    the specified BITMAP.
+
+    @param refName The key value for the text object.
+    @param setVisible Zero if the std::string should only be read, non-zero to display and read.
+    @param bmp The BITMAP on which to display the text.
+    @return &#60;code&#62;true&#60;/code&#62; if the text object is successfully displayed, &#60;code&#62;false&#60;/code&#62; otherwise
+******************************************************/</font>
+<font color="blue">bool</font> TextHandler<font color="black">:</font><font color="black">:</font>ShowText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> setVisible, BITMAP <font color="black">*</font>bmp<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>text.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">if</font><font color="black">(</font>setVisible<font color="black">)</font>
+            text<font color="black">[</font>refName<font color="black">]</font>.ShowText<font color="black">(</font>readEnabled, bmp<font color="black">)</font>;
+        <font color="blue">if</font><font color="black">(</font>readEnabled<font color="black">)</font>
+            ReadText<font color="black">(</font>refName<font color="black">)</font>;
+        <font color="blue">return</font> <font color="blue">true</font>;
+    <font color="black">}</font>
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"The text object \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        <font color="blue">return</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets a new position for the text object at the specified key value.
+
+    @param refName The key value for the text object.
+    @param x The new x coordinate to display the text at.
+    @param y The new y coordinate to display the text at.   
+******************************************************/</font>
+<font color="blue">void</font> TextHandler<font color="black">:</font><font color="black">:</font>SetTextPosition<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> x, <font color="blue">int</font> y<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>text.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        text<font color="black">[</font>refName<font color="black">]</font>.SetPosition<font color="black">(</font>x, y<font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"The text object \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets a new position for the text object at the specified key value.
+
+    @param refName The key value for the text object.
+    @param x The new x coordinate to display the text at.
+    @param y The new y coordinate to display the text at.   
+******************************************************/</font>
+<font color="blue">void</font> TextHandler<font color="black">:</font><font color="black">:</font>SetTTS<font color="black">(</font><font color="blue">bool</font> TTS<font color="black">)</font>
+<font color="black">{</font>
+    readEnabled <font color="black">=</font> TTS;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Reads the std::string of the text object at the specified
+    key value.
+
+    @param refName The key value for the text object.   
+******************************************************/</font>
+<font color="blue">void</font> TextHandler<font color="black">:</font><font color="black">:</font>ReadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>text.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        text<font color="black">[</font>refName<font color="black">]</font>.ReadText<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"The text object \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Displays and/or reads all the text objects that are visible.
+
+    @param dest The Allegro BITMAP to display the text on.  
+******************************************************/</font>
+<font color="blue">void</font> TextHandler<font color="black">:</font><font color="black">:</font>ShowAllVisible<font color="black">(</font>BITMAP<font color="black">*</font> dest<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">for</font><font color="black">(</font>std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, Text<font color="black">&#62;</font><font color="black">:</font><font color="black">:</font>iterator i <font color="black">=</font> text.begin<font color="black">(</font><font color="black">)</font>; i <font color="black">!</font><font color="black">=</font> text.end<font color="black">(</font><font color="black">)</font>; <font color="black">+</font><font color="black">+</font>i<font color="black">)</font>
+    <font color="black">{</font>
+        i<font color="black">-</font><font color="black">&#62;</font>second.ShowText<font color="black">(</font>readEnabled, dest<font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Changes the pixel size of the text object for display.
+
+    @param refName The key value for the text object.
+    @param sz The pixel size for the text object.   
+******************************************************/</font>
+<font color="blue">void</font> TextHandler<font color="black">:</font><font color="black">:</font>SetSize<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> sz<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>text.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        text<font color="black">[</font>refName<font color="black">]</font>.SetSize<font color="black">(</font>sz<font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"The text object \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Changes the foreground color of the text object for display.
+
+    @param refName The key value for the text object.
+    @param r The amount of red (0-255) in the RGB color.    
+    @param g The amount of green (0-255) in the RGB color.
+    @param b The amount of blue (0-255) in the RGB color.
+******************************************************/</font>
+<font color="blue">void</font> TextHandler<font color="black">:</font><font color="black">:</font>SetColor<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> r, <font color="blue">int</font> g, <font color="blue">int</font> b<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>text.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        text<font color="black">[</font>refName<font color="black">]</font>.SetColor<font color="black">(</font>r, g, b<font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"The text object \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Changes the background color of the text object for display.
+
+    @param refName The key value for the text object.
+    @param r The amount of red (0-255) in the RGB color.    
+    @param g The amount of green (0-255) in the RGB color.
+    @param b The amount of blue (0-255) in the RGB color.
+******************************************************/</font>
+<font color="blue">void</font> TextHandler<font color="black">:</font><font color="black">:</font>SetBackgroundColor<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> r, <font color="blue">int</font> g, <font color="blue">int</font> b<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>text.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        text<font color="black">[</font>refName<font color="black">]</font>.SetBackgroundColor<font color="black">(</font>r, g, b<font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"The text object \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+
+<font color="green">/******************************************************
+    Changes the visibility of the text object.
+
+    @param refName The key for the text object.
+    @param vis The new visibilty. 0 for invisible, non-zero for visible.    
+******************************************************/</font>
+<font color="blue">void</font> TextHandler<font color="black">:</font><font color="black">:</font>SetVisible<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> vis<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>text.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        text<font color="black">[</font>refName<font color="black">]</font>.SetVisible<font color="black">(</font>vis<font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"The text object \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,85 @@
+<HTML>
+<HEAD>
+<TITLE>
+input.h
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">/*
+Jason Deering
+
+input.h
+
+Contains the Mouse and Keyboard classes to handle input.
+
+The Mouse class controls the state changes of the left and right mouse button.
+The Keyboard class controls the state changes of all keyboard keys.
+
+Mouse
+    DATA ITEMS  
+        int x - the current x position of the mouse on screen
+        int y - the current y position of the mouse on screen
+        bool leftPressed - the current pressed state of the left mouse button
+        bool rightPressed - the current pressed state of the right mouse button
+        BoundingBox pointer - a collidable BoundingBox to test collision with sprites
+
+    FUNCTIONS
+        void Update(int x, int y) - updates the x and y variables each tick to the current mouse position given by Allegro
+        bool StateChange(int button, int state, int x, int y) - returns true if the state of the mouse has changed
+                all parameters are by reference, so the button the state changed on, the new state, and the mouse's (x,y) position
+                are returned through the parameters
+        BoundingBox GetPointer() - returns the pointer BoundingBox reference
+        bool LeftClick(BoundingBox &box) - returns true if the left mouse button was clicked on top of the parameter BoundingBox
+        bool RightClick(BoundingBox &box) - returns true if the right mouse button was clicked on top of the parameter BoundingBox
+        bool LeftRelease(BoundingBox &box) - returns true if the left mouse button was released on top of the parameter BoundingBox
+        bool RightRelease(BoundingBox &box) - returns true if the right mouse button was released on top of the parameter BoundingBox
+    
+Keyboard
+    DATA ITEMS  
+        int pressed[KEY_MAX] - array of all keyboard key states (pressed or not pressed)
+    FUNCTIONS
+        bool StateChange(int &key, int &state) - returns true if a key's state has changed, the key and the new state are returned
+                                                    through the parameters
+*/</font>
+
+
+<font color="blue">#ifndef</font> _INPUT_H
+<font color="blue">#define</font> _INPUT_H
+
+<font color="blue">#include</font> <font color="maroon">"globals.h"</font>
+<font color="blue">#include</font> <font color="maroon">"collidable.h"</font>
+<font color="blue">#include</font> <font color="maroon">"sprite.h"</font>
+
+<font color="blue">class</font> Mouse
+<font color="black">{</font>
+<font color="blue">private</font><font color="black">:</font>
+    <font color="blue">int</font> x, y;
+    <font color="blue">bool</font> leftPressed, rightPressed;
+    BoundingBox pointer;
+<font color="blue">public</font><font color="black">:</font>
+    Mouse<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> Update<font color="black">(</font><font color="blue">int</font> <font color="black">&</font>x_, <font color="blue">int</font> <font color="black">&</font>y_<font color="black">)</font>;
+    <font color="blue">bool</font> StateChange<font color="black">(</font><font color="blue">int</font> <font color="black">&</font>button, <font color="blue">int</font> <font color="black">&</font>state, <font color="blue">int</font> <font color="black">&</font>x_, <font color="blue">int</font> <font color="black">&</font>y_<font color="black">)</font>;
+    BoundingBox GetPointer<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">bool</font> LeftClick<font color="black">(</font>BoundingBox <font color="black">&</font>box<font color="black">)</font>;
+    <font color="blue">bool</font> RightClick<font color="black">(</font>BoundingBox <font color="black">&</font>box<font color="black">)</font>;
+    <font color="blue">bool</font> LeftRelease<font color="black">(</font>BoundingBox <font color="black">&</font>box<font color="black">)</font>;
+    <font color="blue">bool</font> RightRelease<font color="black">(</font>BoundingBox <font color="black">&</font>box<font color="black">)</font>;
+<font color="black">}</font>;
+
+<font color="blue">class</font> Keyboard
+<font color="black">{</font>
+<font color="blue">private</font><font color="black">:</font>
+    <font color="blue">bool</font> pressed<font color="black">[</font>KEY_MAX<font color="black">]</font>;
+<font color="blue">public</font><font color="black">:</font>
+    Keyboard<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">bool</font> StateChange<font color="black">(</font><font color="blue">int</font> <font color="black">&</font>key, <font color="blue">int</font> <font color="black">&</font>state<font color="black">)</font>;
+<font color="black">}</font>;
+
+
+
+<font color="blue">#endif</font> 
+</PRE>
+</BODY>
+</HTML>

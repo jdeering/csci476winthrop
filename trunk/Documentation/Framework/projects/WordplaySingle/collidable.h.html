@@ -1,0 +1,62 @@
+<HTML>
+<HEAD>
+<TITLE>
+collidable.h
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">/*
+Jason Deering
+
+collidable.h
+
+This class is for use in the Framework.
+
+The BoundingBox class is used for collision detection of objects on the screen.
+
+DATA ITEMS
+    int width - current pixel width of the BoundingBox
+    int height - current pixel height of the BoundingBox
+    int x - current x position of the BoundingBox
+    int y - current y position of the BoundingBox
+
+FUNCTIONS
+    bool isColliding(const BoundingBox&) - returns true if this BoundingBox is colliding with the specified other BoundingBox
+    void SetPosition(int x, int y) - sets the position of the BoundingBox to (x,y)
+    void SetSize(int w, int h) - sets the pixel size of the BoundingBox to w x h
+    int GetPositionX() - returns the current x position of the BoundingBox
+    int GetPositionY() - returns the current y position of the BoundingBox
+    int GetWidth() - returns the current pixel width of the BoundingBox
+    int GetHeight() - returns the current pixel height of the BoundingBox
+
+*/</font>
+
+<font color="blue">#ifndef</font> _COLLIDABLE_H
+<font color="blue">#define</font> _COLLIDABLE_H
+
+<font color="blue">class</font> BoundingBox
+<font color="black">{</font>
+<font color="blue">private</font><font color="black">:</font>
+    <font color="blue">int</font> width, height;
+    <font color="blue">int</font> x, y;
+<font color="blue">public</font><font color="black">:</font>
+    <font color="green">// Default Constructor</font>
+    BoundingBox<font color="black">(</font><font color="black">)</font><font color="black">{</font> width <font color="black">=</font> <font color="maroon">0</font>; height <font color="black">=</font> <font color="maroon">0</font>; x <font color="black">=</font> <font color="maroon">0</font>; y <font color="black">=</font> <font color="maroon">0</font>; <font color="black">}</font>
+    BoundingBox<font color="black">(</font><font color="blue">int</font>, <font color="blue">int</font>, <font color="blue">int</font>, <font color="blue">int</font><font color="black">)</font>;
+    BoundingBox<font color="black">(</font><font color="blue">const</font> BoundingBox<font color="black">&</font><font color="black">)</font>;
+    ~BoundingBox<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">bool</font> isColliding<font color="black">(</font><font color="blue">const</font> BoundingBox<font color="black">&</font><font color="black">)</font>;
+    <font color="blue">void</font> SetPosition<font color="black">(</font><font color="blue">int</font>, <font color="blue">int</font><font color="black">)</font>;
+    <font color="blue">void</font> SetSize<font color="black">(</font><font color="blue">int</font>, <font color="blue">int</font><font color="black">)</font>;
+    <font color="blue">int</font> GetPositionX<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">int</font> GetPositionY<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">int</font> GetWidth<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">int</font> GetHeight<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>;
+
+
+<font color="blue">#endif</font>
+</PRE>
+</BODY>
+</HTML>

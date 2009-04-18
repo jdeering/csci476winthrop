@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+<TITLE>
+text_handler.h
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">/*
+Jason Deering
+
+text_handler.h
+
+This class is for use in the Framework.
+
+The TextHandler class controls the display and text-to-speech reading of all text objects.
+
+
+DATA ITEMS
+    std::map&#60;std::string, Text&#62; text - container for all text objects, mapped to key values of type std::string
+    int numObjects
+    bool readEnabled
+
+PRIVATE FUNCTIONS
+    void ReadText(std::string refName) - reads the text object at key refName using text-to-speech
+
+PUBLIC FUNCTIONS
+    bool AddText(std::string refName, std::string textstd::string, int x, int y, bool visible) - adds a text object to the container
+                    using the textstd::string parameter as the text object's std::string
+    bool AddText(std::string refName, const char* instd::string, int x, int y, bool visible) - adds a text object to the container
+                    using the instd::string parameter as the text object's std::string
+    bool AddTextByRef(std::string refName, std::string assetName, int x, int y, bool visible) - adds a text object to the container
+                    using a std::string specified in the XML text asset reference file
+    bool ChangeText(std::string refName, std::string textstd::string) - changes the std::string of the text object at key refName
+    bool RemoveText(std::string refName) - removes the text object at key refName from the container
+    bool ShowText(std::string refName, int setVisible, BITMAP *bmp) - displays the referenced text object
+    void SetTextPosition(std::string refName, int x, int y) - changes the x,y position of the text object
+    void SetSize(std::string refName, int sz) - changes the pixel size of the text object
+    void SetColor(std::string refName, int r, int g, int b) - changes the foreground color of the text object
+    void SetBackgroundColor(std::string refName, int r, int g, int b) - changes the background color of the text object
+    void SetVisible(std::string refName, int vis) - changes the visibility of the text object
+    void SetTTS(bool TTS) - sets the text-to-speech flag
+    void ShowAllVisible(BITMAP* dest) - displays all visible text objects on the dest BITMAP
+
+*/</font>
+
+<font color="blue">#ifndef</font> _TEXT_HANDLER_H
+<font color="blue">#define</font> _TEXT_HANDLER_H
+
+<font color="blue">#include</font> <font color="maroon">"text.h"</font>
+
+
+<font color="blue">class</font> TextHandler
+<font color="black">{</font>
+<font color="blue">private</font><font color="black">:</font>
+    std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, Text<font color="black">&#62;</font> text;
+    <font color="blue">void</font> ReadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName<font color="black">)</font>;
+    <font color="blue">int</font> numObjects;
+    <font color="blue">bool</font> readEnabled;
+<font color="blue">public</font><font color="black">:</font>
+    TextHandler<font color="black">(</font><font color="black">)</font>;
+    ~TextHandler<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">bool</font> AddText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, std<font color="black">:</font><font color="black">:</font>string textString, <font color="blue">int</font> x, <font color="blue">int</font> y, <font color="blue">bool</font> visible<font color="black">)</font>;
+    <font color="blue">bool</font> AddText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">const</font> <font color="blue">char</font><font color="black">*</font> inString, <font color="blue">int</font> x, <font color="blue">int</font> y, <font color="blue">bool</font> visible<font color="black">)</font>;
+    <font color="blue">bool</font> AddTextByRef<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, std<font color="black">:</font><font color="black">:</font>string assetName, <font color="blue">int</font> x, <font color="blue">int</font> y, <font color="blue">bool</font> visible<font color="black">)</font>;
+    <font color="blue">bool</font> ChangeText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, std<font color="black">:</font><font color="black">:</font>string textString<font color="black">)</font>;
+    <font color="blue">bool</font> RemoveText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName<font color="black">)</font>;
+    <font color="blue">bool</font> ShowText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> setVisible, BITMAP <font color="black">*</font>bmp<font color="black">)</font>;
+    <font color="blue">void</font> SetTextPosition<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> x, <font color="blue">int</font> y<font color="black">)</font>;    
+    <font color="blue">void</font> SetSize<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> sz<font color="black">)</font>;
+    <font color="blue">void</font> SetColor<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> r, <font color="blue">int</font> g, <font color="blue">int</font> b<font color="black">)</font>;
+    <font color="blue">void</font> SetBackgroundColor<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> r, <font color="blue">int</font> g, <font color="blue">int</font> b<font color="black">)</font>;
+    <font color="blue">void</font> SetVisible<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> vis<font color="black">)</font>;
+    <font color="blue">void</font> SetTTS<font color="black">(</font><font color="blue">bool</font> TTS<font color="black">)</font>;
+    <font color="blue">void</font> ShowAllVisible<font color="black">(</font>BITMAP<font color="black">*</font> dest<font color="black">)</font>;
+<font color="black">}</font>;
+
+
+<font color="blue">#endif</font>
+
+</PRE>
+</BODY>
+</HTML>

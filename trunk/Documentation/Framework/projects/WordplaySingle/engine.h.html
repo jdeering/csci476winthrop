@@ -1,0 +1,192 @@
+<HTML>
+<HEAD>
+<TITLE>
+engine.h
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#ifndef</font> _Framework_H
+<font color="blue">#define</font> _Framework_H
+
+<font color="blue">#include</font> <font color="maroon">"globals.h"</font>
+<font color="blue">#include</font> <font color="maroon">"sprite_handler.h"</font>
+<font color="blue">#include</font> <font color="maroon">"audio_handler.h"</font>
+<font color="blue">#include</font> <font color="maroon">"text_handler.h"</font>
+<font color="blue">#include</font> <font color="maroon">"input.h"</font>
+<font color="blue">#include</font> <font color="maroon">"Markup.h"</font>
+<font color="blue">#include</font> <font color="maroon">&#60;errno.h&#62;</font>
+
+
+<font color="blue">#define</font> MAX_MESSAGE_SIZE <font color="maroon">4096</font><font color="black">*</font><font color="maroon">20</font>
+
+<font color="green">/**********************************
+    Struct to hold information for
+    game icons used in the main menu.
+**********************************/</font>
+<font color="blue">typedef</font> <font color="blue">struct</font>
+<font color="black">{</font>
+    <font color="blue">int</font> width, height;
+    std<font color="black">:</font><font color="black">:</font>string path; 
+<font color="black">}</font>Icon;
+
+<font color="green">/**********************************
+    Struct to hold all information needed
+    to load a game's assets when launched.
+**********************************/</font>
+<font color="blue">typedef</font> <font color="blue">struct</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>string <font color="blue">name</font>;
+    std<font color="black">:</font><font color="black">:</font>string path;
+    std<font color="black">:</font><font color="black">:</font>string imageFile, audioFile, textFile;
+    Icon icon;
+<font color="black">}</font>Game;
+
+<font color="green">/**********************************
+    Struct to control the volume and
+    text-to-speech options.
+**********************************/</font>
+<font color="blue">typedef</font> <font color="blue">struct</font>
+<font color="black">{</font>
+    <font color="blue">int</font> VOLUME;
+    <font color="blue">bool</font> TTS;
+<font color="black">}</font>OPTIONS;
+
+<font color="blue">class</font> Framework
+<font color="black">{</font>
+<font color="blue">public</font><font color="black">:</font>
+    <font color="green">/* PUBLIC DESTRUCTOR */</font>
+    ~Framework<font color="black">(</font><font color="black">)</font>;
+
+    <font color="green">/* SINGLETON INSTANCE METHOD */</font>
+    <font color="blue">static</font> Framework<font color="black">*</font> Instance<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string<font color="black">)</font>;
+    
+    <font color="green">/* MAIN GAME LOOP */</font>
+    <font color="blue">bool</font> MainLoop<font color="black">(</font><font color="black">)</font>;
+
+    <font color="green">/* MESSAGE LOOP FUNCTION */</font>
+    <font color="blue">bool</font> MessageLoop<font color="black">(</font><font color="black">)</font>;
+
+    <font color="green">/* GET FILES FOR MENU ASSETS */</font>
+    <font color="blue">void</font> LoadImages<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name<font color="black">)</font>;
+    <font color="blue">void</font> LoadAudio<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name<font color="black">)</font>;
+    <font color="blue">void</font> LoadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name<font color="black">)</font>;
+
+    <font color="green">/* GET FILES FOR GAME ASSETS */</font>
+    <font color="blue">void</font> LoadImages<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name, std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
+    <font color="blue">void</font> LoadAudio<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name, std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
+    <font color="blue">void</font> LoadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name, std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
+    
+    <font color="blue">void</font> AddSprite<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, std<font color="black">:</font><font color="black">:</font>string imageRef, <font color="blue">int</font> x, <font color="blue">int</font> y, <font color="blue">int</font> w, <font color="blue">int</font> h<font color="black">)</font>;
+    <font color="blue">bool</font> isActive<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">bool</font> gameIsRunning<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> DrawMenu<font color="black">(</font><font color="black">)</font>;
+<font color="blue">protected</font><font color="black">:</font>
+    <font color="green">/* PROTECTED CONSTRUCTORS */</font>
+    Framework<font color="black">(</font><font color="black">)</font>;
+    Framework<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string<font color="black">)</font>;
+    Framework<font color="black">(</font><font color="blue">const</font> Framework<font color="black">&</font> fw<font color="black">)</font>;
+    Framework<font color="black">&</font> <font color="blue">operator</font><font color="black">=</font><font color="black">(</font><font color="blue">const</font> Framework<font color="black">&</font><font color="black">)</font>;
+
+    <font color="blue">void</font> clearBuffer<font color="black">(</font><font color="black">)</font>;
+    
+<font color="blue">private</font><font color="black">:</font>
+    <font color="green">/* TO PREVENT MULTIPLE FRAMEWORK INSTANCES */</font>
+    <font color="blue">static</font> Framework<font color="black">*</font> inst;
+
+    <font color="green">/* CLASS VARIABLES */</font>
+    CMarkup imgXML, audXML, txtXML;
+    BITMAP <font color="black">*</font>buffer;
+    <font color="blue">bool</font> gameRunning, menuRunning, active;
+    <font color="blue">int</font> gameCount;
+    Game games<font color="black">[</font>MAXGAMES<font color="black">]</font>;
+    OPTIONS options;
+    std<font color="black">:</font><font color="black">:</font>string username;
+
+    <font color="green">/* MOUSE AND KEYBOARD HANDLERS */</font>
+    Mouse mouse;
+    Keyboard keyboard;
+
+    <font color="green">/* MESSAGE HANDLING VARIABLES */</font>
+    HANDLE hStdIn_Parent, hStdOut_Parent;
+    HANDLE hStdIn_Child, hStdOut_Child;
+    PROCESS_INFORMATION piProcInfo; <font color="green">// maintained to close module process</font>
+    <font color="blue">char</font> incMessage<font color="black">[</font>MAX_MESSAGE_SIZE<font color="black">]</font>;
+
+    <font color="green">/* MESSAGE HANDLING */</font>
+    CMarkup gameList;
+    <font color="blue">void</font> CreateGameProcess<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>wstring<font color="black">)</font>;
+    <font color="blue">void</font> KillModule<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> KillMainMenu<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> CreateMessagePipes<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> LaunchGame<font color="black">(</font><font color="blue">int</font> gameNum<font color="black">)</font>;
+    <font color="blue">void</font> LaunchGame<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string appPath<font color="black">)</font>;
+    <font color="blue">void</font> GetMessages<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> sendMessage<font color="black">(</font><font color="blue">const</font> <font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> ParseMessage<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>stringstream <font color="black">&</font>msgStream<font color="black">)</font>;
+    <font color="blue">void</font> CheckErrors<font color="black">(</font><font color="black">)</font>;
+
+    <font color="green">/* OBJECT VARIABLES */</font>
+    SpriteHandler sprites;
+    AudioHandler audioObjects;
+    TextHandler textObjects;
+
+    <font color="green">/* UPDATE OBJECTS FUNCTIONS */</font>
+    <font color="blue">void</font> UpdateSprites<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> UpdateAudio<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> UpdateText<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> UpdateOptions<font color="black">(</font><font color="black">)</font>;
+
+    <font color="green">/* OBJECT INITIALIZATION / FILE LOADING */</font>
+    <font color="blue">void</font> LoadGames<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> LoadImages<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> LoadAudio<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> LoadText<font color="black">(</font><font color="black">)</font>;
+
+    <font color="blue">void</font> LoadGameAssets<font color="black">(</font><font color="blue">int</font> gameIndex<font color="black">)</font>;
+    <font color="blue">void</font> LoadGameImages<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
+    <font color="blue">void</font> LoadGameAudio<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
+    <font color="blue">void</font> LoadGameText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
+
+    <font color="green">/* KEYBOARD / MOUSE FUNCTIONS */</font>
+    <font color="blue">void</font> UpdateMouse<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> UpdateKeyboard<font color="black">(</font><font color="black">)</font>;
+
+<font color="blue">public</font><font color="black">:</font> <font color="green">// Change to private when separating framework from modules</font>
+
+    <font color="green">/* FUNCTIONS CALLED VIA MESSAGE */</font>
+    <font color="blue">void</font> CreateSprite<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> CreateSpriteRefDimensions<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> KillSprite<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> ShowSprite<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> SetSpriteSize<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> SetSpriteLocation<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> SetFrameDelay<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> SetAnimation<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> SetFrame<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> MoveSprite<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> ChangeBitmap<font color="black">(</font><font color="blue">char</font><font color="black">*</font> msg<font color="black">)</font>;
+    <font color="blue">void</font> SetSpriteVisible<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+
+    <font color="blue">void</font> SetTextPosition<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> ShowText<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;   
+    <font color="blue">void</font> CreateTextFromRef<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> CreateTextFromString<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> RemoveText<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> ChangeText<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> SetTextSize<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> SetTextColor<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> SetTextBackgroundColor<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> SetTextVisible<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+
+    <font color="blue">void</font> PlayFile<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> ResetLoop<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> StopFile<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+
+    <font color="blue">void</font> PostScore<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+<font color="black">}</font>;
+
+<font color="blue">#endif</font>
+</PRE>
+</BODY>
+</HTML>

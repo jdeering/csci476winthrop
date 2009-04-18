@@ -1,0 +1,167 @@
+<HTML>
+<HEAD>
+<TITLE>
+audio_handler.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#include</font> <font color="maroon">"audio_handler.h"</font>
+
+<font color="green">/******************************************************
+    Default Constructor
+******************************************************/</font>
+AudioHandler<font color="black">:</font><font color="black">:</font>AudioHandler<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    muted <font color="black">=</font> <font color="blue">false</font>;
+    volume <font color="black">=</font> <font color="black">(</font>MAX_VOLUME <font color="black">-</font>MIN_VOLUME<font color="black">)</font> <font color="black">/</font> <font color="maroon">2</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Default Destructor
+******************************************************/</font>
+AudioHandler<font color="black">:</font><font color="black">:</font>~AudioHandler<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">for</font><font color="black">(</font>std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, Audio<font color="black">&#62;</font><font color="black">:</font><font color="black">:</font>iterator i <font color="black">=</font> samples.begin<font color="black">(</font><font color="black">)</font>; i <font color="black">!</font><font color="black">=</font> samples.end<font color="black">(</font><font color="black">)</font>; <font color="black">+</font><font color="black">+</font>i<font color="black">)</font>
+    <font color="black">{</font>
+        i<font color="black">-</font><font color="black">&#62;</font>second.~Audio<font color="black">(</font><font color="black">)</font>;
+    <font color="black">}</font>
+    samples.clear<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Adds an audio sample to the container at the
+    specified key, or updates the audio sample at the
+    key.
+
+    @param refName The key name for the sample to add.
+    @param sample The Allegro SAMPLE* associated with the key.
+    @param loop &#60;code&#62;true&#60;/code&#62; if the sample loops when played, &#60;code&#62;false&#60;/code&#62; if it doesn't.
+    @return &#60;code&#62;true&#60;/code&#62; if the sample is successfully added, &#60;code&#62;false&#60;/code&#62; otherwise.
+******************************************************/</font>
+<font color="blue">bool</font> AudioHandler<font color="black">:</font><font color="black">:</font>AddSample<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, SAMPLE <font color="black">*</font>sample, <font color="blue">bool</font> loop<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>numSamples <font color="black">&#60;</font> MAXFILES<font color="black">)</font>
+    <font color="black">{</font>
+        Audio temp<font color="black">(</font>sample, loop<font color="black">)</font>;
+        samples<font color="black">[</font>refName<font color="black">]</font> <font color="black">=</font> temp;
+        numSamples<font color="black">+</font><font color="black">+</font>;
+    <font color="black">}</font>
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sample \"%d\" could not be added."</font>, refName<font color="black">)</font>;
+        <font color="blue">return</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Removes the audio sample from the container at the
+    specified key.
+
+    @param refName The key name for the sample to remove.
+    @return &#60;code&#62;true&#60;/code&#62; if the sample is successfully removed, &#60;code&#62;false&#60;/code&#62; otherwise.
+******************************************************/</font>
+<font color="blue">bool</font> AudioHandler<font color="black">:</font><font color="black">:</font>RemoveSample<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, Audio<font color="black">&#62;</font><font color="black">:</font><font color="black">:</font>iterator loc <font color="black">=</font> samples.find<font color="black">(</font>refName<font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font>numSamples <font color="black">&#62;</font> <font color="maroon">0</font> <font color="black">&</font><font color="black">&</font> loc <font color="black">!</font><font color="black">=</font> samples.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        samples.erase<font color="black">(</font>loc<font color="black">)</font>;
+        numSamples<font color="black">-</font><font color="black">-</font>;
+        <font color="blue">return</font> <font color="blue">true</font>;
+    <font color="black">}</font>
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sample \"%d\" not found or could not be removed."</font>, refName<font color="black">)</font>;
+        <font color="blue">return</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Plays the audio sample at the specified key.
+
+    @param refName The key name for the sample to play.
+    @param volume_ The volume to play the sample at.
+    @return &#60;code&#62;true&#60;/code&#62; if the sample is successfully started, &#60;code&#62;false&#60;/code&#62; otherwise.
+******************************************************/</font>
+<font color="blue">bool</font> AudioHandler<font color="black">:</font><font color="black">:</font>PlaySample<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> volume_<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>muted<font color="black">)</font>
+        volume_ <font color="black">=</font> <font color="maroon">0</font>;
+    <font color="blue">if</font><font color="black">(</font>samples<font color="black">[</font>refName<font color="black">]</font>.Play<font color="black">(</font>volume_<font color="black">)</font> <font color="black">&#60;</font> <font color="maroon">0</font><font color="black">)</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sample \"%d\" could not be played.\n(May be out of voice channels)"</font>, refName<font color="black">)</font>;
+        <font color="blue">return</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+    <font color="blue">else</font>
+        <font color="blue">return</font> <font color="blue">true</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Stops the audio sample at the specified key.
+
+    @param refName The key name for the sample to stop playing.
+******************************************************/</font>
+<font color="blue">void</font> AudioHandler<font color="black">:</font><font color="black">:</font>StopSample<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName<font color="black">)</font>
+<font color="black">{</font>
+    samples<font color="black">[</font>refName<font color="black">]</font>.Stop<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the volume at which to play all samples.
+
+    @param vol The volume at which to play audio samples (0 to 100);
+******************************************************/</font>
+<font color="blue">void</font> AudioHandler<font color="black">:</font><font color="black">:</font>SetVolume<font color="black">(</font><font color="blue">int</font> vol<font color="black">)</font>
+<font color="black">{</font>
+    volume <font color="black">=</font> vol <font color="black">*</font> MAX_VOLUME <font color="black">/</font> <font color="maroon">100</font>;
+    ResetVolume<font color="black">(</font>volume<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Mutes all playing samples and subsequently played samples.
+******************************************************/</font>
+<font color="blue">void</font> AudioHandler<font color="black">:</font><font color="black">:</font>Mute<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    muted <font color="black">=</font> <font color="blue">true</font>;
+    ResetVolume<font color="black">(</font><font color="maroon">0</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Unmutes all playing samples and subsequently played samples.
+******************************************************/</font>
+<font color="blue">void</font> AudioHandler<font color="black">:</font><font color="black">:</font>Unmute<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    muted <font color="black">=</font> <font color="blue">false</font>;
+    ResetVolume<font color="black">(</font>volume<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Resets the loop flag for the audio sample at the
+    specified key.
+
+    @param refName The key value for the audio sample.
+    @param loop The new value for the loop flag. Zero for no looping, non-zero for looping.
+******************************************************/</font>
+<font color="blue">void</font> AudioHandler<font color="black">:</font><font color="black">:</font>ResetLoopFlag<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> loop<font color="black">)</font>
+<font color="black">{</font>
+    samples<font color="black">[</font>refName<font color="black">]</font>.ResetLoopFlag<font color="black">(</font>volume, loop<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Resets the volume for all currently playing samples.
+
+    @param volume_ The volume at which to set the samples (0 to 255).
+******************************************************/</font>
+<font color="blue">void</font> AudioHandler<font color="black">:</font><font color="black">:</font>ResetVolume<font color="black">(</font><font color="blue">int</font> volume_<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">for</font><font color="black">(</font>std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, Audio<font color="black">&#62;</font><font color="black">:</font><font color="black">:</font>iterator i <font color="black">=</font> samples.begin<font color="black">(</font><font color="black">)</font>; i <font color="black">!</font><font color="black">=</font> samples.end<font color="black">(</font><font color="black">)</font>; <font color="black">+</font><font color="black">+</font>i<font color="black">)</font>
+    <font color="black">{</font>
+        i<font color="black">-</font><font color="black">&#62;</font>second.ResetVolume<font color="black">(</font>volume_<font color="black">)</font>;
+    <font color="black">}</font>
+    <font color="blue">if</font><font color="black">(</font>volume_<font color="black">)</font> <font color="green">// Only resets volume if not muting</font>
+        volume <font color="black">=</font> volume_;
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>

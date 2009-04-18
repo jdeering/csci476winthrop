@@ -1,0 +1,186 @@
+<HTML>
+<HEAD>
+<TITLE>
+text.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#include</font> <font color="maroon">"text.h"</font>
+
+<font color="green">/******************************************************
+    Default Constructor
+******************************************************/</font>
+Text<font color="black">:</font><font color="black">:</font>Text<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    pVoice <font color="black">=</font> NULL;
+    x <font color="black">=</font> <font color="maroon">0</font>; 
+    y <font color="black">=</font> <font color="maroon">0</font>; 
+    visible <font color="black">=</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Default Destructor
+******************************************************/</font>
+Text<font color="black">:</font><font color="black">:</font>~Text<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>pVoice<font color="black">)</font>
+    <font color="black">{</font>
+        pVoice<font color="black">-</font><font color="black">&#62;</font>Release<font color="black">(</font><font color="black">)</font>;
+        pVoice <font color="black">=</font> NULL;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Loads the values for the &#60;code&#62;Text&#60;/code&#62; object
+
+    @param txt The std::string to be displayed and/or read for the text object
+    @param x_ The x coordinate of the text object
+    @param y_ The y coordinate of the text object
+    @param vis &#60;code&#62;true&#60;/code&#62; if the text object should be visible, &#60;code&#62;false&#60;/code&#62; otherwise
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>LoadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string txt, <font color="blue">int</font> x_, <font color="blue">int</font> y_, <font color="blue">bool</font> vis<font color="black">)</font>
+<font color="black">{</font>
+    text <font color="black">=</font> txt;
+    x <font color="black">=</font> x_;
+    y <font color="black">=</font> y_;
+    visible <font color="black">=</font> vis;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Reads the std::string associated with the object using
+    Windows text-to-speech
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>ReadText<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>   
+    <font color="blue">const</font> std<font color="black">:</font><font color="black">:</font>wstring str<font color="black">(</font>text.begin<font color="black">(</font><font color="black">)</font>, text.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    HRESULT hr <font color="black">=</font> CoCreateInstance<font color="black">(</font>CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, <font color="black">(</font><font color="blue">void</font> <font color="black">*</font><font color="black">*</font><font color="black">)</font><font color="black">&</font>pVoice<font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font> SUCCEEDED<font color="black">(</font> hr <font color="black">)</font> <font color="black">)</font>
+    <font color="black">{</font>
+        hr <font color="black">=</font> pVoice<font color="black">-</font><font color="black">&#62;</font>SetRate<font color="black">(</font><font color="maroon">0</font><font color="black">)</font>;
+        hr <font color="black">=</font> pVoice<font color="black">-</font><font color="black">&#62;</font>Speak<font color="black">(</font>str.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">0</font>, NULL<font color="black">)</font>;
+        pVoice<font color="black">-</font><font color="black">&#62;</font>Release<font color="black">(</font><font color="black">)</font>;
+        pVoice <font color="black">=</font> NULL;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the new position of the text on screen to (x,y)
+
+    @param x_ New x coordinate of the text position
+    @param y_ New y coordinate of the text position
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>SetPosition<font color="black">(</font><font color="blue">int</font> x_, <font color="blue">int</font> y_<font color="black">)</font>
+<font color="black">{</font>
+    x <font color="black">=</font> x_;
+    y <font color="black">=</font> y_;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Changes the text std::string for the object to the specified
+    value.
+
+    @param txt The new &#60;code&#62;std::string&#60;/code&#62; to associate with the object 
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>ChangeText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string txt<font color="black">)</font>
+<font color="black">{</font>
+    text <font color="black">=</font> txt;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Displays the text on the specified BITMAP if it is
+    visible and reads the text if specified to do so.
+
+    @param read &#60;code&#62;true&#60;/code&#62; if text-to-speech should be used, &#60;code&#62;false&#60;/code&#62; otherwise
+    @param dest Allegro BITMAP on which to display the text
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>ShowText<font color="black">(</font><font color="blue">bool</font> read, BITMAP <font color="black">*</font>dest<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">double</font> multiplier <font color="black">=</font> size <font color="black">/</font> <font color="maroon">8</font>.<font color="maroon">0</font>; <font color="green">// Regular font size is 8 pixels, set multiplier to scale up to size</font>
+    BITMAP <font color="black">*</font>tmp;
+
+    tmp <font color="black">=</font> create_bitmap<font color="black">(</font>text_length<font color="black">(</font>font, text.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>, text_height<font color="black">(</font>font<font color="black">)</font><font color="black">)</font>;
+
+    <font color="blue">if</font><font color="black">(</font><font color="black">!</font>tmp<font color="black">)</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Error creating font for text object."</font><font color="black">)</font>;
+        <font color="blue">return</font>;
+    <font color="black">}</font>
+
+    clear_to_color<font color="black">(</font>tmp, makecol<font color="black">(</font><font color="maroon">255</font>, <font color="maroon">0</font>, <font color="maroon">255</font><font color="black">)</font><font color="black">)</font>;
+    textout_ex<font color="black">(</font>tmp, font, text.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">0</font>, <font color="maroon">0</font>, color, bg_color<font color="black">)</font>;
+
+    masked_stretch_blit<font color="black">(</font>tmp, dest, <font color="maroon">0</font>, <font color="maroon">0</font>, tmp<font color="black">-</font><font color="black">&#62;</font>w, tmp<font color="black">-</font><font color="black">&#62;</font>h, x<font color="black">+</font>XOFFSET, y, <font color="black">(</font><font color="blue">int</font><font color="black">)</font><font color="black">(</font>tmp<font color="black">-</font><font color="black">&#62;</font>w <font color="black">*</font> multiplier<font color="black">)</font>, <font color="black">(</font><font color="blue">int</font><font color="black">)</font><font color="black">(</font>tmp<font color="black">-</font><font color="black">&#62;</font>h <font color="black">*</font> multiplier<font color="black">)</font><font color="black">)</font>;
+    scare_mouse<font color="black">(</font><font color="black">)</font>;
+    destroy_bitmap<font color="black">(</font>tmp<font color="black">)</font>;
+    unscare_mouse<font color="black">(</font><font color="black">)</font>;
+
+    <font color="blue">if</font><font color="black">(</font>read<font color="black">)</font>
+        ReadText<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Changes the pixel size of the text object for display.
+
+    @param sz The pixel size for the text object.   
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>SetSize<font color="black">(</font><font color="blue">int</font> sz<font color="black">)</font>
+<font color="black">{</font>
+    size <font color="black">=</font> sz;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Changes the foreground color of the text object for display.
+
+    @param r The amount of red (0-255) in the RGB color.    
+    @param g The amount of green (0-255) in the RGB color.
+    @param b The amount of blue (0-255) in the RGB color.
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>SetColor<font color="black">(</font><font color="blue">int</font> r, <font color="blue">int</font> g, <font color="blue">int</font> b<font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">// Maintain correct ranges</font>
+    <font color="blue">if</font><font color="black">(</font>r <font color="black">&#60;</font> <font color="maroon">0</font><font color="black">)</font> r <font color="black">=</font> <font color="maroon">0</font>;
+    <font color="blue">if</font><font color="black">(</font>g <font color="black">&#60;</font> <font color="maroon">0</font><font color="black">)</font> g <font color="black">=</font> <font color="maroon">0</font>;
+    <font color="blue">if</font><font color="black">(</font>b <font color="black">&#60;</font> <font color="maroon">0</font><font color="black">)</font> b <font color="black">=</font> <font color="maroon">0</font>;
+    <font color="blue">if</font><font color="black">(</font>r <font color="black">&#62;</font> <font color="maroon">255</font><font color="black">)</font> r <font color="black">=</font> <font color="maroon">255</font>;
+    <font color="blue">if</font><font color="black">(</font>g <font color="black">&#62;</font> <font color="maroon">255</font><font color="black">)</font> g <font color="black">=</font> <font color="maroon">255</font>;
+    <font color="blue">if</font><font color="black">(</font>b <font color="black">&#62;</font> <font color="maroon">255</font><font color="black">)</font> b <font color="black">=</font> <font color="maroon">255</font>;
+
+    color <font color="black">=</font> makecol<font color="black">(</font>r, g, b<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Changes the background color of the text object for display.
+
+    @param r The amount of red (0-255) in the RGB color.    
+    @param g The amount of green (0-255) in the RGB color.
+    @param b The amount of blue (0-255) in the RGB color.
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>SetBackgroundColor<font color="black">(</font><font color="blue">int</font> r, <font color="blue">int</font> g, <font color="blue">int</font> b<font color="black">)</font>
+<font color="black">{</font>
+    <font color="green">// Maintain correct ranges</font>
+    <font color="blue">if</font><font color="black">(</font>r <font color="black">&#60;</font> <font color="maroon">0</font><font color="black">)</font> r <font color="black">=</font> <font color="maroon">0</font>;
+    <font color="blue">if</font><font color="black">(</font>g <font color="black">&#60;</font> <font color="maroon">0</font><font color="black">)</font> g <font color="black">=</font> <font color="maroon">0</font>;
+    <font color="blue">if</font><font color="black">(</font>b <font color="black">&#60;</font> <font color="maroon">0</font><font color="black">)</font> b <font color="black">=</font> <font color="maroon">0</font>;
+    <font color="blue">if</font><font color="black">(</font>r <font color="black">&#62;</font> <font color="maroon">255</font><font color="black">)</font> r <font color="black">=</font> <font color="maroon">255</font>;
+    <font color="blue">if</font><font color="black">(</font>g <font color="black">&#62;</font> <font color="maroon">255</font><font color="black">)</font> g <font color="black">=</font> <font color="maroon">255</font>;
+    <font color="blue">if</font><font color="black">(</font>b <font color="black">&#62;</font> <font color="maroon">255</font><font color="black">)</font> b <font color="black">=</font> <font color="maroon">255</font>;
+
+    bg_color <font color="black">=</font> makecol<font color="black">(</font>r, g, b<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Changes the visibility of the text object.
+
+    @param vis The new visibilty. 0 for invisible, non-zero for visible.    
+******************************************************/</font>
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>SetVisible<font color="black">(</font><font color="blue">int</font> vis<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>vis <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+        visible <font color="black">=</font> <font color="blue">false</font>;
+    <font color="blue">else</font>
+        visible <font color="black">=</font> <font color="blue">true</font>;
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>

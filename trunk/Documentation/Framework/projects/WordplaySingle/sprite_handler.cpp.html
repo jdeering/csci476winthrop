@@ -1,0 +1,348 @@
+<HTML>
+<HEAD>
+<TITLE>
+sprite_handler.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#include</font> <font color="maroon">"sprite_handler.h"</font>
+
+<font color="green">/******************************************************
+    Default Constructor
+******************************************************/</font>
+SpriteHandler<font color="black">:</font><font color="black">:</font>SpriteHandler<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    numSprites <font color="black">=</font> <font color="maroon">0</font>;
+    numFiles <font color="black">=</font> <font color="maroon">0</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Default Destructor
+******************************************************/</font>
+SpriteHandler<font color="black">:</font><font color="black">:</font>~SpriteHandler<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    sprites.clear<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">for</font><font color="black">(</font>std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, ImageFile<font color="black">*</font><font color="black">&#62;</font><font color="black">:</font><font color="black">:</font>iterator i <font color="black">=</font> files.begin<font color="black">(</font><font color="black">)</font>; i <font color="black">!</font><font color="black">=</font> files.end<font color="black">(</font><font color="black">)</font>; <font color="black">+</font><font color="black">+</font>i<font color="black">)</font>
+    <font color="black">{</font>
+        i<font color="black">-</font><font color="black">&#62;</font>second<font color="black">-</font><font color="black">&#62;</font>~ImageFile<font color="black">(</font><font color="black">)</font>;
+    <font color="black">}</font>
+    numFiles <font color="black">=</font> <font color="maroon">0</font>;
+    numSprites <font color="black">=</font> <font color="maroon">0</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Removes the sprite object from the container at the
+    specified key value.
+
+    @param refName The key value of the sprite to remove
+    @return true if successful, false otherwise
+******************************************************/</font>
+<font color="blue">bool</font> SpriteHandler<font color="black">:</font><font color="black">:</font>RemoveSprite<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, Sprite<font color="black">&#62;</font><font color="black">:</font><font color="black">:</font>iterator loc <font color="black">=</font> sprites.find<font color="black">(</font>refName<font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font>numSprites <font color="black">&#62;</font> <font color="maroon">0</font> <font color="black">&</font><font color="black">&</font> loc <font color="black">!</font><font color="black">=</font> sprites.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        sprites<font color="black">[</font>refName<font color="black">]</font>.SetAlive<font color="black">(</font><font color="blue">false</font><font color="black">)</font>;
+        sprites.erase<font color="black">(</font>loc<font color="black">)</font>;
+        numSprites<font color="black">-</font><font color="black">-</font>;
+        <font color="blue">return</font> <font color="blue">true</font>;
+    <font color="black">}</font>
+    <font color="blue">return</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Adds a sprite object to the container at the
+    specified key value, or updates the sprite at the key
+    value if it is already in use.
+
+    @param refName The key value of the sprite to add or update
+    @param imageRef The key value of the bitmap file to associate with the &#60;code&#62;Sprite&#60;/code&#62;
+    @param x The initial x-coordinate of the &#60;code&#62;Sprite&#60;/code&#62;
+    @param y The initial y-coordinate of the &#60;code&#62;Sprite&#60;/code&#62;
+    @param w The initial width in pixels of the &#60;code&#62;Sprite&#60;/code&#62;
+    @param h The initial height in pixels of the &#60;code&#62;Sprite&#60;/code&#62;
+    @return true if successful, false otherwise
+******************************************************/</font>
+<font color="blue">bool</font> SpriteHandler<font color="black">:</font><font color="black">:</font>AddSprite<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, std<font color="black">:</font><font color="black">:</font>string imageRef, <font color="blue">int</font> x, <font color="blue">int</font> y, <font color="blue">int</font> w, <font color="blue">int</font> h<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>numSprites <font color="black">&#60;</font> MAXSPRITES<font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">if</font><font color="black">(</font>files.count<font color="black">(</font>imageRef<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        <font color="black">{</font>
+            Sprite temp<font color="black">(</font>imageRef, x, y, w, h<font color="black">)</font>;
+            temp.SetFrameCount<font color="black">(</font>files<font color="black">[</font>imageRef<font color="black">]</font><font color="black">-</font><font color="black">&#62;</font>GetNumFrames<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+            sprites<font color="black">[</font>refName<font color="black">]</font> <font color="black">=</font> temp;
+            numSprites<font color="black">+</font><font color="black">+</font>;
+            <font color="blue">return</font> <font color="blue">true</font>;
+        <font color="black">}</font>
+        <font color="blue">else</font>
+        <font color="black">{</font>
+            allegro_message<font color="black">(</font><font color="maroon">"Image file reference \"%s\" not found."</font>, imageRef.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+            <font color="blue">return</font> <font color="blue">false</font>;
+        <font color="black">}</font>
+    <font color="black">}</font>
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sprite cannot be added."</font><font color="black">)</font>;
+        <font color="blue">return</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Adds a sprite object to the container at the
+    specified key value, or updates the sprite at the key
+    value if it is already in use. Uses the specified bitmap file's
+    width and height as the sprite's width and height.
+
+    @param refName The key value of the sprite to add or update
+    @param imageRef The key value of the bitmap file to associate with the &#60;code&#62;Sprite&#60;/code&#62;
+    @param x The initial x-coordinate of the &#60;code&#62;Sprite&#60;/code&#62;
+    @param y The initial y-coordinate of the &#60;code&#62;Sprite&#60;/code&#62;
+    @return true if successful, false otherwise
+******************************************************/</font>
+<font color="blue">bool</font> SpriteHandler<font color="black">:</font><font color="black">:</font>AddSprite<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, std<font color="black">:</font><font color="black">:</font>string imageRef, <font color="blue">int</font> x, <font color="blue">int</font> y<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>numSprites <font color="black">&#60;</font> MAXSPRITES<font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">if</font><font color="black">(</font>files.count<font color="black">(</font>imageRef<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        <font color="black">{</font>
+            Sprite temp<font color="black">(</font>imageRef, x, y, files<font color="black">[</font>imageRef<font color="black">]</font><font color="black">-</font><font color="black">&#62;</font>GetWidth<font color="black">(</font><font color="black">)</font>, files<font color="black">[</font>imageRef<font color="black">]</font><font color="black">-</font><font color="black">&#62;</font>GetHeight<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+            temp.SetFrameCount<font color="black">(</font>files<font color="black">[</font>imageRef<font color="black">]</font><font color="black">-</font><font color="black">&#62;</font>GetNumFrames<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+            sprites<font color="black">[</font>refName<font color="black">]</font> <font color="black">=</font> temp;
+            numSprites<font color="black">+</font><font color="black">+</font>;   
+            <font color="blue">return</font> <font color="blue">true</font>;
+        <font color="black">}</font>
+        <font color="blue">else</font>
+        <font color="black">{</font>
+            allegro_message<font color="black">(</font><font color="maroon">"Image file reference \"%s\" not found."</font>, imageRef.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+            <font color="blue">return</font> <font color="blue">false</font>;
+        <font color="black">}</font>
+    <font color="black">}</font>
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sprite cannot be added."</font><font color="black">)</font>;
+        <font color="blue">return</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Draws the current frame of all active sprites to the specified
+    BITMAP buffer. Removes all inactive sprites from the container
+    after updating.
+
+    @param buffer Pointer to the Allegro BITMAP struct that sprites should be drawn to
+******************************************************/</font>
+<font color="blue">void</font> SpriteHandler<font color="black">:</font><font color="black">:</font>DrawSprites<font color="black">(</font>BITMAP <font color="black">*</font>buffer<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>string refName <font color="black">=</font> <font color="maroon">""</font>;
+    <font color="blue">int</font> frame <font color="black">=</font> <font color="maroon">0</font>;
+    BITMAP <font color="black">*</font>temp <font color="black">=</font> NULL;
+    <font color="blue">for</font><font color="black">(</font>std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, Sprite<font color="black">&#62;</font><font color="black">:</font><font color="black">:</font>iterator i <font color="black">=</font> sprites.begin<font color="black">(</font><font color="black">)</font>; i <font color="black">!</font><font color="black">=</font> sprites.end<font color="black">(</font><font color="black">)</font>; <font color="black">+</font><font color="black">+</font>i<font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">if</font><font color="black">(</font>i<font color="black">-</font><font color="black">&#62;</font>second.isAlive<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+        <font color="black">{</font>
+            i<font color="black">-</font><font color="black">&#62;</font>second.Update<font color="black">(</font><font color="black">)</font>;
+            refName <font color="black">=</font> i<font color="black">-</font><font color="black">&#62;</font>second.GetSheetRef<font color="black">(</font><font color="black">)</font>;
+            frame <font color="black">=</font> i<font color="black">-</font><font color="black">&#62;</font>second.GetFrameNum<font color="black">(</font><font color="black">)</font>;
+            temp <font color="black">=</font> files<font color="black">[</font>refName<font color="black">]</font><font color="black">-</font><font color="black">&#62;</font>GetFrame<font color="black">(</font>frame, i<font color="black">-</font><font color="black">&#62;</font>second.GetWidth<font color="black">(</font><font color="black">)</font>, i<font color="black">-</font><font color="black">&#62;</font>second.GetHeight<font color="black">(</font><font color="black">)</font><font color="black">)</font>;    
+            <font color="blue">if</font><font color="black">(</font>temp <font color="black">=</font><font color="black">=</font> NULL<font color="black">)</font>
+                allegro_message<font color="black">(</font><font color="maroon">"Error generating Frame %d for sprite reference \"%s\"."</font>, frame, i<font color="black">-</font><font color="black">&#62;</font>first<font color="black">)</font>;
+            <font color="blue">else</font>
+                i<font color="black">-</font><font color="black">&#62;</font>second.Draw<font color="black">(</font>temp, buffer<font color="black">)</font>;
+        <font color="black">}</font>
+        <font color="blue">else</font>
+        <font color="black">{</font>
+            sprites.erase<font color="black">(</font>i<font color="black">)</font>;
+        <font color="black">}</font>
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Adds a file object to the container at the
+    specified key value, or updates the file at the key
+    value if it is already in use.
+
+    @param imageRef The key value of the file to add or update
+    @param filePath The file path of the bitmap file to load
+    @param frame_count The number of animation frames in the file
+    @param col_count The number of columns of animation frames in the file
+    @param w The initial width in pixels of a frame of animation
+    @param h The initial height in pixels of a frame of animation
+    @return true if successful, false otherwise
+******************************************************/</font>
+<font color="blue">bool</font> SpriteHandler<font color="black">:</font><font color="black">:</font>AddFile<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string imageRef, std<font color="black">:</font><font color="black">:</font>string filePath, <font color="blue">int</font> frame_count, <font color="blue">int</font> col_count, <font color="blue">int</font> w, <font color="blue">int</font> h<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>numFiles <font color="black">&#60;</font> MAXFILES<font color="black">)</font>
+    <font color="black">{</font>
+        ImageFile<font color="black">*</font> temp <font color="black">=</font> <font color="blue">new</font> ImageFile<font color="black">(</font>filePath, frame_count, col_count, w, h<font color="black">)</font>;
+        <font color="blue">if</font><font color="black">(</font>temp<font color="black">-</font><font color="black">&#62;</font>isValid<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+        <font color="black">{</font>
+            files.insert<font color="black">(</font>pair<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, ImageFile<font color="black">*</font><font color="black">&#62;</font><font color="black">(</font>imageRef, temp<font color="black">)</font><font color="black">)</font>;
+            numFiles<font color="black">+</font><font color="black">+</font>;
+            <font color="blue">return</font> <font color="blue">true</font>;
+        <font color="black">}</font>
+        <font color="blue">else</font>
+            allegro_message<font color="black">(</font><font color="maroon">"The file referenced by %s could not be found at %s."</font>, imageRef.c_str<font color="black">(</font><font color="black">)</font>, filePath.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="black">}</font>
+    <font color="blue">return</font> <font color="blue">false</font>;
+<font color="black">}</font> 
+
+<font color="green">/******************************************************
+    Removes the file object from the container at the
+    specified key value.
+
+    @param imageRef The key value of the file to remove
+    @return &#60;code&#62;true&#60;/code&#62; if successful, &#60;code&#62;false&#60;/code&#62; otherwise
+******************************************************/</font>
+<font color="blue">bool</font> SpriteHandler<font color="black">:</font><font color="black">:</font>RemoveFile<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string imageRef<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, ImageFile<font color="black">*</font><font color="black">&#62;</font><font color="black">:</font><font color="black">:</font>iterator loc <font color="black">=</font> files.find<font color="black">(</font>imageRef<font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font>numFiles <font color="black">&#62;</font> <font color="maroon">0</font> <font color="black">&</font><font color="black">&</font> loc <font color="black">!</font><font color="black">=</font> files.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        files.erase<font color="black">(</font>loc<font color="black">)</font>;
+        numFiles<font color="black">-</font><font color="black">-</font>;
+        <font color="blue">return</font> <font color="blue">true</font>;
+    <font color="black">}</font>
+    <font color="blue">return</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Checks whether or not any of the active sprites have been
+    clicked or released on by the mouse pointer.
+
+    @param pointer Reference to the &#60;code&#62;BoundingBox&#60;/code&#62; of the mouse pointer
+    @return The key value of the most recently added sprite (hopefully top sprite) being clicked or released on
+******************************************************/</font>
+std<font color="black">:</font><font color="black">:</font>string SpriteHandler<font color="black">:</font><font color="black">:</font>CheckClicks<font color="black">(</font>BoundingBox <font color="black">&</font>pointer<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>string sprite_name <font color="black">=</font> <font color="maroon">""</font>;
+    <font color="blue">for</font><font color="black">(</font>std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, Sprite<font color="black">&#62;</font><font color="black">:</font><font color="black">:</font>reverse_iterator i <font color="black">=</font> sprites.rbegin<font color="black">(</font><font color="black">)</font>; i <font color="black">!</font><font color="black">=</font> sprites.rend<font color="black">(</font><font color="black">)</font>; <font color="black">+</font><font color="black">+</font>i<font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">if</font><font color="black">(</font>i<font color="black">-</font><font color="black">&#62;</font>second.isColliding<font color="black">(</font>pointer<font color="black">)</font><font color="black">)</font>
+        <font color="black">{</font>
+            sprite_name <font color="black">=</font> i<font color="black">-</font><font color="black">&#62;</font>first;
+            <font color="blue">break</font>;
+        <font color="black">}</font>
+    <font color="black">}</font>
+    <font color="blue">return</font> sprite_name;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Resizes the &#60;code&#62;Sprite&#60;/code&#62; at the specified key
+    value.
+    
+    @param refName Key value of the &#60;code&#62;Sprite&#60;/code&#62; to resize
+    @param w The new width for the &#60;code&#62;Sprite&#60;/code&#62;
+    @param h The new height for the &#60;code&#62;Sprite&#60;/code&#62;
+******************************************************/</font>
+<font color="blue">void</font> SpriteHandler<font color="black">:</font><font color="black">:</font>SetSpriteSize<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> w, <font color="blue">int</font> h<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>sprites.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        sprites<font color="black">[</font>refName<font color="black">]</font>.SetSize<font color="black">(</font>w, h<font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sprite \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the new position for the &#60;code&#62;Sprite&#60;/code&#62; 
+    at the specified key value.
+    
+    @param refName Key value of the &#60;code&#62;Sprite&#60;/code&#62; to relocate
+    @param x The new x coordinate for the &#60;code&#62;Sprite&#60;/code&#62;
+    @param y The new y coordinate for the &#60;code&#62;Sprite&#60;/code&#62;
+******************************************************/</font>
+<font color="blue">void</font> SpriteHandler<font color="black">:</font><font color="black">:</font>SetSpriteLocation<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> x, <font color="blue">int</font> y<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>sprites.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        sprites<font color="black">[</font>refName<font color="black">]</font>.SetPosition<font color="black">(</font>x, y<font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sprite \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the visibility of the &#60;code&#62;Sprite&#60;/code&#62; 
+    at the specified key value.
+    
+    @param refName Key value of the &#60;code&#62;Sprite&#60;/code&#62;
+    @param visible The new visibility value for the &#60;code&#62;Sprite&#60;/code&#62;
+******************************************************/</font>
+<font color="blue">void</font> SpriteHandler<font color="black">:</font><font color="black">:</font>SetVisible<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> visible<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>sprites.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        sprites<font color="black">[</font>refName<font color="black">]</font>.SetVisible<font color="black">(</font>visible<font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sprite \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the frame delay of the &#60;code&#62;Sprite&#60;/code&#62; 
+    at the specified key value.
+    
+    @param refName Key value of the &#60;code&#62;Sprite&#60;/code&#62;
+    @param delay The new frame delay value for the &#60;code&#62;Sprite&#60;/code&#62;
+******************************************************/</font>
+<font color="blue">void</font> SpriteHandler<font color="black">:</font><font color="black">:</font>SetFrameDelay<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> delay<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>sprites.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        sprites<font color="black">[</font>refName<font color="black">]</font>.SetFrameDelay<font color="black">(</font>delay<font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sprite \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the frame delay of the &#60;code&#62;Sprite&#60;/code&#62; 
+    at the specified key value and starts animating
+    the &#60;code&#62;Sprite&#60;/code&#62;.
+    
+    @param refName Key value of the &#60;code&#62;Sprite&#60;/code&#62;
+    @param animate The new frame delay value for the &#60;code&#62;Sprite&#60;/code&#62;.
+                    0 or less stops animation.
+******************************************************/</font>
+<font color="blue">void</font> SpriteHandler<font color="black">:</font><font color="black">:</font>SetAnimation<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> animate<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>sprites.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        sprites<font color="black">[</font>refName<font color="black">]</font>.SetAnimation<font color="black">(</font>animate<font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sprite \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the current frame of animation for the &#60;code&#62;Sprite&#60;/code&#62; 
+    at the specified key value.
+    
+    @param refName Key value of the &#60;code&#62;Sprite&#60;/code&#62;
+    @param frame The frame of animation to display.
+******************************************************/</font>
+<font color="blue">void</font> SpriteHandler<font color="black">:</font><font color="black">:</font>SetFrame<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, <font color="blue">int</font> frame<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>sprites.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+        sprites<font color="black">[</font>refName<font color="black">]</font>.SetFrame<font color="black">(</font>frame<font color="black">)</font>;
+    <font color="blue">else</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sprite \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Sets the associated bitmap file for the &#60;code&#62;Sprite&#60;/code&#62; 
+    at the specified key value.
+    
+    @param refName Key value of the &#60;code&#62;Sprite&#60;/code&#62;
+    @param fileRef The &#60;code&#62;ImageFile&#60;/code&#62; container key value for the bitmap.
+******************************************************/</font>
+<font color="blue">void</font> SpriteHandler<font color="black">:</font><font color="black">:</font>ChangeBitmap<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, std<font color="black">:</font><font color="black">:</font>string fileRef<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>files.count<font color="black">(</font>fileRef<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">if</font><font color="black">(</font>sprites.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
+            sprites<font color="black">[</font>refName<font color="black">]</font>.ChangeBitmap<font color="black">(</font>fileRef<font color="black">)</font>;
+        <font color="blue">else</font>
+            allegro_message<font color="black">(</font><font color="maroon">"Sprite \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="black">}</font>
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Image file reference \"%s\" not found."</font>, fileRef.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>

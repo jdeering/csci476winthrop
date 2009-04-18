@@ -1,0 +1,133 @@
+<HTML>
+<HEAD>
+<TITLE>
+image_file.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#include</font> <font color="maroon">"image_file.h"</font>
+
+
+<font color="green">/******************************************************
+    Default Constructor
+******************************************************/</font>
+ImageFile<font color="black">:</font><font color="black">:</font>ImageFile<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    img <font color="black">=</font> NULL;
+    frame <font color="black">=</font> NULL;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Constructor to set the class data to the specified values.
+    
+    @param file The file path for the bitmap file associated with the object.
+    @param frame_count The number of frames of animation in the file.
+    @param col_count The number of columns of frames in the file.
+    @param w The width of a single animation frame.
+    @param h The height of a single animation frame. 
+******************************************************/</font>
+ImageFile<font color="black">:</font><font color="black">:</font>ImageFile<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file, <font color="blue">int</font> frame_count, <font color="blue">int</font> col_count, <font color="blue">int</font> w, <font color="blue">int</font> h<font color="black">)</font>
+<font color="black">{</font>   
+    img <font color="black">=</font> NULL;
+    filePath <font color="black">=</font> file;
+    frameWidth <font color="black">=</font> w;
+    frameHeight <font color="black">=</font> h;
+    numFrames <font color="black">=</font> frame_count;
+    numCols <font color="black">=</font> col_count;
+    img <font color="black">=</font> load_bitmap<font color="black">(</font>filePath.c_str<font color="black">(</font><font color="black">)</font>, NULL<font color="black">)</font>;
+    frame <font color="black">=</font> create_bitmap<font color="black">(</font>frameWidth, frameHeight<font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font><font color="black">!</font>img<font color="black">)</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Could not find image file reference \"%s\""</font>, file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Default Destructor. 
+    Ensures that the associated BITMAP* memory is released.
+******************************************************/</font>
+ImageFile<font color="black">:</font><font color="black">:</font>~ImageFile<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    scare_mouse<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font>img<font color="black">)</font>
+        destroy_bitmap<font color="black">(</font>img<font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font>frame<font color="black">)</font>
+        destroy_bitmap<font color="black">(</font>frame<font color="black">)</font>;
+    unscare_mouse<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Returns a BITMAP* for the specified frame from the associated bitmap file.
+    
+    @param frameNum The index for the frame to be copied.
+    @param width The desired width of the returned BITMAP. 
+    @param height The desired height of the returned BITMAP. 
+    @return A BITMAP* that is the desired from of size width x height.
+******************************************************/</font>
+BITMAP<font color="black">*</font> ImageFile<font color="black">:</font><font color="black">:</font>GetFrame<font color="black">(</font><font color="blue">int</font> frameNum, <font color="blue">int</font> width, <font color="blue">int</font> height<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>img <font color="black">=</font><font color="black">=</font> NULL<font color="black">)</font> 
+    <font color="black">{</font>
+        <font color="blue">return</font> img; 
+    <font color="black">}</font>
+    <font color="blue">int</font> s_x, s_y;
+    s_x <font color="black">=</font> <font color="black">(</font>frameNum % numCols<font color="black">)</font> <font color="black">*</font> frameWidth;
+    s_y <font color="black">=</font> <font color="black">(</font>frameNum <font color="black">/</font> numCols<font color="black">)</font> <font color="black">*</font> frameHeight;   
+    stretch_blit<font color="black">(</font>img, frame, s_x, s_y, frameWidth, frameHeight, <font color="maroon">0</font>, <font color="maroon">0</font>, width, height<font color="black">)</font>;
+    <font color="blue">return</font> frame;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Gets the number of frames for the associated file.
+    
+    @return The number of frames in the associated bitmap file.
+******************************************************/</font>
+<font color="blue">int</font> ImageFile<font color="black">:</font><font color="black">:</font>GetNumFrames<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font> 
+    <font color="blue">return</font> numFrames; 
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Gets the number of columns of animation frames for the associated file.
+    
+    @return The number of columns of animation frames in the associated bitmap file.
+******************************************************/</font>
+<font color="blue">int</font> ImageFile<font color="black">:</font><font color="black">:</font>GetNumCols<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font> 
+    <font color="blue">return</font> numCols; 
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Gets the width of one frame of animation in the associated file.
+    
+    @return The width of one frame of animation in the associated file.
+******************************************************/</font>
+<font color="blue">int</font> ImageFile<font color="black">:</font><font color="black">:</font>GetWidth<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font> 
+    <font color="blue">return</font> frameWidth; 
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Gets the height of one frame of animation in the associated file.
+    
+    @return The height of one frame of animation in the associated file.
+******************************************************/</font>
+<font color="blue">int</font> ImageFile<font color="black">:</font><font color="black">:</font>GetHeight<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font> 
+    <font color="blue">return</font> frameHeight; 
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Gets whether or not the associated bitmap file has been loaded.
+    
+    @return &#60;code&#62;true&#60;/code&#62; if the file has been loaded successfully, &#60;code&#62;false&#60;/code&#62; otherwise.
+******************************************************/</font>
+<font color="blue">bool</font> ImageFile<font color="black">:</font><font color="black">:</font>isValid<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>img <font color="black">=</font><font color="black">=</font> NULL<font color="black">)</font> <font color="blue">return</font> <font color="blue">false</font>;
+    <font color="blue">return</font> <font color="blue">true</font>;
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>
