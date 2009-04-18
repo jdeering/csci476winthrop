@@ -1,0 +1,1094 @@
+<HTML>
+<HEAD>
+<TITLE>
+engine.cpp
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="blue">#include</font> <font color="maroon">"engine.h"</font>
+<font color="blue">#include</font> <font color="maroon">"GameFramework.h"</font>
+
+Framework<font color="black">*</font> Framework<font color="black">:</font><font color="black">:</font>inst <font color="black">=</font> NULL;
+
+Framework<font color="black">*</font> Framework<font color="black">:</font><font color="black">:</font>Instance<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string user<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font><font color="black">!</font>inst<font color="black">)</font>
+    <font color="black">{</font>
+        inst <font color="black">=</font> <font color="blue">new</font> Framework<font color="black">(</font>user<font color="black">)</font>;
+    <font color="black">}</font>
+    <font color="blue">return</font> inst;
+<font color="black">}</font>
+
+Framework<font color="black">:</font><font color="black">:</font>Framework<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    gameRunning <font color="black">=</font> <font color="blue">false</font>;
+    username <font color="black">=</font> <font color="maroon">"Anonymous"</font>;
+    active <font color="black">=</font> <font color="blue">true</font>;
+    gameCount <font color="black">=</font> <font color="maroon">0</font>;
+    options.VOLUME <font color="black">=</font> <font color="maroon">128</font>;
+    options.TTS <font color="black">=</font> <font color="blue">false</font>;
+    menuRunning <font color="black">=</font> <font color="blue">true</font>;
+<font color="black">}</font>
+
+Framework<font color="black">:</font><font color="black">:</font>Framework<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string user<font color="black">)</font>
+<font color="black">{</font>
+    gameRunning <font color="black">=</font> <font color="blue">false</font>;
+    username <font color="black">=</font> user;
+    active <font color="black">=</font> <font color="blue">true</font>;
+    gameCount <font color="black">=</font> <font color="maroon">0</font>;
+    options.VOLUME <font color="black">=</font> <font color="maroon">128</font>;
+    options.TTS <font color="black">=</font> <font color="blue">false</font>;
+    LoadGames<font color="black">(</font><font color="black">)</font>;
+    menuRunning <font color="black">=</font> <font color="blue">true</font>;
+    LaunchGame<font color="black">(</font><font color="maroon">0</font><font color="black">)</font>;
+    buffer <font color="black">=</font> create_bitmap<font color="black">(</font><font color="maroon">800</font>, <font color="maroon">600</font><font color="black">)</font>;
+<font color="black">}</font>
+
+Framework<font color="black">:</font><font color="black">:</font>~Framework<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    show_mouse<font color="black">(</font>NULL<font color="black">)</font>;
+    destroy_bitmap<font color="black">(</font>buffer<font color="black">)</font>;
+    active <font color="black">=</font> <font color="blue">false</font>;
+    inst <font color="black">=</font> NULL;
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadImages<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>wstring file<font color="black">(</font>file_name.begin<font color="black">(</font><font color="black">)</font>, file_name.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    imgXML.Load<font color="black">(</font>file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    LoadImages<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadAudio<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>wstring file<font color="black">(</font>file_name.begin<font color="black">(</font><font color="black">)</font>, file_name.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    audXML.Load<font color="black">(</font>file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    LoadAudio<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>wstring file<font color="black">(</font>file_name.begin<font color="black">(</font><font color="black">)</font>, file_name.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    txtXML.Load<font color="black">(</font>file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    LoadText<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadImages<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    imgXML.FindElem<font color="black">(</font><font color="black">)</font>;
+
+    <font color="blue">while</font><font color="black">(</font>imgXML.FindChildElem<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"image"</font><font color="black">)</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        imgXML.IntoElem<font color="black">(</font><font color="black">)</font>;
+        <font color="green">// Get attributes</font>
+        std<font color="black">:</font><font color="black">:</font>wstring atFile <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"file"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atRef <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"ref"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atNumFrames <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"numFrames"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atNumFrameCol <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"numFrameCol"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atWidth <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"frameWidth"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atHeight <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"frameHeight"</font><font color="black">)</font><font color="black">)</font>;
+        <font color="green">// Set variables for attributes</font>
+        std<font color="black">:</font><font color="black">:</font>string file<font color="black">(</font>atFile.begin<font color="black">(</font><font color="black">)</font>, atFile.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string ref<font color="black">(</font>atRef.begin<font color="black">(</font><font color="black">)</font>, atRef.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string numFrames<font color="black">(</font>atNumFrames.begin<font color="black">(</font><font color="black">)</font>, atNumFrames.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string numFrameCol<font color="black">(</font>atNumFrameCol.begin<font color="black">(</font><font color="black">)</font>, atNumFrameCol.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string width<font color="black">(</font>atWidth.begin<font color="black">(</font><font color="black">)</font>, atWidth.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string height<font color="black">(</font>atHeight.begin<font color="black">(</font><font color="black">)</font>, atHeight.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        imgXML.OutOfElem<font color="black">(</font><font color="black">)</font>;
+        
+        <font color="green">// Add file to sprite handler</font>
+        sprites.AddFile<font color="black">(</font>ref, file, atoi<font color="black">(</font>numFrames.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>, atoi<font color="black">(</font>numFrameCol.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>, atoi<font color="black">(</font>width.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>, atoi<font color="black">(</font>height.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font><font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadAudio<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    SAMPLE <font color="black">*</font>temp <font color="black">=</font> NULL;
+    audXML.FindElem<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">bool</font> loopVal <font color="black">=</font> <font color="blue">false</font>;
+    <font color="blue">while</font><font color="black">(</font>audXML.FindChildElem<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"audio"</font><font color="black">)</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        audXML.IntoElem<font color="black">(</font><font color="black">)</font>;
+        <font color="green">// Get attributes</font>
+        std<font color="black">:</font><font color="black">:</font>wstring atFile <font color="black">=</font> audXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"file"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atRef <font color="black">=</font> audXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"ref"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atLoop <font color="black">=</font> audXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"loop"</font><font color="black">)</font><font color="black">)</font>;
+
+        <font color="green">// Set variables for attributes</font>
+        std<font color="black">:</font><font color="black">:</font>string file<font color="black">(</font>atFile.begin<font color="black">(</font><font color="black">)</font>, atFile.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string ref<font color="black">(</font>atRef.begin<font color="black">(</font><font color="black">)</font>, atRef.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string loop<font color="black">(</font>atLoop.begin<font color="black">(</font><font color="black">)</font>, atLoop.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        audXML.OutOfElem<font color="black">(</font><font color="black">)</font>;
+
+        <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>loop.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"true"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+            loopVal <font color="black">=</font> <font color="blue">true</font>;
+        <font color="blue">else</font> <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>loop.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"false"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+            loopVal <font color="black">=</font> <font color="blue">false</font>;
+        <font color="blue">else</font>
+        <font color="black">{</font>
+            allegro_message<font color="black">(</font><font color="maroon">"Error in Audio XML file (loop value)."</font><font color="black">)</font>;
+            active <font color="black">=</font> <font color="blue">false</font>;
+            <font color="blue">return</font>;
+        <font color="black">}</font>
+
+        temp <font color="black">=</font> load_sample<font color="black">(</font>file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        <font color="blue">if</font><font color="black">(</font><font color="black">!</font>temp<font color="black">)</font>
+        <font color="black">{</font>
+            allegro_message<font color="black">(</font><font color="maroon">"File not found at \"%s\". Audio Sample \"%s\" not added."</font>, file.c_str<font color="black">(</font><font color="black">)</font>, ref.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+            active <font color="black">=</font> <font color="blue">false</font>;
+        <font color="black">}</font>
+        <font color="blue">else</font>
+            audioObjects.AddSample<font color="black">(</font>ref, temp, loopVal<font color="black">)</font>;
+    <font color="black">}</font>
+    destroy_sample<font color="black">(</font>temp<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadText<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    txtXML.FindElem<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">int</font> x, y;
+    <font color="blue">bool</font> visVal <font color="black">=</font> <font color="blue">false</font>;
+    <font color="blue">while</font><font color="black">(</font>txtXML.FindChildElem<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"text"</font><font color="black">)</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        x<font color="black">=</font><font color="maroon">0</font>; y<font color="black">=</font><font color="maroon">0</font>;
+        txtXML.IntoElem<font color="black">(</font><font color="black">)</font>;
+        <font color="green">// Get attributes</font>
+        std<font color="black">:</font><font color="black">:</font>wstring atString <font color="black">=</font> txtXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"std::string"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atRef <font color="black">=</font> txtXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"ref"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atX <font color="black">=</font> txtXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"x"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atY <font color="black">=</font> txtXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"y"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atVisible <font color="black">=</font> txtXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"visible"</font><font color="black">)</font><font color="black">)</font>;
+
+        <font color="green">// Set variables for attributes</font>
+        std<font color="black">:</font><font color="black">:</font>string textString<font color="black">(</font>atString.begin<font color="black">(</font><font color="black">)</font>, atString.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string ref<font color="black">(</font>atRef.begin<font color="black">(</font><font color="black">)</font>, atRef.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string xLoc<font color="black">(</font>atX.begin<font color="black">(</font><font color="black">)</font>, atX.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string yLoc<font color="black">(</font>atY.begin<font color="black">(</font><font color="black">)</font>, atY.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string visible<font color="black">(</font>atVisible.begin<font color="black">(</font><font color="black">)</font>, atVisible.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        txtXML.OutOfElem<font color="black">(</font><font color="black">)</font>;
+        x <font color="black">=</font> atoi<font color="black">(</font>xLoc.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        y <font color="black">=</font> atoi<font color="black">(</font>yLoc.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+
+        <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>visible.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"true"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+            visVal <font color="black">=</font> <font color="blue">true</font>;
+        <font color="blue">else</font> <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>visible.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"false"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+            visVal <font color="black">=</font> <font color="blue">false</font>;
+        <font color="blue">else</font>
+        <font color="black">{</font>
+            allegro_message<font color="black">(</font><font color="maroon">"Error in Audio XML file (loop value)."</font><font color="black">)</font>;
+            active <font color="black">=</font> <font color="blue">false</font>;
+            <font color="blue">return</font>;
+        <font color="black">}</font>
+
+        textObjects.AddText<font color="black">(</font>ref, textString, x, y, visVal<font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>UpdateSprites<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    scare_mouse<font color="black">(</font><font color="black">)</font>;
+    clear_to_color<font color="black">(</font>buffer, makecol<font color="black">(</font><font color="maroon">0</font>, <font color="maroon">0</font>, <font color="maroon">0</font><font color="black">)</font><font color="black">)</font>;
+    sprites.DrawSprites<font color="black">(</font>buffer<font color="black">)</font>;
+    unscare_mouse<font color="black">(</font><font color="black">)</font>;
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>UpdateText<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    textObjects.ShowAllVisible<font color="black">(</font>buffer<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">bool</font> Framework<font color="black">:</font><font color="black">:</font>MessageLoop<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>key<font color="black">[</font>KEY_ESC<font color="black">]</font> <font color="black">|</font><font color="black">|</font> <font color="black">!</font>active<font color="black">)</font>
+    <font color="black">{</font>
+        <font color="green">//Kill Program</font>
+        active <font color="black">=</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+
+    UpdateSprites<font color="black">(</font><font color="black">)</font>;
+    UpdateText<font color="black">(</font><font color="black">)</font>;
+    UpdateMouse<font color="black">(</font><font color="black">)</font>;
+    UpdateKeyboard<font color="black">(</font><font color="black">)</font>;
+    UpdateOptions<font color="black">(</font><font color="black">)</font>;
+    <font color="green">//if(gameRunning)</font>
+    <font color="green">//{</font>
+        <font color="green">//GetMessages();        </font>
+    <font color="green">//}</font>
+    <font color="green">//CheckErrors();</font>
+    <font color="blue">return</font> active;
+<font color="black">}</font>
+
+<font color="blue">bool</font> Framework<font color="black">:</font><font color="black">:</font>MainLoop<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">bool</font> retVal <font color="black">=</font> MessageLoop<font color="black">(</font><font color="black">)</font>;    
+    acquire_screen<font color="black">(</font><font color="black">)</font>;
+    blit<font color="black">(</font>buffer, screen, <font color="maroon">0</font>, <font color="maroon">0</font>, <font color="maroon">0</font>, <font color="maroon">0</font>, <font color="maroon">800</font>, <font color="maroon">600</font><font color="black">)</font>;
+    release_screen<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">return</font> retVal;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>CreateMessagePipes<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    SECURITY_ATTRIBUTES saAttr; 
+    saAttr.nLength <font color="black">=</font> <font color="blue">sizeof</font><font color="black">(</font>SECURITY_ATTRIBUTES<font color="black">)</font>; 
+    saAttr.bInheritHandle <font color="black">=</font> TRUE; 
+    saAttr.lpSecurityDescriptor <font color="black">=</font> NULL;
+
+    <font color="green">// Create a pipe for the child process's STDOUT. </font>
+
+    <font color="blue">if</font> <font color="black">(</font> <font color="black">!</font> CreatePipe<font color="black">(</font><font color="black">&</font>hStdIn_Parent, <font color="black">&</font>hStdOut_Child, <font color="black">&</font>saAttr, <font color="maroon">0</font><font color="black">)</font> <font color="black">)</font> 
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Error creating output pipe."</font><font color="black">)</font>;
+        active <font color="black">=</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+
+    <font color="green">// Ensure the read handle to the pipe for STDOUT is not inherited.</font>
+
+    <font color="blue">if</font> <font color="black">(</font> <font color="black">!</font> SetHandleInformation<font color="black">(</font>hStdIn_Parent, HANDLE_FLAG_INHERIT, <font color="maroon">0</font><font color="black">)</font> <font color="black">)</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Error setting handle information."</font><font color="black">)</font>;
+        active <font color="black">=</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+
+    <font color="green">// Create a pipe for the child process's STDIN. </font>
+
+    <font color="blue">if</font> <font color="black">(</font> <font color="black">!</font> CreatePipe<font color="black">(</font><font color="black">&</font>hStdIn_Child, <font color="black">&</font>hStdOut_Parent, <font color="black">&</font>saAttr, <font color="maroon">0</font><font color="black">)</font> <font color="black">)</font> 
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Error creating input pipe."</font><font color="black">)</font>;
+        active <font color="black">=</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+
+    <font color="green">// Ensure the write handle to the pipe for STDIN is not inherited.</font>
+
+    <font color="blue">if</font> <font color="black">(</font> <font color="black">!</font> SetHandleInformation<font color="black">(</font>hStdOut_Parent, HANDLE_FLAG_INHERIT, <font color="maroon">0</font><font color="black">)</font> <font color="black">)</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Error setting handle information."</font><font color="black">)</font>;
+        active <font color="black">=</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+    
+    SetNamedPipeHandleState<font color="black">(</font>hStdOut_Parent, PIPE_WAIT, NULL, NULL<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LaunchGame<font color="black">(</font><font color="blue">int</font> gameNum<font color="black">)</font>
+<font color="black">{</font>
+    LoadGameAssets<font color="black">(</font>gameNum<font color="black">)</font>;
+    <font color="green">//CreateMessagePipes();</font>
+    <font color="green">//std::string gameExe = "modules/"+games[gameNum].path + games[gameNum].name + ".exe";</font>
+    <font color="green">//std::wstring gameToLaunch(gameExe.begin(), gameExe.end());</font>
+    <font color="green">//TCHAR szCmdline[]=TEXT("modules\\Wordplay\\Wordplay.exe");</font>
+    <font color="green">//CreateGameProcess(gameToLaunch);</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadGames<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>   
+    gameList.Load<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"data/Games.xml"</font><font color="black">)</font><font color="black">)</font>;
+    gameList.FindElem<font color="black">(</font><font color="black">)</font>;
+
+    <font color="blue">while</font><font color="black">(</font>gameList.FindChildElem<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"game"</font><font color="black">)</font><font color="black">)</font> <font color="black">&</font><font color="black">&</font> gameCount <font color="black">&#60;</font> <font color="maroon">4</font><font color="black">)</font>
+    <font color="black">{</font>
+        gameList.IntoElem<font color="black">(</font><font color="black">)</font>;
+        <font color="green">// Get attributes</font>
+        std<font color="black">:</font><font color="black">:</font>wstring atPath <font color="black">=</font> gameList.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"path"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atName <font color="black">=</font> gameList.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"name"</font><font color="black">)</font><font color="black">)</font>;
+        <font color="green">// Get Asset XML File Paths</font>
+        gameList.FindChildElem<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"imageFile"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atImageXMLPath <font color="black">=</font> gameList.GetChildData<font color="black">(</font><font color="black">)</font>;
+        gameList.FindChildElem<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"audioFile"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atAudioXMLPath <font color="black">=</font> gameList.GetChildData<font color="black">(</font><font color="black">)</font>;      
+        gameList.FindChildElem<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"textFile"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atTextXMLPath <font color="black">=</font> gameList.GetChildData<font color="black">(</font><font color="black">)</font>;
+        gameList.FindChildElem<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"icon"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atIconWidth <font color="black">=</font> gameList.GetChildAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"width"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atIconHeight <font color="black">=</font> gameList.GetChildAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"height"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atIconPath <font color="black">=</font> gameList.GetChildData<font color="black">(</font><font color="black">)</font>;
+        gameList.OutOfElem<font color="black">(</font><font color="black">)</font>;
+
+        <font color="green">// Set variables for attributes</font>
+        std<font color="black">:</font><font color="black">:</font>string path<font color="black">(</font>atPath.begin<font color="black">(</font><font color="black">)</font>, atPath.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string <font color="blue">name</font><font color="black">(</font>atName.begin<font color="black">(</font><font color="black">)</font>, atName.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string image<font color="black">(</font>atImageXMLPath.begin<font color="black">(</font><font color="black">)</font>, atImageXMLPath.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string audio<font color="black">(</font>atAudioXMLPath.begin<font color="black">(</font><font color="black">)</font>, atAudioXMLPath.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string text<font color="black">(</font>atTextXMLPath.begin<font color="black">(</font><font color="black">)</font>, atTextXMLPath.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string iconPath<font color="black">(</font>atIconPath.begin<font color="black">(</font><font color="black">)</font>, atIconPath.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string iconWidth<font color="black">(</font>atIconWidth.begin<font color="black">(</font><font color="black">)</font>, atIconWidth.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string iconHeight<font color="black">(</font>atIconHeight.begin<font color="black">(</font><font color="black">)</font>, atIconHeight.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        games<font color="black">[</font>gameCount<font color="black">]</font>.path <font color="black">=</font> path;
+        games<font color="black">[</font>gameCount<font color="black">]</font>.<font color="blue">name</font> <font color="black">=</font> <font color="blue">name</font>;
+        games<font color="black">[</font>gameCount<font color="black">]</font>.imageFile <font color="black">=</font> image;
+        games<font color="black">[</font>gameCount<font color="black">]</font>.audioFile <font color="black">=</font> audio;
+        games<font color="black">[</font>gameCount<font color="black">]</font>.textFile <font color="black">=</font> text;
+        games<font color="black">[</font>gameCount<font color="black">]</font>.icon.path <font color="black">=</font> iconPath;
+        games<font color="black">[</font>gameCount<font color="black">]</font>.icon.width <font color="black">=</font> atoi<font color="black">(</font>iconWidth.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        games<font color="black">[</font>gameCount<font color="black">]</font>.icon.height <font color="black">=</font> atoi<font color="black">(</font>iconHeight.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        gameCount<font color="black">+</font><font color="black">+</font>;
+    <font color="black">}</font>
+    <font color="blue">for</font><font color="black">(</font><font color="blue">int</font> i <font color="black">=</font> <font color="maroon">0</font>; i <font color="black">&#60;</font> gameCount; i<font color="black">+</font><font color="black">+</font><font color="black">)</font>
+    <font color="black">{</font>
+        
+        <font color="blue">char</font> temp<font color="black">[</font><font color="maroon">3</font><font color="black">]</font>;
+        itoa<font color="black">(</font>i, temp, <font color="maroon">10</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string iconName<font color="black">(</font>temp<font color="black">)</font>;
+        <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>games<font color="black">[</font>i<font color="black">]</font>.icon.path.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">""</font><font color="black">)</font> <font color="black">!</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+        <font color="black">{</font>
+            iconName <font color="black">=</font> <font color="maroon">"gameicon."</font> <font color="black">+</font> iconName;
+            sprites.AddFile<font color="black">(</font>iconName, games<font color="black">[</font>i<font color="black">]</font>.path <font color="black">+</font> games<font color="black">[</font>i<font color="black">]</font>.icon.path, games<font color="black">[</font>gameCount<font color="black">]</font>.icon.width, games<font color="black">[</font>gameCount<font color="black">]</font>.icon.height, <font color="maroon">1</font>, <font color="maroon">1</font><font color="black">)</font>;
+        <font color="black">}</font>
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LaunchGame<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string appPath<font color="black">)</font>
+<font color="black">{</font> 
+    std<font color="black">:</font><font color="black">:</font>wstring szCmdline<font color="black">(</font>appPath.begin<font color="black">(</font><font color="black">)</font>, appPath.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    PROCESS_INFORMATION piProcInfo; 
+    STARTUPINFO siStartInfo;
+    BOOL bSuccess <font color="black">=</font> FALSE; 
+
+    <font color="green">// Set up members of the PROCESS_INFORMATION structure. </font>
+
+    ZeroMemory<font color="black">(</font> <font color="black">&</font>piProcInfo, <font color="blue">sizeof</font><font color="black">(</font>PROCESS_INFORMATION<font color="black">)</font> <font color="black">)</font>;
+
+    <font color="green">// Set up members of the STARTUPINFO structure. </font>
+    <font color="green">// This structure specifies the STDIN and STDOUT handles for redirection.</font>
+
+    ZeroMemory<font color="black">(</font> <font color="black">&</font>siStartInfo, <font color="blue">sizeof</font><font color="black">(</font>STARTUPINFO<font color="black">)</font> <font color="black">)</font>;
+    siStartInfo.cb <font color="black">=</font> <font color="blue">sizeof</font><font color="black">(</font>STARTUPINFO<font color="black">)</font>; 
+    <font color="green">//siStartInfo.hStdError = hStdOut_Child;</font>
+    siStartInfo.hStdOutput <font color="black">=</font> hStdOut_Child;
+    <font color="green">//siStartInfo.hStdInput = hStdIn_Child;</font>
+    siStartInfo.lpTitle <font color="black">=</font> L<font color="maroon">"Game Module"</font>;
+    siStartInfo.dwFlags <font color="black">|</font><font color="black">=</font> STARTF_USESTDHANDLES;
+
+    <font color="green">// Create the child process. </font>
+
+    bSuccess <font color="black">=</font> CreateProcess<font color="black">(</font>szCmdline.c_str<font color="black">(</font><font color="black">)</font>, 
+    NULL,     <font color="green">// command line </font>
+    NULL,          <font color="green">// process security attributes </font>
+    NULL,          <font color="green">// primary thread security attributes </font>
+    TRUE,          <font color="green">// handles are inherited </font>
+    <font color="maroon">0</font>,             <font color="green">// creation flags </font>
+    NULL,          <font color="green">// use parent's environment </font>
+    NULL,          <font color="green">// use parent's current directory </font>
+    <font color="black">&</font>siStartInfo,  <font color="green">// STARTUPINFO pointer </font>
+    <font color="black">&</font>piProcInfo<font color="black">)</font>;  <font color="green">// receives PROCESS_INFORMATION </font>
+
+    <font color="green">// If an error occurs, exit the application. </font>
+    <font color="blue">if</font> <font color="black">(</font> <font color="black">!</font> bSuccess <font color="black">)</font> 
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Game could not launch."</font><font color="black">)</font>;
+        active <font color="black">=</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+    <font color="blue">else</font> 
+    <font color="black">{</font>
+    <font color="green">// Close handles to the child process and its primary thread.</font>
+    <font color="green">// Some applications might keep these handles to monitor the status</font>
+    <font color="green">// of the child process, for example. </font>
+        gameRunning <font color="black">=</font> <font color="blue">true</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>GetMessages<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    DWORD bytesRead, bytesAvail, bytesLeft;
+    std<font color="black">:</font><font color="black">:</font>stringstream msgStream;
+    msgStream.clear<font color="black">(</font><font color="black">)</font>;
+    PeekNamedPipe<font color="black">(</font>hStdIn_Parent, incMessage, MAX_MESSAGE_SIZE, <font color="black">&</font>bytesRead, <font color="black">&</font>bytesAvail, NULL<font color="black">)</font>;
+    <font color="blue">if</font> <font color="black">(</font>bytesRead <font color="black">!</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+    <font color="black">{</font>
+        clearBuffer<font color="black">(</font><font color="black">)</font>;
+        <font color="blue">if</font> <font color="black">(</font>bytesAvail <font color="black">&#62;</font> MAX_MESSAGE_SIZE<font color="black">)</font>
+        <font color="black">{</font>
+            cout <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">"Filled Read Pipe."</font> <font color="black">&#60;</font><font color="black">&#60;</font> endl;
+            <font color="blue">while</font> <font color="black">(</font>bytesRead <font color="black">&#62;</font><font color="black">=</font> MAX_MESSAGE_SIZE<font color="black">)</font>
+            <font color="black">{</font>
+                clearBuffer<font color="black">(</font><font color="black">)</font>;
+                <font color="green">// input handle, buffer, max message size, DWORD for bytesRead</font>
+                ReadFile<font color="black">(</font>hStdIn_Parent, incMessage, MAX_MESSAGE_SIZE, <font color="black">&</font>bytesRead, NULL<font color="black">)</font>;
+                msgStream.write<font color="black">(</font>incMessage, bytesRead<font color="black">)</font>; <font color="green">// copy message to std::stringstream</font>
+                ParseMessage<font color="black">(</font>msgStream<font color="black">)</font>;
+            <font color="black">}</font>
+        <font color="black">}</font>
+        <font color="blue">else</font> 
+        <font color="black">{</font>
+            <font color="green">// input handle, buffer, max message size, DWORD for bytesRead</font>
+            ReadFile<font color="black">(</font>hStdIn_Parent, incMessage, MAX_MESSAGE_SIZE, <font color="black">&</font>bytesRead, NULL<font color="black">)</font>;
+            msgStream.write<font color="black">(</font>incMessage, bytesRead<font color="black">)</font>; <font color="green">// copy message to std::stringstream</font>
+            ParseMessage<font color="black">(</font>msgStream<font color="black">)</font>;
+        <font color="black">}</font>
+    <font color="black">}</font>
+    clearBuffer<font color="black">(</font><font color="black">)</font>; <font color="green">// clears incMessage</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>sendMessage<font color="black">(</font><font color="blue">const</font> <font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    DWORD bytesWritten;
+    std<font color="black">:</font><font color="black">:</font>string message<font color="black">(</font>msg<font color="black">)</font>;
+    WriteFile<font color="black">(</font>hStdOut_Parent, message.c_str<font color="black">(</font><font color="black">)</font>, message.size<font color="black">(</font><font color="black">)</font>, <font color="black">&</font>bytesWritten, NULL<font color="black">)</font>;
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>CreateSprite<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">int</font> x, y, w, h;
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">25</font><font color="black">]</font>, imageReference<font color="black">[</font><font color="maroon">25</font><font color="black">]</font>;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %s %d %d %d %d"</font>, reference, imageReference, <font color="black">&</font>x, <font color="black">&</font>y, <font color="black">&</font>w, <font color="black">&</font>h<font color="black">)</font>;
+    std<font color="black">:</font><font color="black">:</font>string str_reference <font color="black">=</font> reference;
+    std<font color="black">:</font><font color="black">:</font>string str_imageReference <font color="black">=</font> imageReference;
+    sprites.AddSprite<font color="black">(</font>str_reference, str_imageReference, x<font color="black">+</font>XOFFSET, y, w, h<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font> CreateSpriteRefDimensions<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">int</font> x, y;
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">25</font><font color="black">]</font>, imageReference<font color="black">[</font><font color="maroon">25</font><font color="black">]</font>;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %s %d %d"</font>, reference, imageReference, <font color="black">&</font>x, <font color="black">&</font>y<font color="black">)</font>;
+    std<font color="black">:</font><font color="black">:</font>string str_reference <font color="black">=</font> reference;
+    std<font color="black">:</font><font color="black">:</font>string str_imageReference <font color="black">=</font> imageReference;
+    sprites.AddSprite<font color="black">(</font>str_reference, str_imageReference, x<font color="black">+</font>XOFFSET, y<font color="black">)</font>;
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>KillSprite<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s"</font>, reference<font color="black">)</font>;
+    std<font color="black">:</font><font color="black">:</font>string str_reference <font color="black">=</font> reference;
+    <font color="blue">if</font><font color="black">(</font><font color="black">!</font>sprites.RemoveSprite<font color="black">(</font>str_reference<font color="black">)</font><font color="black">)</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Sprite %s could not be removed"</font>, str_reference.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>ShowSprite<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">int</font> vis;
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d"</font>, reference, <font color="black">&</font>vis<font color="black">)</font>;
+    sprites.SetVisible<font color="black">(</font>reference, vis<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>SetSpriteSize<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> w, h;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d %d"</font>, reference, <font color="black">&</font>w, <font color="black">&</font>h<font color="black">)</font>;
+    sprites.SetSpriteSize<font color="black">(</font>reference, w, h<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>SetSpriteLocation<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> x, y;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d %d"</font>, reference, <font color="black">&</font>x, <font color="black">&</font>y<font color="black">)</font>;
+    printf<font color="black">(</font><font color="maroon">"Setting location for %s at %d , %d\n"</font>, reference, x, y<font color="black">)</font>;
+    sprites.SetSpriteLocation<font color="black">(</font>reference, x<font color="black">+</font>XOFFSET, y<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>SetFrameDelay<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> delay;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d"</font>, reference, <font color="black">&</font>delay<font color="black">)</font>;
+    sprites.SetFrameDelay<font color="black">(</font>reference, delay<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>SetAnimation<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> animate;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d"</font>, reference, <font color="black">&</font>animate<font color="black">)</font>;
+    sprites.SetAnimation<font color="black">(</font>reference, animate<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>SetFrame<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> frame;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d"</font>, reference, <font color="black">&</font>frame<font color="black">)</font>;
+    printf<font color="black">(</font><font color="maroon">"Getting frame for %s\n"</font>, reference<font color="black">)</font>;
+    sprites.SetFrame<font color="black">(</font>reference, frame<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>MoveSprite<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> x, y, speed;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d %d %d"</font>, reference, <font color="black">&</font>x, <font color="black">&</font>y, <font color="black">&</font>speed<font color="black">)</font>;
+    sprites.MoveSprite<font color="black">(</font>reference, x<font color="black">+</font>XOFFSET, y, speed<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>SetTextPosition<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> x, y;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d %d"</font>, reference, <font color="black">&</font>x, <font color="black">&</font>y<font color="black">)</font>;
+    textObjects.SetTextPosition<font color="black">(</font>reference, x, y<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>SetTextSize<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> size;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d"</font>, reference, <font color="black">&</font>size<font color="black">)</font>;
+    textObjects.SetSize<font color="black">(</font>reference, size<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>SetTextColor<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> r, g, b;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d %d %d"</font>, reference, <font color="black">&</font>r, <font color="black">&</font>g, <font color="black">&</font>b<font color="black">)</font>;
+    textObjects.SetColor<font color="black">(</font>reference, r, g, b<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>SetTextBackgroundColor<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> r, g, b;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d %d %d"</font>, reference, <font color="black">&</font>r, <font color="black">&</font>g, <font color="black">&</font>b<font color="black">)</font>;
+    textObjects.SetBackgroundColor<font color="black">(</font>reference, r, g, b<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>ShowText<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> show;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d"</font>, reference, <font color="black">&</font>show<font color="black">)</font>;
+    textObjects.ShowText<font color="black">(</font>reference, show, buffer<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>PlayFile<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s"</font>, reference<font color="black">)</font>;
+    audioObjects.PlaySample<font color="black">(</font>reference, options.VOLUME<font color="black">)</font>; <font color="green">// EDIT volume</font>
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>ResetLoop<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    <font color="blue">int</font> loop;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d"</font>, reference, <font color="black">&</font>loop<font color="black">)</font>;
+    audioObjects.ResetLoopFlag<font color="black">(</font>reference, loop<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>StopFile<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s"</font>, reference<font color="black">)</font>;
+    audioObjects.StopSample<font color="black">(</font>reference<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>PostScore<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">int</font> score;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %d"</font>, <font color="black">&</font>score<font color="black">)</font>;
+    gameRunning <font color="black">=</font> <font color="blue">false</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>UpdateMouse<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>string mouse_message <font color="black">=</font> <font color="maroon">""</font>;
+    std<font color="black">:</font><font color="black">:</font>stringstream message;
+    <font color="blue">int</font> button, state, x, y;
+    mouse.Update<font color="black">(</font>x, y<font color="black">)</font>;
+    message.clear<font color="black">(</font><font color="black">)</font>;
+    message <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">"101 "</font> <font color="black">&#60;</font><font color="black">&#60;</font> x <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">" "</font> <font color="black">&#60;</font><font color="black">&#60;</font> y;
+    mouse_message <font color="black">=</font> message.str<font color="black">(</font><font color="black">)</font>;
+    <font color="green">//sendMessage(mouse_message.c_str());</font>
+    GameFramework<font color="black">:</font><font color="black">:</font>mouseMessage<font color="black">(</font>mouse_message.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    message.clear<font color="black">(</font><font color="black">)</font>;
+    message.str<font color="black">(</font><font color="maroon">""</font><font color="black">)</font>;
+    mouse_message.clear<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font>mouse.StateChange<font color="black">(</font>button, state, x, y<font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        std<font color="black">:</font><font color="black">:</font>string sprite_name <font color="black">=</font> sprites.CheckClicks<font color="black">(</font>mouse.GetPointer<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        <font color="blue">if</font><font color="black">(</font>x <font color="black">&#62;</font><font color="black">=</font> <font color="maroon">0</font> <font color="black">&</font><font color="black">&</font> x <font color="black">&#60;</font><font color="black">=</font> <font color="maroon">600</font> <font color="black">&</font><font color="black">&</font> y <font color="black">&#62;</font><font color="black">=</font> <font color="maroon">0</font> <font color="black">&</font><font color="black">&</font> y <font color="black">&#60;</font><font color="black">=</font> <font color="maroon">600</font><font color="green">/* && gameRunning*/</font><font color="black">)</font> <font color="green">// Game event</font>
+        <font color="black">{</font>
+            cout <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">"Click at ("</font><font color="black">&#60;</font><font color="black">&#60;</font> x <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">","</font> <font color="black">&#60;</font><font color="black">&#60;</font> y <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">")."</font> <font color="black">&#60;</font><font color="black">&#60;</font> endl;
+            message.clear<font color="black">(</font><font color="black">)</font>;
+            message.str<font color="black">(</font><font color="maroon">""</font><font color="black">)</font>;
+            message <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">"102 "</font> <font color="black">&#60;</font><font color="black">&#60;</font> button <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">" "</font> <font color="black">&#60;</font><font color="black">&#60;</font> state <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">" "</font> <font color="black">&#60;</font><font color="black">&#60;</font> x <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">" "</font> <font color="black">&#60;</font><font color="black">&#60;</font> y <font color="black">&#60;</font><font color="black">&#60;</font> endl;
+            mouse_message <font color="black">=</font> message.str<font color="black">(</font><font color="black">)</font>;
+            <font color="green">//sendMessage(mouse_message.c_str());</font>
+            GameFramework<font color="black">:</font><font color="black">:</font>mouseMessage<font color="black">(</font>mouse_message.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+            message.clear<font color="black">(</font><font color="black">)</font>;
+            mouse_message.clear<font color="black">(</font><font color="black">)</font>;
+            <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>sprite_name.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">""</font><font color="black">)</font> <font color="black">!</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+            <font color="black">{</font>               
+                message.clear<font color="black">(</font><font color="black">)</font>;
+                message.str<font color="black">(</font><font color="maroon">""</font><font color="black">)</font>;
+                message <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">"103 "</font> <font color="black">&#60;</font><font color="black">&#60;</font> button <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">" "</font> <font color="black">&#60;</font><font color="black">&#60;</font> state <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">" "</font> <font color="black">&#60;</font><font color="black">&#60;</font> sprite_name.c_str<font color="black">(</font><font color="black">)</font> <font color="black">&#60;</font><font color="black">&#60;</font> endl;
+                mouse_message <font color="black">=</font> message.str<font color="black">(</font><font color="black">)</font>;
+                <font color="green">//sendMessage(mouse_message.c_str());</font>
+                GameFramework<font color="black">:</font><font color="black">:</font>mouseMessage<font color="black">(</font>mouse_message.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+                message.clear<font color="black">(</font><font color="black">)</font>;
+                mouse_message.clear<font color="black">(</font><font color="black">)</font>;
+            <font color="black">}</font>
+        <font color="black">}</font>
+        <font color="blue">else</font> <font color="green">// Framework event</font>
+        <font color="black">{</font>
+            x <font color="black">+</font><font color="black">=</font> XOFFSET; <font color="green">// Reset x to reflect entire screen instead of only the game window</font>
+            std<font color="black">:</font><font color="black">:</font>string sprite_name <font color="black">=</font> sprites.CheckClicks<font color="black">(</font>mouse.GetPointer<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        <font color="black">}</font>
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>UpdateKeyboard<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">int</font> key, state;
+    std<font color="black">:</font><font color="black">:</font>string key_message;
+    std<font color="black">:</font><font color="black">:</font>stringstream message;
+    <font color="blue">while</font><font color="black">(</font>keyboard.StateChange<font color="black">(</font>key, state<font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        key_message.clear<font color="black">(</font><font color="black">)</font>;
+        message.clear<font color="black">(</font><font color="black">)</font>;
+        message.str<font color="black">(</font><font color="maroon">""</font><font color="black">)</font>;
+        message <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">"201 "</font> <font color="black">&#60;</font><font color="black">&#60;</font> key <font color="black">&#60;</font><font color="black">&#60;</font> <font color="maroon">" "</font> <font color="black">&#60;</font><font color="black">&#60;</font> state <font color="black">&#60;</font><font color="black">&#60;</font> endl;
+        key_message <font color="black">=</font> message.str<font color="black">(</font><font color="black">)</font>;
+        <font color="green">//sendMessage(key_message.c_str());</font>
+        GameFramework<font color="black">:</font><font color="black">:</font>kybdMessage<font color="black">(</font>key_message.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+
+<font color="blue">bool</font> Framework<font color="black">:</font><font color="black">:</font>isActive<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font> 
+    <font color="blue">return</font> active;
+<font color="black">}</font>
+
+<font color="blue">bool</font> Framework<font color="black">:</font><font color="black">:</font>gameIsRunning<font color="black">(</font><font color="black">)</font> 
+<font color="black">{</font> 
+    <font color="blue">return</font> gameRunning; 
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>DrawMenu<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    sprites.AddSprite<font color="black">(</font><font color="maroon">"exitButton"</font>, <font color="maroon">"exitButton"</font>, <font color="maroon">10</font>, <font color="maroon">10</font><font color="black">)</font>;
+    sprites.AddSprite<font color="black">(</font><font color="maroon">"volumeStrip"</font>, <font color="maroon">"volumeStrip"</font>, <font color="maroon">10</font>, <font color="maroon">200</font><font color="black">)</font>;
+    sprites.AddSprite<font color="black">(</font><font color="maroon">"volumeIndicator"</font>, <font color="maroon">"volumeIndicator"</font>, <font color="maroon">10</font>, <font color="maroon">200</font><font color="black">)</font>;
+    textObjects.AddText<font color="black">(</font><font color="maroon">"volume"</font>, <font color="maroon">"Volume : "</font>, <font color="maroon">100</font>, <font color="maroon">100</font>, <font color="blue">true</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>CheckErrors<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>errno <font color="black">&</font><font color="black">&</font> errno <font color="black">!</font><font color="black">=</font> <font color="maroon">2</font><font color="black">)</font>
+    <font color="black">{</font>
+        <font color="blue">char</font><font color="black">*</font> message <font color="black">=</font> strerror<font color="black">(</font>errno<font color="black">)</font>;
+        allegro_message<font color="black">(</font><font color="maroon">"Error %d : %s"</font>, errno, message<font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>UpdateOptions<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>   
+    <font color="blue">if</font><font color="black">(</font>options.VOLUME <font color="black">&#60;</font> <font color="maroon">1</font><font color="black">)</font> options.VOLUME <font color="black">=</font> <font color="maroon">1</font>;
+    <font color="blue">if</font><font color="black">(</font>options.VOLUME <font color="black">&#62;</font> <font color="maroon">255</font><font color="black">)</font> options.VOLUME <font color="black">=</font> <font color="maroon">255</font>;
+    audioObjects.SetVolume<font color="black">(</font>options.VOLUME<font color="black">)</font>;
+    textObjects.SetTTS<font color="black">(</font>options.TTS<font color="black">)</font>;
+<font color="black">}</font>
+
+ 
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>CreateGameProcess<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>wstring szCmdline<font color="black">)</font>
+<font color="green">// Create a child process that uses the previously created pipes for STDIN and STDOUT.</font>
+<font color="black">{</font> 
+    
+   STARTUPINFO siStartInfo;
+   BOOL bSuccess <font color="black">=</font> FALSE; 
+ 
+<font color="green">// Set up members of the PROCESS_INFORMATION structure. </font>
+ 
+       ZeroMemory<font color="black">(</font> <font color="black">&</font>piProcInfo, <font color="blue">sizeof</font><font color="black">(</font>PROCESS_INFORMATION<font color="black">)</font> <font color="black">)</font>;
+ 
+<font color="green">// Set up members of the STARTUPINFO structure. </font>
+<font color="green">// This structure specifies the STDIN and STDOUT handles for redirection.</font>
+ 
+    ZeroMemory<font color="black">(</font> <font color="black">&</font>siStartInfo, <font color="blue">sizeof</font><font color="black">(</font>STARTUPINFO<font color="black">)</font> <font color="black">)</font>;
+    siStartInfo.cb <font color="black">=</font> <font color="blue">sizeof</font><font color="black">(</font>STARTUPINFO<font color="black">)</font>; 
+    siStartInfo.hStdOutput <font color="black">=</font> hStdOut_Child;
+    siStartInfo.hStdInput <font color="black">=</font> hStdIn_Child;
+    siStartInfo.dwFlags <font color="black">|</font><font color="black">=</font> STARTF_USESTDHANDLES <font color="black">|</font> STARTF_USESHOWWINDOW;
+    <font color="green">// set the window display to HIDE</font>
+    <font color="green">//if(!DEBUG)</font>
+    siStartInfo.wShowWindow <font color="black">=</font> SW_HIDE;
+
+<font color="green">// Create the child process. </font>
+
+   bSuccess <font color="black">=</font> CreateProcess<font color="black">(</font>NULL, 
+      const_cast<font color="black">&#60;</font>LPWSTR<font color="black">&#62;</font><font color="black">(</font>szCmdline.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>,     <font color="green">// command line </font>
+      NULL,          <font color="green">// process security attributes </font>
+      NULL,          <font color="green">// primary thread security attributes </font>
+      TRUE,          <font color="green">// handles are inherited </font>
+      <font color="maroon">0</font>,             <font color="green">// creation flags </font>
+      NULL,          <font color="green">// use parent's environment </font>
+      NULL,          <font color="green">// use parent's current directory </font>
+      <font color="black">&</font>siStartInfo,  <font color="green">// STARTUPINFO pointer </font>
+      <font color="black">&</font>piProcInfo<font color="black">)</font>;  <font color="green">// receives PROCESS_INFORMATION </font>
+   
+   <font color="green">// If an error occurs, exit the application. </font>
+    <font color="blue">if</font> <font color="black">(</font> <font color="black">!</font> bSuccess <font color="black">)</font> 
+    <font color="black">{</font>
+        <font color="green">//LPWSTR cTemp = new WCHAR[100];</font>
+        <font color="green">//memset(cTemp, 0, 100);</font>
+        DWORD dTemp <font color="black">=</font> GetLastError<font color="black">(</font><font color="black">)</font>;
+        <font color="green">//FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dTemp, 0, cTemp, 100, NULL);</font>
+        std<font color="black">:</font><font color="black">:</font>string appPath<font color="black">(</font>szCmdline.begin<font color="black">(</font><font color="black">)</font>, szCmdline.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        allegro_message<font color="black">(</font><font color="maroon">"Game Launch failed. Could not launch %s\n"</font>, appPath.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        <font color="green">//MessageBox(NULL, cTemp, NULL, MB_OK);</font>
+        active <font color="black">=</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+    <font color="blue">else</font> 
+    <font color="black">{</font>
+        <font color="green">// Close handles to the child process and its primary thread.</font>
+        <font color="green">// Some applications might keep these handles to monitor the status</font>
+        <font color="green">// of the child process, for example. </font>
+
+        CloseHandle<font color="black">(</font>piProcInfo.hProcess<font color="black">)</font>;
+        CloseHandle<font color="black">(</font>piProcInfo.hThread<font color="black">)</font>;
+
+        <font color="green">// Set game running flag</font>
+        gameRunning <font color="black">=</font> <font color="blue">true</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>CreateTextFromRef<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">int</font> x, y;
+    std<font color="black">:</font><font color="black">:</font>string refName, assetName;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d %d %s"</font>, refName, <font color="black">&</font>x, <font color="black">&</font>y, assetName<font color="black">)</font>;
+    textObjects.AddTextByRef<font color="black">(</font>refName, assetName, x, y, <font color="blue">true</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>CreateTextFromString<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> c;
+    <font color="blue">char</font> <font color="black">*</font>currStr <font color="black">=</font> <font color="maroon">""</font>;
+    <font color="blue">int</font> code, x, y, length;
+    std<font color="black">:</font><font color="black">:</font>string refName;
+    <font color="green">//sscanf(msg, "%*d %s %d %d %d", refName, &x, &y);</font>
+    std<font color="black">:</font><font color="black">:</font>stringstream stream;
+    stream <font color="black">&#60;</font><font color="black">&#60;</font> msg; <font color="green">// put msg into stream</font>
+    stream <font color="black">&#62;</font><font color="black">&#62;</font> code <font color="black">&#62;</font><font color="black">&#62;</font> refName <font color="black">&#62;</font><font color="black">&#62;</font> length <font color="black">&#62;</font><font color="black">&#62;</font> x <font color="black">&#62;</font><font color="black">&#62;</font> y;  
+
+    <font color="green">// get code</font>
+    stream.get<font color="black">(</font>c<font color="black">)</font>;
+    <font color="green">//for(int i = 0; i &#60; 4; i++)</font>
+    <font color="green">//{</font>
+    <font color="green">//  while(c != ' ')</font>
+    <font color="green">//  {</font>
+    <font color="green">//      stream.get(c);</font>
+    <font color="green">//  }</font>
+    <font color="green">//  stream.get(c);</font>
+    <font color="green">//}</font>
+
+    <font color="blue">char</font> <font color="black">*</font>string <font color="black">=</font> <font color="blue">new</font> <font color="blue">char</font><font color="black">[</font>length<font color="black">+</font><font color="maroon">1</font><font color="black">]</font>;
+
+    stream.getline<font color="black">(</font>string, length<font color="black">+</font><font color="maroon">1</font><font color="black">)</font>;
+    textObjects.AddText<font color="black">(</font>refName, string, x, y, <font color="blue">true</font><font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>RemoveText<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>string refName;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s"</font>, refName<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>ChangeText<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>   
+    <font color="blue">char</font> c;
+    <font color="blue">char</font> <font color="black">*</font>currStr <font color="black">=</font> <font color="maroon">""</font>;
+    <font color="blue">int</font> code, length;
+    std<font color="black">:</font><font color="black">:</font>string refName;
+    std<font color="black">:</font><font color="black">:</font>stringstream stream;
+    stream <font color="black">&#60;</font><font color="black">&#60;</font> msg; <font color="green">// put msg into stream</font>
+    stream <font color="black">&#62;</font><font color="black">&#62;</font> code <font color="black">&#62;</font><font color="black">&#62;</font> refName <font color="black">&#62;</font><font color="black">&#62;</font> length;    
+
+    stream.get<font color="black">(</font>c<font color="black">)</font>; <font color="green">// Get space</font>
+
+    <font color="blue">char</font> <font color="black">*</font>string <font color="black">=</font> <font color="blue">new</font> <font color="blue">char</font><font color="black">[</font>length<font color="black">+</font><font color="maroon">1</font><font color="black">]</font>;
+
+    stream.getline<font color="black">(</font>string, length<font color="black">+</font><font color="maroon">1</font><font color="black">)</font>;
+    textObjects.ChangeText<font color="black">(</font>refName, string<font color="black">)</font>;
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadGameAssets<font color="black">(</font><font color="blue">int</font> gameIndex<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>string gamePath <font color="black">=</font> <font color="maroon">""</font>;
+    std<font color="black">:</font><font color="black">:</font>string imageFilePath <font color="black">=</font> games<font color="black">[</font>gameIndex<font color="black">]</font>.imageFile;
+    std<font color="black">:</font><font color="black">:</font>string audioFilePath <font color="black">=</font> games<font color="black">[</font>gameIndex<font color="black">]</font>.audioFile;
+    std<font color="black">:</font><font color="black">:</font>string textFilePath <font color="black">=</font> games<font color="black">[</font>gameIndex<font color="black">]</font>.textFile;
+
+    LoadImages<font color="black">(</font>imageFilePath, gamePath<font color="black">)</font>;
+    LoadAudio<font color="black">(</font>audioFilePath, gamePath<font color="black">)</font>;
+    LoadText<font color="black">(</font>textFilePath, gamePath<font color="black">)</font>;
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadImages<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name, std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>string file <font color="black">=</font> gamePath <font color="black">+</font> file_name;
+    std<font color="black">:</font><font color="black">:</font>wstring w_file<font color="black">(</font>file.begin<font color="black">(</font><font color="black">)</font>, file.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font>imgXML.Load<font color="black">(</font>w_file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font><font color="black">)</font>
+        LoadGameImages<font color="black">(</font>gamePath<font color="black">)</font>;
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        allegro_message<font color="black">(</font><font color="maroon">"Image asset XML file not found at %s."</font>, file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        active <font color="black">=</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadAudio<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name, std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>string file <font color="black">=</font> gamePath <font color="black">+</font> file_name;
+    std<font color="black">:</font><font color="black">:</font>wstring w_file<font color="black">(</font>file.begin<font color="black">(</font><font color="black">)</font>, file.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font>audXML.Load<font color="black">(</font>w_file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font><font color="black">)</font>
+        LoadGameAudio<font color="black">(</font>gamePath<font color="black">)</font>;
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        file_name.erase<font color="black">(</font><font color="maroon">0</font>, <font color="maroon">8</font><font color="black">)</font>;
+        allegro_message<font color="black">(</font><font color="maroon">"Audio asset XML file not found at %s."</font>, file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        active <font color="black">=</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name, std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>
+<font color="black">{</font>
+    std<font color="black">:</font><font color="black">:</font>string file <font color="black">=</font> gamePath <font color="black">+</font> file_name;
+    std<font color="black">:</font><font color="black">:</font>wstring w_file<font color="black">(</font>file.begin<font color="black">(</font><font color="black">)</font>, file.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+    <font color="blue">if</font><font color="black">(</font>txtXML.Load<font color="black">(</font>w_file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font><font color="black">)</font>
+        LoadGameText<font color="black">(</font>gamePath<font color="black">)</font>;
+    <font color="blue">else</font>
+    <font color="black">{</font>
+        file_name.erase<font color="black">(</font><font color="maroon">0</font>, <font color="maroon">8</font><font color="black">)</font>;
+        allegro_message<font color="black">(</font><font color="maroon">"Text asset XML file not found at %s."</font>, file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        active <font color="black">=</font> <font color="blue">false</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadGameImages<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>
+<font color="black">{</font>
+    imgXML.FindElem<font color="black">(</font><font color="black">)</font>;
+
+    <font color="blue">while</font><font color="black">(</font>imgXML.FindChildElem<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"image"</font><font color="black">)</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        imgXML.IntoElem<font color="black">(</font><font color="black">)</font>;
+        <font color="green">// Get attributes</font>
+        std<font color="black">:</font><font color="black">:</font>wstring atFile <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"file"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atRef <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"ref"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atNumFrames <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"numFrames"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atNumFrameCol <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"numFrameCol"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atWidth <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"spriteWidth"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atHeight <font color="black">=</font> imgXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"spriteHeight"</font><font color="black">)</font><font color="black">)</font>;
+        <font color="green">// Set variables for attributes</font>
+        std<font color="black">:</font><font color="black">:</font>string file<font color="black">(</font>atFile.begin<font color="black">(</font><font color="black">)</font>, atFile.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        file <font color="black">=</font> gamePath <font color="black">+</font> file;
+        std<font color="black">:</font><font color="black">:</font>string ref<font color="black">(</font>atRef.begin<font color="black">(</font><font color="black">)</font>, atRef.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string numFrames<font color="black">(</font>atNumFrames.begin<font color="black">(</font><font color="black">)</font>, atNumFrames.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string numFrameCol<font color="black">(</font>atNumFrameCol.begin<font color="black">(</font><font color="black">)</font>, atNumFrameCol.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string width<font color="black">(</font>atWidth.begin<font color="black">(</font><font color="black">)</font>, atWidth.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string height<font color="black">(</font>atHeight.begin<font color="black">(</font><font color="black">)</font>, atHeight.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        imgXML.OutOfElem<font color="black">(</font><font color="black">)</font>;
+        
+        <font color="green">// Add file to sprite handler</font>
+        <font color="blue">bool</font> ret <font color="black">=</font> sprites.AddFile<font color="black">(</font>ref, file, atoi<font color="black">(</font>numFrames.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>, atoi<font color="black">(</font>numFrameCol.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>, atoi<font color="black">(</font>width.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>, atoi<font color="black">(</font>height.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font><font color="black">)</font>;
+        <font color="blue">if</font><font color="black">(</font><font color="black">!</font>ret<font color="black">)</font>
+            allegro_message<font color="black">(</font><font color="maroon">"%s not loaded."</font>, file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadGameAudio<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>
+<font color="black">{</font>
+    SAMPLE <font color="black">*</font>temp <font color="black">=</font> NULL;
+    audXML.FindElem<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">bool</font> loopVal <font color="black">=</font> <font color="blue">false</font>;
+    <font color="blue">while</font><font color="black">(</font>audXML.FindChildElem<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"audio"</font><font color="black">)</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        audXML.IntoElem<font color="black">(</font><font color="black">)</font>;
+        <font color="green">// Get attributes</font>
+        std<font color="black">:</font><font color="black">:</font>wstring atFile <font color="black">=</font> audXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"file"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atRef <font color="black">=</font> audXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"ref"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atLoop <font color="black">=</font> audXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"loop"</font><font color="black">)</font><font color="black">)</font>;
+
+        <font color="green">// Set variables for attributes</font>
+        std<font color="black">:</font><font color="black">:</font>string file<font color="black">(</font>atFile.begin<font color="black">(</font><font color="black">)</font>, atFile.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        file <font color="black">=</font> gamePath <font color="black">+</font> file;
+        std<font color="black">:</font><font color="black">:</font>string ref<font color="black">(</font>atRef.begin<font color="black">(</font><font color="black">)</font>, atRef.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string loop<font color="black">(</font>atLoop.begin<font color="black">(</font><font color="black">)</font>, atLoop.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        audXML.OutOfElem<font color="black">(</font><font color="black">)</font>;
+
+        <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>loop.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"true"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+            loopVal <font color="black">=</font> <font color="blue">true</font>;
+        <font color="blue">else</font> <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>loop.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"false"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+            loopVal <font color="black">=</font> <font color="blue">false</font>;
+        <font color="blue">else</font>
+        <font color="black">{</font>
+            allegro_message<font color="black">(</font><font color="maroon">"Error in Audio XML file (loop value)."</font><font color="black">)</font>;
+            active <font color="black">=</font> <font color="blue">false</font>;
+            <font color="blue">return</font>;
+        <font color="black">}</font>
+
+        temp <font color="black">=</font> load_sample<font color="black">(</font>file.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        <font color="blue">if</font><font color="black">(</font><font color="black">!</font>temp<font color="black">)</font>
+        <font color="black">{</font>
+            allegro_message<font color="black">(</font><font color="maroon">"File not found at \"%s\". Audio Sample \"%s\" not added."</font>, file.c_str<font color="black">(</font><font color="black">)</font>, ref.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+            active <font color="black">=</font> <font color="blue">false</font>;
+        <font color="black">}</font>
+        <font color="blue">else</font>
+            audioObjects.AddSample<font color="black">(</font>ref, temp, loopVal<font color="black">)</font>;
+    <font color="black">}</font>
+    destroy_sample<font color="black">(</font>temp<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadGameText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>
+<font color="black">{</font>
+    txtXML.FindElem<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">int</font> x, y;
+    <font color="blue">bool</font> visVal <font color="black">=</font> <font color="blue">false</font>;
+    <font color="blue">while</font><font color="black">(</font>txtXML.FindChildElem<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"text"</font><font color="black">)</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        x<font color="black">=</font><font color="maroon">0</font>; y<font color="black">=</font><font color="maroon">0</font>;
+        txtXML.IntoElem<font color="black">(</font><font color="black">)</font>;
+        <font color="green">// Get attributes</font>
+        std<font color="black">:</font><font color="black">:</font>wstring atString <font color="black">=</font> txtXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"std::string"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atRef <font color="black">=</font> txtXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"ref"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atX <font color="black">=</font> txtXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"x"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atY <font color="black">=</font> txtXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"y"</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>wstring atVisible <font color="black">=</font> txtXML.GetAttrib<font color="black">(</font>TEXT<font color="black">(</font><font color="maroon">"visible"</font><font color="black">)</font><font color="black">)</font>;
+
+        <font color="green">// Set variables for attributes</font>
+        std<font color="black">:</font><font color="black">:</font>string textString<font color="black">(</font>atString.begin<font color="black">(</font><font color="black">)</font>, atString.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string ref<font color="black">(</font>atRef.begin<font color="black">(</font><font color="black">)</font>, atRef.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string xLoc<font color="black">(</font>atX.begin<font color="black">(</font><font color="black">)</font>, atX.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string yLoc<font color="black">(</font>atY.begin<font color="black">(</font><font color="black">)</font>, atY.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string visible<font color="black">(</font>atVisible.begin<font color="black">(</font><font color="black">)</font>, atVisible.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        txtXML.OutOfElem<font color="black">(</font><font color="black">)</font>;
+        x <font color="black">=</font> atoi<font color="black">(</font>xLoc.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+        y <font color="black">=</font> atoi<font color="black">(</font>yLoc.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+
+        <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>visible.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"true"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+            visVal <font color="black">=</font> <font color="blue">true</font>;
+        <font color="blue">else</font> <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>visible.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"false"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+            visVal <font color="black">=</font> <font color="blue">false</font>;
+        <font color="blue">else</font>
+        <font color="black">{</font>
+            allegro_message<font color="black">(</font><font color="maroon">"Error in Text XML file (visible value)."</font><font color="black">)</font>;
+            active <font color="black">=</font> <font color="blue">false</font>;
+            <font color="blue">return</font>;
+        <font color="black">}</font>
+
+        textObjects.AddText<font color="black">(</font>ref, textString, x, y, visVal<font color="black">)</font>;
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>clearBuffer<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font> memset<font color="black">(</font>incMessage, <font color="maroon">0</font>, MAX_MESSAGE_SIZE<font color="black">)</font>; <font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>ParseMessage<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>stringstream <font color="black">&</font>msgStream<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> message<font color="black">[</font>MAX_MESSAGE_SIZE<font color="black">]</font>;
+    <font color="blue">int</font> code;
+    <font color="green">//cout &#60;&#60; "Inc Message : " &#60;&#60;  msgStream.str() &#60;&#60; endl;</font>
+    <font color="blue">while</font><font color="black">(</font><font color="black">!</font>msgStream.eof<font color="black">(</font><font color="black">)</font><font color="black">)</font>
+    <font color="black">{</font>
+        memset<font color="black">(</font>message, <font color="maroon">0</font>, MAX_MESSAGE_SIZE<font color="black">)</font>;
+        msgStream.getline<font color="black">(</font>message, MAX_MESSAGE_SIZE<font color="black">)</font>;
+        code <font color="black">=</font> <font color="maroon">0</font>;
+        sscanf<font color="black">(</font>message, <font color="maroon">"%d"</font>, <font color="black">&</font>code<font color="black">)</font>;
+        <font color="blue">if</font><font color="black">(</font><font color="black">!</font>code<font color="black">)</font>
+        <font color="black">{</font> 
+            <font color="blue">if</font><font color="black">(</font>strlen<font color="black">(</font>message<font color="black">)</font><font color="black">)</font> 
+                printf<font color="black">(</font><font color="maroon">"Debug Message : %s\n"</font>, message<font color="black">)</font>; 
+            <font color="blue">continue</font>; 
+        <font color="black">}</font>
+        <font color="green">//printf("%s\n", message);</font>
+        <font color="green">//switch(code)</font>
+        <font color="green">//{</font>
+        <font color="green">//  // Sprites</font>
+        <font color="green">//case SPRITE_CREATE : CreateSprite(message); break;</font>
+        <font color="green">//case SPRITE_CREATE_FROM_ASSET : CreateSpriteRefDimensions(message); break;</font>
+        <font color="green">//case SPRITE_REMOVE : KillSprite(message); break;</font>
+        <font color="green">//case SPRITE_VISIBILITY_CHANGE : ShowSprite(message); break;</font>
+        <font color="green">//case SPRITE_SET_SIZE : SetSpriteSize(message); break;</font>
+        <font color="green">//case SPRITE_SET_LOCATION : SetSpriteLocation(message); break;</font>
+        <font color="green">//case SPRITE_SET_FRAME_DELAY : SetFrameDelay(message); break;</font>
+        <font color="green">//case SPRITE_SET_ANIMATION : SetAnimation(message); break;</font>
+        <font color="green">//case SPRITE_SET_FRAME : SetFrame(message); break;</font>
+        <font color="green">//case SPRITE_MOVE_TO : MoveSprite(message); break;</font>
+        <font color="green">//case SPRITE_CHANGE_BITMAP : ChangeBitmap(message); break;</font>
+        <font color="green">//  // Text</font>
+        <font color="green">//case TEXT_CREATE_FROM_ASSET   : CreateTextFromRef(message); break;</font>
+        <font color="green">//case TEXT_CREATE_FROM_STRING : CreateTextFromString(message); break; </font>
+        <font color="green">//case TEXT_REMOVE : RemoveText(message); break;</font>
+        <font color="green">//case TEXT_CHANGE_CONTENT : ChangeText(message); break;</font>
+        <font color="green">//case TEXT_CHANGE_LOCATION : SetTextPosition(message); break;</font>
+        <font color="green">//case TEXT_VISIBILITY_CHANGE : ShowText(message); break;</font>
+        <font color="green">//case TEXT_SIZE_CHANGE : SetTextSize(message); break;</font>
+        <font color="green">//case TEXT_COLOR_CHANGE : SetTextColor(message); break;</font>
+        <font color="green">//case TEXT_BGCOLOR_CHANGE : SetTextBackgroundColor(message); break;</font>
+        <font color="green">//  // Audio</font>
+        <font color="green">//case AUDIO_PLAY   : PlayFile(message); break;      </font>
+        <font color="green">//case AUDIO_SET_LOOP_COUNT : ResetLoop(message); break;</font>
+        <font color="green">//case AUDIO_STOP   : StopFile(message); break;</font>
+        <font color="green">//  // Score</font>
+        <font color="green">//case SCORE : PostScore(message); break;</font>
+        <font color="green">//default :  printf("Debug Message : %s\n", message); </font>
+        <font color="green">//  break;</font>
+        <font color="green">//}</font>
+    <font color="black">}</font>
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>ChangeBitmap<font color="black">(</font><font color="blue">char</font><font color="black">*</font> msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> refName<font color="black">[</font><font color="maroon">5</font><font color="black">]</font>, fileRef<font color="black">[</font><font color="maroon">25</font><font color="black">]</font>;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %s"</font>, refName, fileRef<font color="black">)</font>;
+    sprites.ChangeBitmap<font color="black">(</font>refName, fileRef<font color="black">)</font>;
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>KillModule<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">if</font><font color="black">(</font>gameRunning<font color="black">)</font>
+    <font color="black">{</font>
+        gameRunning <font color="black">=</font> <font color="blue">false</font>;
+        menuRunning <font color="black">=</font> <font color="blue">true</font>;
+        <font color="green">// Kill game</font>
+        <font color="green">// Launch menu</font>
+    <font color="black">}</font>
+    <font color="blue">else</font> <font color="blue">if</font><font color="black">(</font>menuRunning<font color="black">)</font>
+    <font color="black">{</font>
+        menuRunning <font color="black">=</font> <font color="blue">false</font>; <font color="green">// Kill menu</font>
+        active <font color="black">=</font> <font color="blue">false</font>; <font color="green">// Exit framework</font>
+    <font color="black">}</font>
+    DWORD access <font color="black">=</font> PROCESS_ALL_ACCESS;
+    HANDLE pHandle <font color="black">=</font> OpenProcess<font color="black">(</font>access, <font color="blue">false</font>, piProcInfo.dwProcessId<font color="black">)</font>;
+    TerminateProcess<font color="black">(</font>pHandle, <font color="maroon">0</font><font color="black">)</font>;
+    CloseHandle<font color="black">(</font>pHandle<font color="black">)</font>;
+    CloseHandle<font color="black">(</font>hStdIn_Parent<font color="black">)</font>;
+    CloseHandle<font color="black">(</font>hStdOut_Parent<font color="black">)</font>;
+    CloseHandle<font color="black">(</font>hStdIn_Child<font color="black">)</font>;
+    CloseHandle<font color="black">(</font>hStdOut_Child<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>SetSpriteVisible<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> refName<font color="black">[</font><font color="maroon">5</font><font color="black">]</font>;
+    <font color="blue">int</font> visible;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d"</font>, refName, <font color="black">&</font>visible<font color="black">)</font>;
+    sprites.SetVisible<font color="black">(</font>refName, visible<font color="black">)</font>;   
+<font color="black">}</font>
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>SetTextVisible<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> refName<font color="black">[</font><font color="maroon">5</font><font color="black">]</font>;
+    <font color="blue">int</font> visible;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %d"</font>, refName, <font color="black">&</font>visible<font color="black">)</font>;
+    textObjects.SetVisible<font color="black">(</font>refName, visible<font color="black">)</font>;
+<font color="black">}</font>
+</PRE>
+</BODY>
+</HTML>
