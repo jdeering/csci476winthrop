@@ -18,7 +18,8 @@ struct TileItem
 	holds a pointer to a Tile object (tileObj) and its x and y subscripts in the larger board array
 
 DATA ITEMS
-
+TileItem boardset[9][9]
+	Holds the 9x9 boardset that is at use in the game
 int gameLevel
 	the level of the game that the user chose--passed in as a parameter into the class constructor
 vector <TileItem*> currentWord
@@ -44,6 +45,8 @@ int submitWord
 	submits the currently selected word, if it is a valid word; returns the word's score
 clickHandler(x, y)
 	given the x and y coordinates of the click, decides which letter has been clicked and handles it appropriately
+void reset
+	resets the game board, placing all new letters in the board
 
 --Private functions:
 addLetter(TileItem&)
@@ -103,7 +106,6 @@ class Board
 		void changeAppearance();
 	
 		void replaceLetters();
-		void sortWord();
 
 };
 #endif

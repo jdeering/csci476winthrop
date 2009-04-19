@@ -5,7 +5,8 @@ CSCI 476 Project
 
 Dictionary.cpp
 For use with the Wordplay game module
-Implementation of Dictionary.h; all the function documentation and includes are found there
+Implementation of Dictionary.h; all the function documentation and includes are found there.
+Cppdocs comments are also found in this file.
 
 */
 #include "Dictionary.h"
@@ -13,7 +14,11 @@ Implementation of Dictionary.h; all the function documentation and includes are 
 #include <fstream>
 using namespace std;
 
-// constructs dictionary based on filename passed in, or the default if no filename is passed into the constructor
+// constructs dictionary by loading in words from a file
+/*********************************************
+	Default constructor. Loads in words from dictionary.txt (in same folder as executable) and puts them into the <code>words</code> vector.
+	In order for the search algorithm to work correctly, dictionary.txt must be an already ordered list of words.
+*********************************************/
 Dictionary::Dictionary()
 {
 	//initialize word list
@@ -27,6 +32,13 @@ Dictionary::Dictionary()
 		inFile>>s;
 	}
 }
+
+/*********************************************
+	Searches the dictionary <code>words</code> vector for the incoming word using the STL <code>binary_search</code> algorithm.
+
+	@param s the word that we're looking for in the dictionary
+	@return true if the word is in the dictionary, false if it is not in the dictionary
+*********************************************/
 
 //returns whether the word is in the dictionary or not
 bool Dictionary::search(std::string s)
