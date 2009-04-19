@@ -1,0 +1,85 @@
+[FILES]
+LoginGUI.html
+LoginGUIHierarchy.html
+LoginGUI.AdminForm.html
+LoginGUI.AdminFormMembers.html
+LoginGUI.AdminFormConstructor.html
+LoginGUI.AdminFormMethods.html
+LoginGUI.AdminForm.Dispose_overloads.html
+LoginGUI.AdminForm.Dispose_overload_1.html
+LoginGUI.ChartForm.html
+LoginGUI.ChartFormMembers.html
+LoginGUI.ChartFormConstructor.html
+LoginGUI.ChartFormConstructor1.html
+LoginGUI.ChartFormConstructor2.html
+LoginGUI.ChartFormMethods.html
+LoginGUI.ChartForm.BitBlt.html
+LoginGUI.ChartForm.Dispose_overloads.html
+LoginGUI.ChartForm.Dispose_overload_1.html
+LoginGUI.Login.html
+LoginGUI.LoginMembers.html
+LoginGUI.LoginConstructor.html
+LoginGUI.LoginMethods.html
+LoginGUI.Login.CreateUser.html
+LoginGUI.Login.MD5Encrypt.html
+LoginGUI.Login.UserLogin.html
+LoginGUI.LoginForm.html
+LoginGUI.LoginFormMembers.html
+LoginGUI.LoginFormConstructor.html
+LoginGUI.LoginFormMethods.html
+LoginGUI.LoginForm.Dispose_overloads.html
+LoginGUI.LoginForm.Dispose_overload_1.html
+LoginGUI.UserStats.html
+LoginGUI.UserStatsMembers.html
+LoginGUI.UserStatsConstructor.html
+LoginGUI.UserStatsMethods.html
+LoginGUI.UserStats.parseModuleScore.html
+LoginGUI.UserStats.parseUserScore.html
+LoginGUI.UserStats.ModuleScoreData.html
+LoginGUI.UserStats.ModuleScoreDataMembers.html
+LoginGUI.UserStats.ModuleScoreDataFields.html
+LoginGUI.UserStats.ModuleScoreData.allData.html
+LoginGUI.UserStats.ModuleScoreData.listsize.html
+LoginGUI.UserStats.ModuleScoreData.module.html
+LoginGUI.UserStats.ModuleScoreNode.html
+LoginGUI.UserStats.ModuleScoreNodeMembers.html
+LoginGUI.UserStats.ModuleScoreNodeFields.html
+LoginGUI.UserStats.ModuleScoreNode.score.html
+LoginGUI.UserStats.ModuleScoreNode.username.html
+LoginGUI.UserStats.UserScoreData.html
+LoginGUI.UserStats.UserScoreDataMembers.html
+LoginGUI.UserStats.UserScoreDataFields.html
+LoginGUI.UserStats.UserScoreData.average.html
+LoginGUI.UserStats.UserScoreData.best.html
+LoginGUI.UserStats.UserScoreData.first.html
+LoginGUI.UserStats.UserScoreData.last.html
+LoginGUI.UserStats.UserScoreData.listsize.html
+LoginGUI.UserStats.UserScoreData.module.html
+LoginGUI.UserStats.UserScoreData.recent.html
+LoginGUI.UserStats.UserScoreData.username.html
+LoginGUI.UserStats.UserScoreNode.html
+LoginGUI.UserStats.UserScoreNodeMembers.html
+LoginGUI.UserStats.UserScoreNodeFields.html
+LoginGUI.UserStats.UserScoreNode.date.html
+LoginGUI.UserStats.UserScoreNode.score.html
+LoginGUI.UserStats.UserScoreNode.time.html
+
+[OPTIONS]
+Title=LoginGUI Documentation
+Auto Index=Yes
+Binary TOC=Yes
+Compatibility=1.1 or later
+Compiled file=LoginGUI Documentation.chm
+Default Window=MsdnHelp
+Default topic=LoginGUI.html
+Display compile progress=No
+Error log file=LoginGUI Documentation.log
+Full-text search=Yes
+Index file=LoginGUI Documentation.hhk
+Language=0x409 English (United States)
+Contents file=LoginGUI Documentation.hhc
+
+[WINDOWS]
+MsdnHelp="LoginGUI Documentation Help","LoginGUI Documentation.hhc","LoginGUI Documentation.hhk","LoginGUI.html","LoginGUI.html",,,,,0x62520,220,0x387e,[86,51,872,558],,,,,,,0
+
+[INFOTYPES]
