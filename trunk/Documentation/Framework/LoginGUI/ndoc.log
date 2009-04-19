@@ -1,0 +1,170 @@
+Building documentation...
+Memory before build: 965500
+Initializing...
+Merging XML documentation...
+Building file mapping...
+Loading XSLT files...
+    namespace.xslt
+    namespacehierarchy.xslt
+    type.xslt
+    typehierarchy.xslt
+    allmembers.xslt
+    individualmembers.xslt
+    event.xslt
+    member.xslt
+    memberoverload.xslt
+    property.xslt
+    field.xslt
+    htmlcontents.xslt
+Generating HTML pages...
+LoginGUI.html
+0 msec.
+LoginGUIHierarchy.html
+0 msec.
+LoginGUI.AdminForm.html
+0 msec.
+LoginGUI.AdminFormMembers.html
+235 msec.
+LoginGUI.AdminFormConstructor.html
+0 msec.
+LoginGUI.AdminFormMethods.html
+94 msec.
+LoginGUI.AdminForm.Dispose_overloads.html
+0 msec.
+LoginGUI.AdminForm.Dispose_overload_1.html
+16 msec.
+LoginGUI.ChartForm.html
+0 msec.
+LoginGUI.ChartFormMembers.html
+171 msec.
+LoginGUI.ChartFormConstructor.html
+0 msec.
+LoginGUI.ChartFormConstructor1.html
+16 msec.
+LoginGUI.ChartFormConstructor2.html
+0 msec.
+LoginGUI.ChartFormMethods.html
+94 msec.
+LoginGUI.ChartForm.BitBlt.html
+15 msec.
+LoginGUI.ChartForm.Dispose_overloads.html
+0 msec.
+LoginGUI.ChartForm.Dispose_overload_1.html
+0 msec.
+LoginGUI.Login.html
+16 msec.
+LoginGUI.LoginMembers.html
+0 msec.
+LoginGUI.LoginConstructor.html
+0 msec.
+LoginGUI.LoginMethods.html
+16 msec.
+LoginGUI.Login.CreateUser.html
+0 msec.
+LoginGUI.Login.MD5Encrypt.html
+0 msec.
+LoginGUI.Login.UserLogin.html
+0 msec.
+LoginGUI.LoginForm.html
+15 msec.
+LoginGUI.LoginFormMembers.html
+157 msec.
+LoginGUI.LoginFormConstructor.html
+15 msec.
+LoginGUI.LoginFormMethods.html
+94 msec.
+LoginGUI.LoginForm.Dispose_overloads.html
+0 msec.
+LoginGUI.LoginForm.Dispose_overload_1.html
+0 msec.
+LoginGUI.UserStats.html
+16 msec.
+LoginGUI.UserStatsMembers.html
+0 msec.
+LoginGUI.UserStatsConstructor.html
+0 msec.
+LoginGUI.UserStatsMethods.html
+15 msec.
+LoginGUI.UserStats.parseModuleScore.html
+0 msec.
+LoginGUI.UserStats.parseUserScore.html
+0 msec.
+LoginGUI.UserStats.ModuleScoreData.html
+0 msec.
+LoginGUI.UserStats.ModuleScoreDataMembers.html
+16 msec.
+LoginGUI.UserStats.ModuleScoreDataFields.html
+0 msec.
+LoginGUI.UserStats.ModuleScoreData.allData.html
+0 msec.
+LoginGUI.UserStats.ModuleScoreData.listsize.html
+0 msec.
+LoginGUI.UserStats.ModuleScoreData.module.html
+0 msec.
+LoginGUI.UserStats.ModuleScoreNode.html
+0 msec.
+LoginGUI.UserStats.ModuleScoreNodeMembers.html
+15 msec.
+LoginGUI.UserStats.ModuleScoreNodeFields.html
+0 msec.
+LoginGUI.UserStats.ModuleScoreNode.score.html
+0 msec.
+LoginGUI.UserStats.ModuleScoreNode.username.html
+0 msec.
+LoginGUI.UserStats.UserScoreData.html
+0 msec.
+LoginGUI.UserStats.UserScoreDataMembers.html
+16 msec.
+LoginGUI.UserStats.UserScoreDataFields.html
+0 msec.
+LoginGUI.UserStats.UserScoreData.average.html
+0 msec.
+LoginGUI.UserStats.UserScoreData.best.html
+0 msec.
+LoginGUI.UserStats.UserScoreData.first.html
+0 msec.
+LoginGUI.UserStats.UserScoreData.last.html
+0 msec.
+LoginGUI.UserStats.UserScoreData.listsize.html
+0 msec.
+LoginGUI.UserStats.UserScoreData.module.html
+16 msec.
+LoginGUI.UserStats.UserScoreData.recent.html
+0 msec.
+LoginGUI.UserStats.UserScoreData.username.html
+0 msec.
+LoginGUI.UserStats.UserScoreNode.html
+0 msec.
+LoginGUI.UserStats.UserScoreNodeMembers.html
+0 msec.
+LoginGUI.UserStats.UserScoreNodeFields.html
+0 msec.
+LoginGUI.UserStats.UserScoreNode.date.html
+15 msec.
+LoginGUI.UserStats.UserScoreNode.score.html
+0 msec.
+LoginGUI.UserStats.UserScoreNode.time.html
+0 msec.
+Making Html: 1.093 sec.
+Generating HTML content file...
+transform the HHC contents file into html
+0 msec.
+Compiling HTML Help file...
+Compiling Html Help file
+Microsoft HTML Help Compiler 4.74.8702
+
+Compiling c:\Documents and Settings\Andrew\My Documents\loginGUI\LoginGUI\doc\ndoc_msdn_temp\LoginGUI Documentation.chm
+
+
+Compile time: 0 minutes, 1 second
+66	Topics
+379	Local links
+3,259	Internet links
+9	Graphics
+
+
+Created c:\Documents and Settings\Andrew\My Documents\loginGUI\LoginGUI\doc\ndoc_msdn_temp\LoginGUI Documentation.chm, 147,585 bytes
+Compression decreased file by 933,732 bytes.
+
+Html Help compile complete
+Done.
