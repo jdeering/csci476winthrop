@@ -6,7 +6,7 @@ CSCI 476 Project
 Board.cpp
 
 This class is for use with the Wordplay game module. It's the implementation for Board.h.
-All the function details are found here.
+All the function details are found here. Cppdocs comments are also found in this file.
 
 */
 
@@ -18,6 +18,12 @@ All the function details are found here.
 //////////////////////////////
 
 //accepts and sets game level and pointer to the dictionary to be used to check words
+/*********************************************
+	Default constructor for a Board object.
+
+	@param lvl The gameplay level for the generated board. This determines what kinds of moves are legal and how words are scored.
+	@param d A pointer to the Dictionary object that user-chosen words should be checked against.
+*********************************************/
 Board::Board(int lvl, Dictionary * d)
 {	
 	gameLevel = lvl;
@@ -35,6 +41,9 @@ Board::Board(int lvl, Dictionary * d)
 }
 
 //displays the board
+/*********************************************
+	Displays an already-generated game board by calling the <code>slideFromTop</code> method for each <code>Tile</code>  contained in the <code>tileObj</code> array in the object.
+*********************************************/
 void Board::displayBoard()
 {
 	//display each tile in the array in its appropriate position
@@ -42,9 +51,37 @@ void Board::displayBoard()
 	{
 		for (int j = 0; j < 9; ++j)
 		{
-			boardset[i][j].tileObj->showTile( (25 + 50 * i), (25 + 50 * j) );
+			boardset[j][i].tileObj->slideFromTop(j, i);
 		}
 	}
+}
+
+/*********************************************
+	Resets the entire gameboard, replacing each <code>Tile</code> held in the <code>TileItem</code>s in <code>boardset</code> with a new
+	<code>Tile</code>. Then, it calls <code>displayBoard</code> so that the new letter values show up on the gameboard.
+	The currentWord is also reset.
+
+	@return the integer value of the gameplay level
+*********************************************/
+void Board::reset()
+{
+	//change out every tile object
+	for (int m = 0; m < 9; ++m)
+	{
+		for (int n = 0; n < 9; ++n)
+		{
+			GameFramework::removeSprite(*boardset[m][n].tileObj->returnSprite());
+			boardset[m][n].tileObj = new Tile();
+		}
+	}
+
+	//clear out word
+	while (currentWord.size() > 0)
+	{
+		currentWord.pop_back();
+	}
+
+	displayBoard();
 }
 
 //////////////////////////////////
@@ -52,6 +89,13 @@ void Board::displayBoard()
 //////////////////////////////////
 
 //handles all the clicks within the board area
+/*********************************************
+	Handles all the clicks within the gameboard area. Finds the tile that has been clicked, and, if it a valid move,
+	calls addLetter to add it to the current word.
+
+	@param x The x-coordinate of the click
+	@param y The y-coordinate of the click
+*********************************************/
 void Board::clickHandler(int x, int y)
 {
 	//figure out which tile object the user clicked on
@@ -122,6 +166,12 @@ void Board::clickHandler(int x, int y)
 }
 
 //add the letter passed in to the current word
+/*********************************************
+	Adds the <code>TileItem</code> passed in to the current word vector, then calls <code>checkWord</code> to see if it is a valid word
+	and <code>changeAppearance</code> so that the word's appearance corresponds to its validity.
+
+	@param t the <code>TileItem</code> that should be added to the curent word vector
+*********************************************/
 void Board::addLetter(TileItem & t)
 {
 	currentWord.push_back(&t);
@@ -135,6 +185,13 @@ void Board::addLetter(TileItem & t)
 
 //remove the letter passed in from the word, and any letters following it
 //works recursively
+/*********************************************
+	Removes the <code>TileItem</code> passed in, and any <code>TileItem</code>s with a larger subscript, from the <code>currentWord vector</code>. Unhighlights each letter it removes
+	using the <code>unhighlight</code> method of the <code>Tile</code> class. After all the desired <code>TileItems</code> are removed, it calls <code>checkWord</code> to check the word against the dictionary
+	and then <code>changeAppearance</code> so that the word's appearance corresponds to its validity. 
+
+	@param toRemove the TileItem that should be removed from the current word. If there are any TileItems in the vector with a larger subscript then this TileItem, then they are also removed.
+*********************************************/
 void Board::removeLetter(TileItem & toRemove)
 {
 	//unselect the top letter
@@ -163,6 +220,11 @@ void Board::removeLetter(TileItem & toRemove)
 //////////////////////////////////////
 
 //change the appearance of the word on the basis of whether it's valid or not
+/*********************************************
+	Uses <code>isWord</code> to check if the current word is a valid word or not, then uses the <code>highlightValid</code> or <code>highlightInvalid</code>
+	functions in the Tile class to make the <code>Tile</code>s' appearance correspond to the word's validity.
+
+*********************************************/
 void Board::changeAppearance()
 {
 	//if it's a word, highlight it as valid
@@ -183,6 +245,14 @@ void Board::changeAppearance()
 
 //checks the current word against the dictionary and submits if it's valid
 //returns 10 * wordlength * levelnumber for the score
+/*********************************************
+	Checks to see if the word is valid using <code>isWord</code>. If it's not a valid word, nothing happens.
+	If it is a valid word, then it scores the word and returns the value, and calls <code>replaceLetters</code> so that
+	the <code>TileItems<code> in the current word corresponding to the letters on the game board are replaced with new
+	<code>TileItems</code> according to the replacement rules for each game level.
+
+	@return the score for the word that's been submitted. A word is worth 10 * number of letters in the word * game level (1-4).
+*********************************************/
 int Board::submitWord()
 {
 	int wordScore = 0;
@@ -207,6 +277,12 @@ int Board::submitWord()
 
 //replaces the letters that are in the current word with new letters, method depends on level
 //should be called when the word is submitted
+/*********************************************
+	Replaces all the letters that are in the <code>currentWord</code> vector, depending on the game level and their corresponding rules.
+	For the first three levels, letters above the selected letters drop down to take the place of the discarded letters, and any unfilled
+	letters at top are replaced with new <code>TileItems</code>. For the fourth level, new letters (and <code>TileItems</code> simply take
+	the place of discarded letters, and surrounding letters do not move.
+*********************************************/
 void Board::replaceLetters()
 {
 	//now, delete all those tiles and, dependent on level, replace appropriately
@@ -267,6 +343,13 @@ void Board::replaceLetters()
 }
 
 //checks the word to see if it's in the dictionary or not
+/*********************************************
+	Checks the current word represented in the <code>currentWord</code> vector against the dictionary, and sets <code>validWord</code>
+	to true if the word is in the dictionary and meets the length constraints of each level, or false if it does not. For levels 1 and 2,
+	words must be two letters long. For levels three and four, words must be three letters long.
+
+	We use this function to set <code>validWord</code> to minimize the amount of dictionary searches we do.
+*********************************************/
 void Board::checkWord()
 {
 	//check for length requirements
@@ -290,12 +373,25 @@ void Board::checkWord()
 //////////////////////////////
 
 //returns whether the word is valid or not
+/*********************************************
+	Returns whether the word is valid according to the <code>validWord</code> value.
+
+	@return the value of <code>validWord</code>
+*********************************************/
 bool Board::isWord()
 {
 	return validWord;
 }
 
 //returns the current word as a std::string
+/*********************************************
+	Returns the string representation of the current word stored as a sequence of <code>TileItem</code>s in the <code>currentWord</code> vector.
+	Uses the <code>getLetter</code> function of each <code>Tile</code> contained in each <code>TileItem</code> to get the letters represented by
+	the <code>Tile</code>s and concatenates them into a string.
+
+
+	@return the string representation of the word currently selected in gameplay
+*********************************************/
 std::string Board::returnWord()
 {
 	std::string currentString = "";
@@ -310,38 +406,13 @@ std::string Board::returnWord()
 }
 
 //returns the board level
+/*********************************************
+	Returns the integer value of the gameplay level. 1 is Easy, 2 is Medium, 3 is Difficult, and 4 is Challenge.
+
+	@return the integer value of the gameplay level
+*********************************************/
 int Board::returnLevel()
 {
 	return gameLevel;
 }
 
-void Board::sortWord()
-{
-	//selection sort: inefficient, but I understand it!
-	int max = currentWord.size();
-	//sort according to y
-	for (int i = 0; i < max; ++i){
-		int greatest = i;
-		for (int j = i + 1; j < max; ++j){
-			if (currentWord.at(j)->x < currentWord.at(greatest)->x) greatest = j;
-		}
-		TileItem * t = currentWord.at(i);
-		currentWord.at(i) = currentWord.at(greatest);
-		currentWord.at(greatest) = t;
-	}
-}
-
-void Board::reset()
-{
-	//change out every tile object
-	for (int m = 0; m < 9; ++m)
-	{
-		for (int n = 0; n < 9; ++n)
-		{
-			GameFramework::removeSprite(*boardset[m][n].tileObj->returnSprite());
-			boardset[m][n].tileObj = new Tile();
-		}
-	}
-
-	displayBoard();
-}
