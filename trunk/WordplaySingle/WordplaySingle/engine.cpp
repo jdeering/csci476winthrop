@@ -1,8 +1,18 @@
 #include "engine.h"
 #include "GameFramework.h"
 
+// Set inst to NULL to begin
 Framework* Framework::inst = NULL;
 
+/******************************************************
+	Provides a pointer to the Singleton instance of the
+	Framework class. If there is not an instance, it calls
+	the constructor.
+
+	@param user The username that the score of the game 
+			will be posted for.
+	@return A pointer to the single Framework instance.
+******************************************************/
 Framework* Framework::Instance(std::string user)
 {
 	if(!inst)
@@ -12,6 +22,9 @@ Framework* Framework::Instance(std::string user)
 	return inst;
 }
 
+/******************************************************
+	Default constructor.
+******************************************************/
 Framework::Framework()
 {
 	gameRunning = false;
@@ -23,6 +36,12 @@ Framework::Framework()
 	menuRunning = true;
 }
 
+/******************************************************
+	Protected constructor
+
+	@param user The username that the score of the game 
+			will be posted for.
+******************************************************/
 Framework::Framework(std::string user)
 {
 	gameRunning = false;
@@ -31,12 +50,19 @@ Framework::Framework(std::string user)
 	gameCount = 0;
 	options.VOLUME = 128;
 	options.TTS = false;
+	if(GAMENUM != -1) // If this is a game and not the main menu
+					  // load the side menu
+		LoadSideMenu();
 	LoadGames();
 	menuRunning = true;
-	LaunchGame(0);
+	LaunchGame(GAMENUM);
 	buffer = create_bitmap(800, 600);
 }
 
+/******************************************************
+	Default destructor. Destroys all pointers used by
+	Allegro.
+******************************************************/
 Framework::~Framework()
 {
 	show_mouse(NULL);
@@ -45,139 +71,10 @@ Framework::~Framework()
 	inst = NULL;
 }
 
-
-void Framework::LoadImages(std::string file_name)
-{
-	std::wstring file(file_name.begin(), file_name.end());
-	imgXML.Load(file.c_str());
-	LoadImages();
-}
-
-void Framework::LoadAudio(std::string file_name)
-{
-	std::wstring file(file_name.begin(), file_name.end());
-	audXML.Load(file.c_str());
-	LoadAudio();
-}
-
-void Framework::LoadText(std::string file_name)
-{
-	std::wstring file(file_name.begin(), file_name.end());
-	txtXML.Load(file.c_str());
-	LoadText();
-}
-
-void Framework::LoadImages()
-{
-	imgXML.FindElem();
-
-	while(imgXML.FindChildElem(TEXT("image")))
-	{
-		imgXML.IntoElem();
-		// Get attributes
-		std::wstring atFile = imgXML.GetAttrib(TEXT("file"));
-		std::wstring atRef = imgXML.GetAttrib(TEXT("ref"));
-		std::wstring atNumFrames = imgXML.GetAttrib(TEXT("numFrames"));
-		std::wstring atNumFrameCol = imgXML.GetAttrib(TEXT("numFrameCol"));
-		std::wstring atWidth = imgXML.GetAttrib(TEXT("frameWidth"));
-		std::wstring atHeight = imgXML.GetAttrib(TEXT("frameHeight"));
-		// Set variables for attributes
-		std::string file(atFile.begin(), atFile.end());
-		std::string ref(atRef.begin(), atRef.end());
-		std::string numFrames(atNumFrames.begin(), atNumFrames.end());
-		std::string numFrameCol(atNumFrameCol.begin(), atNumFrameCol.end());
-		std::string width(atWidth.begin(), atWidth.end());
-		std::string height(atHeight.begin(), atHeight.end());
-		imgXML.OutOfElem();
-		
-		// Add file to sprite handler
-		sprites.AddFile(ref, file, atoi(numFrames.c_str()), atoi(numFrameCol.c_str()), atoi(width.c_str()), atoi(height.c_str()));
-	}
-}
-
-void Framework::LoadAudio()
-{
-	SAMPLE *temp = NULL;
-	audXML.FindElem();
-	bool loopVal = false;
-	while(audXML.FindChildElem(TEXT("audio")))
-	{
-		audXML.IntoElem();
-		// Get attributes
-		std::wstring atFile = audXML.GetAttrib(TEXT("file"));
-		std::wstring atRef = audXML.GetAttrib(TEXT("ref"));
-		std::wstring atLoop = audXML.GetAttrib(TEXT("loop"));
-
-		// Set variables for attributes
-		std::string file(atFile.begin(), atFile.end());
-		std::string ref(atRef.begin(), atRef.end());
-		std::string loop(atLoop.begin(), atLoop.end());
-		audXML.OutOfElem();
-
-		if(strcmp(loop.c_str(), "true") == 0)
-			loopVal = true;
-		else if(strcmp(loop.c_str(), "false") == 0)
-			loopVal = false;
-		else
-		{
-			allegro_message("Error in Audio XML file (loop value).");
-			active = false;
-			return;
-		}
-
-		temp = load_sample(file.c_str());
-		if(!temp)
-		{
-			allegro_message("File not found at \"%s\". Audio Sample \"%s\" not added.", file.c_str(), ref.c_str());
-			active = false;
-		}
-		else
-			audioObjects.AddSample(ref, temp, loopVal);
-	}
-	destroy_sample(temp);
-}
-
-void Framework::LoadText()
-{
-	txtXML.FindElem();
-	int x, y;
-	bool visVal = false;
-	while(txtXML.FindChildElem(TEXT("text")))
-	{
-		x=0; y=0;
-		txtXML.IntoElem();
-		// Get attributes
-		std::wstring atString = txtXML.GetAttrib(TEXT("std::string"));
-		std::wstring atRef = txtXML.GetAttrib(TEXT("ref"));
-		std::wstring atX = txtXML.GetAttrib(TEXT("x"));
-		std::wstring atY = txtXML.GetAttrib(TEXT("y"));
-		std::wstring atVisible = txtXML.GetAttrib(TEXT("visible"));
-
-		// Set variables for attributes
-		std::string textString(atString.begin(), atString.end());
-		std::string ref(atRef.begin(), atRef.end());
-		std::string xLoc(atX.begin(), atX.end());
-		std::string yLoc(atY.begin(), atY.end());
-		std::string visible(atVisible.begin(), atVisible.end());
-		txtXML.OutOfElem();
-		x = atoi(xLoc.c_str());
-		y = atoi(yLoc.c_str());
-
-		if(strcmp(visible.c_str(), "true") == 0)
-			visVal = true;
-		else if(strcmp(visible.c_str(), "false") == 0)
-			visVal = false;
-		else
-		{
-			allegro_message("Error in Audio XML file (loop value).");
-			active = false;
-			return;
-		}
-
-		textObjects.AddText(ref, textString, x, y, visVal);
-	}
-}
-
+/******************************************************
+	Clears the current screen and calls the sprite handler's
+	draw method.
+******************************************************/
 void Framework::UpdateSprites()
 {
 	scare_mouse();
@@ -186,12 +83,19 @@ void Framework::UpdateSprites()
 	unscare_mouse();
 }
 
-
+/******************************************************
+	Calls the text handler's draw method to show all text
+	objects that are visible and reads all visible and
+	invisible text.
+******************************************************/
 void Framework::UpdateText()
 {
 	textObjects.ShowAllVisible(buffer);
 }
 
+/******************************************************
+	The Framework's main method calls for each iteration.
+******************************************************/
 bool Framework::MessageLoop()
 {
 	if(key[KEY_ESC] || !active)
@@ -213,6 +117,10 @@ bool Framework::MessageLoop()
 	return active;
 }
 
+/******************************************************
+	The Framework's public method to provide iterative
+	calls to its main loop method.
+******************************************************/
 bool Framework::MainLoop()
 {
 	bool retVal = MessageLoop();	
@@ -222,6 +130,11 @@ bool Framework::MainLoop()
 	return retVal;
 }
 
+/******************************************************
+	Creates anonymous pipes via the operating system
+	by which modules and the framework will communicate.
+	This is not currently being used.
+******************************************************/
 void Framework::CreateMessagePipes()
 {
 	SECURITY_ATTRIBUTES saAttr;	
@@ -264,6 +177,15 @@ void Framework::CreateMessagePipes()
 	SetNamedPipeHandleState(hStdOut_Parent, PIPE_WAIT, NULL, NULL);
 }
 
+/******************************************************
+	Launches the game at the given index. If the framework
+	and modules become separate EXE files, this will be used
+	to create the message pipes and create the module's process.
+
+	@param gameNum A zero-based index value that represents
+				   a game's information's relative position
+				   in the Games.XML file.
+******************************************************/
 void Framework::LaunchGame(int gameNum)
 {
 	LoadGameAssets(gameNum);
@@ -274,6 +196,11 @@ void Framework::LaunchGame(int gameNum)
 	//CreateGameProcess(gameToLaunch);
 }
 
+/******************************************************
+	Loads the information for all the games specified in
+	the Games.XML file and stores the information in a
+	game struct.
+******************************************************/
 void Framework::LoadGames()
 {	
 	gameList.Load(TEXT("data/Games.xml"));
@@ -331,60 +258,13 @@ void Framework::LoadGames()
 	}
 }
 
-void Framework::LaunchGame(std::string appPath)
-{ 
-	std::wstring szCmdline(appPath.begin(), appPath.end());
-	PROCESS_INFORMATION piProcInfo; 
-	STARTUPINFO siStartInfo;
-	BOOL bSuccess = FALSE; 
-
-	// Set up members of the PROCESS_INFORMATION structure. 
-
-	ZeroMemory( &piProcInfo, sizeof(PROCESS_INFORMATION) );
-
-	// Set up members of the STARTUPINFO structure. 
-	// This structure specifies the STDIN and STDOUT handles for redirection.
-
-	ZeroMemory( &siStartInfo, sizeof(STARTUPINFO) );
-	siStartInfo.cb = sizeof(STARTUPINFO); 
-	//siStartInfo.hStdError = hStdOut_Child;
-	siStartInfo.hStdOutput = hStdOut_Child;
-	//siStartInfo.hStdInput = hStdIn_Child;
-	siStartInfo.lpTitle = L"Game Module";
-	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
-
-	// Create the child process. 
-
-	bSuccess = CreateProcess(szCmdline.c_str(), 
-	NULL,     // command line 
-	NULL,          // process security attributes 
-	NULL,          // primary thread security attributes 
-	TRUE,          // handles are inherited 
-	0,             // creation flags 
-	NULL,          // use parent's environment 
-	NULL,          // use parent's current directory 
-	&siStartInfo,  // STARTUPINFO pointer 
-	&piProcInfo);  // receives PROCESS_INFORMATION 
-
-	// If an error occurs, exit the application. 
-	if ( ! bSuccess ) 
-	{
-		allegro_message("Game could not launch.");
-		active = false;
-	}
-	else 
-	{
-	// Close handles to the child process and its primary thread.
-	// Some applications might keep these handles to monitor the status
-	// of the child process, for example. 
-		gameRunning = true;
-	}
-}
-
-
+/******************************************************
+	Reads the inbound pipe to receive messages from the
+	currently active module.
+******************************************************/
 void Framework::GetMessages()
 {
-	DWORD bytesRead, bytesAvail, bytesLeft;
+	DWORD bytesRead, bytesAvail;
 	std::stringstream msgStream;
 	msgStream.clear();
 	PeekNamedPipe(hStdIn_Parent, incMessage, MAX_MESSAGE_SIZE, &bytesRead, &bytesAvail, NULL);
@@ -393,7 +273,6 @@ void Framework::GetMessages()
 		clearBuffer();
 		if (bytesAvail > MAX_MESSAGE_SIZE)
 		{
-			cout << "Filled Read Pipe." << endl;
 			while (bytesRead >= MAX_MESSAGE_SIZE)
 			{
 				clearBuffer();
@@ -414,6 +293,12 @@ void Framework::GetMessages()
 	clearBuffer(); // clears incMessage
 }
 
+/******************************************************
+	Adds a message to the outbound pipe for retrieval
+	by the currently active module.
+
+	@param msg The message to be sent to the module.
+******************************************************/
 void Framework::sendMessage(const char *msg)
 {
 	DWORD bytesWritten;
@@ -421,7 +306,13 @@ void Framework::sendMessage(const char *msg)
 	WriteFile(hStdOut_Parent, message.c_str(), message.size(), &bytesWritten, NULL);
 }
 
+/******************************************************
+	Adds a new sprite object to the sprite handler based
+	on information received via a message from the module.
 
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::CreateSprite(char *msg)
 {
 	int x, y, w, h;
@@ -432,6 +323,16 @@ void Framework::CreateSprite(char *msg)
 	sprites.AddSprite(str_reference, str_imageReference, x+XOFFSET, y, w, h);
 }
 
+/******************************************************
+	Adds a new sprite object to the sprite handler based
+	on information received via a message from the module.
+	This message does not contain width or height information.
+	The sprite's width and height will be based on the associated
+	bitmap file's loaded dimensions.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework:: CreateSpriteRefDimensions(char *msg)
 {
 	int x, y;
@@ -443,6 +344,13 @@ void Framework:: CreateSpriteRefDimensions(char *msg)
 }
 
 
+/******************************************************
+	Removes a specified sprite object from the sprite handler based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::KillSprite(char *msg)
 {
 	char reference[10];
@@ -452,14 +360,28 @@ void Framework::KillSprite(char *msg)
 		allegro_message("Sprite %s could not be removed", str_reference.c_str());
 }
 
-void Framework::ShowSprite(char *msg)
+/******************************************************
+	Changes the visibility of an active sprite object based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
+void Framework::SetSpriteVisible(char *msg)
 {
-	int vis;
-	char reference[10];
-	sscanf(msg, "%*d %s %d", reference, &vis);
-	sprites.SetVisible(reference, vis);
+	char refName[5];
+	int visible;
+	sscanf(msg, "%*d %s %d", refName, &visible);
+	sprites.SetVisible(refName, visible);	
 }
 
+/******************************************************
+	Changes the size of a sprite in the sprite handler based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::SetSpriteSize(char *msg)
 {
 	char reference[10];
@@ -468,6 +390,13 @@ void Framework::SetSpriteSize(char *msg)
 	sprites.SetSpriteSize(reference, w, h);
 }
 
+/******************************************************
+	Changes the screen location of a sprite in the sprite handler based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::SetSpriteLocation(char *msg)
 {
 	char reference[10];
@@ -477,6 +406,13 @@ void Framework::SetSpriteLocation(char *msg)
 	sprites.SetSpriteLocation(reference, x+XOFFSET, y);
 }
 
+/******************************************************
+	Changes the animation frame delay of a sprite in the sprite handler based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::SetFrameDelay(char *msg)
 {
 	char reference[10];
@@ -485,6 +421,13 @@ void Framework::SetFrameDelay(char *msg)
 	sprites.SetFrameDelay(reference, delay);
 }
 
+/******************************************************
+	Changes whether or not a sprite should be animated based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::SetAnimation(char *msg)
 {
 	char reference[10];
@@ -493,6 +436,13 @@ void Framework::SetAnimation(char *msg)
 	sprites.SetAnimation(reference, animate);
 }
 
+/******************************************************
+	Changes the current animation frame of a sprite in the sprite handler based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::SetFrame(char *msg)
 {
 	char reference[10];
@@ -502,6 +452,13 @@ void Framework::SetFrame(char *msg)
 	sprites.SetFrame(reference, frame);
 }
 
+/******************************************************
+	Moves a sprite to a new screen location based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::MoveSprite(char *msg)
 {
 	char reference[10];
@@ -510,6 +467,28 @@ void Framework::MoveSprite(char *msg)
 	sprites.MoveSprite(reference, x+XOFFSET, y, speed);
 }
 
+/******************************************************
+	Changes the associated bitmap file for a sprite
+	based on information received via a message from the
+	module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
+void Framework::ChangeBitmap(char* msg)
+{
+	char refName[5], fileRef[25];
+	sscanf(msg, "%*d %s %s", refName, fileRef);
+	sprites.ChangeBitmap(refName, fileRef);
+}
+
+/******************************************************
+	Changes the screen location of a text object based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::SetTextPosition(char *msg)
 {
 	char reference[10];
@@ -518,6 +497,13 @@ void Framework::SetTextPosition(char *msg)
 	textObjects.SetTextPosition(reference, x, y);
 }
 
+/******************************************************
+	Changes the size of a text object based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::SetTextSize(char *msg)
 {
 	char reference[10];
@@ -526,6 +512,13 @@ void Framework::SetTextSize(char *msg)
 	textObjects.SetSize(reference, size);
 }
 
+/******************************************************
+	Changes the foreground color of a text object based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::SetTextColor(char *msg)
 {
 	char reference[10];
@@ -534,6 +527,13 @@ void Framework::SetTextColor(char *msg)
 	textObjects.SetColor(reference, r, g, b);
 }
 
+/******************************************************
+	Changes the background color of a text object based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::SetTextBackgroundColor(char *msg)
 {
 	char reference[10];
@@ -542,14 +542,113 @@ void Framework::SetTextBackgroundColor(char *msg)
 	textObjects.SetBackgroundColor(reference, r, g, b);
 }
 
-void Framework::ShowText(char *msg)
+/******************************************************
+	Changes the visibility of an active text object based
+	on information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
+void Framework::SetTextVisible(char *msg)
 {
-	char reference[10];
-	int show;
-	sscanf(msg, "%*d %s %d", reference, &show);
-	textObjects.ShowText(reference, show, buffer);
+	char refName[5];
+	int visible;
+	sscanf(msg, "%*d %s %d", refName, &visible);
+	textObjects.SetVisible(refName, visible);
 }
 
+
+/******************************************************
+	Creates a new text object from a text asset reference in the
+	XML file based on information received via a message from the
+	module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
+void Framework::CreateTextFromRef(char *msg)
+{
+	int x, y;
+	std::string refName, assetName;
+	sscanf(msg, "%*d %s %d %d %s", refName, &x, &y, assetName);
+	textObjects.AddTextByRef(refName, assetName, x, y, true);
+}
+
+/******************************************************
+	Creates a new text object for a given text string
+	based on information received via a message from the
+	module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
+void Framework::CreateTextFromString(char *msg)
+{
+	char c;
+	char *currStr = "";
+	int code, x, y, length;
+	std::string refName;
+	//sscanf(msg, "%*d %s %d %d %d", refName, &x, &y);
+	std::stringstream stream;
+	stream << msg; // put msg into stream
+	stream >> code >> refName >> length >> x >> y;	
+
+	// get hanging space
+	stream.get(c);
+
+	char *string = new char[length+1];
+	// remainder of the stream is the string
+	stream.getline(string, length+1);
+	textObjects.AddText(refName, string, x, y, true);
+}
+
+/******************************************************
+	Removes a text object from the text handler
+	based on information received via a message from the
+	module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
+void Framework::RemoveText(char *msg)
+{
+	std::string refName;
+	sscanf(msg, "%*d %s", refName);
+}
+
+/******************************************************
+	Changes the string of a text object
+	based on information received via a message from the
+	module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
+void Framework::ChangeText(char *msg)
+{	
+	char c;
+	char *currStr = "";
+	int code, length;
+	std::string refName;
+	std::stringstream stream;
+	stream << msg; // put msg into stream
+	stream >> code >> refName >> length;	
+
+	stream.get(c); // Get hanging space
+
+	char *string = new char[length+1];
+
+	stream.getline(string, length+1);
+	textObjects.ChangeText(refName, string);
+}
+
+/******************************************************
+	Plays a loaded audio file specified by information received 
+	via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::PlayFile(char *msg)
 {
 	char reference[10];
@@ -557,7 +656,13 @@ void Framework::PlayFile(char *msg)
 	audioObjects.PlaySample(reference, options.VOLUME); // EDIT volume
 }
 
+/******************************************************
+	Updates the loop variable of a loaded audio file specified 
+	by information received via a message from the module.
 
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::ResetLoop(char *msg)
 {
 	char reference[10];
@@ -566,6 +671,13 @@ void Framework::ResetLoop(char *msg)
 	audioObjects.ResetLoopFlag(reference, loop);
 }
 
+/******************************************************
+	Stops a loaded audio file specified by information received 
+	via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::StopFile(char *msg)
 {
 	char reference[10];
@@ -573,6 +685,13 @@ void Framework::StopFile(char *msg)
 	audioObjects.StopSample(reference);
 }
 
+/******************************************************
+	Posts the players score upon exiting the game based on
+	information received via a message from the module.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
 void Framework::PostScore(char *msg)
 {
 	int score;
@@ -580,6 +699,11 @@ void Framework::PostScore(char *msg)
 	gameRunning = false;
 }
 
+/******************************************************
+	Handles the sending of mouse events and location changes
+	to the module as well as Framework-only events (i.e. side menu
+	interaction).
+******************************************************/
 void Framework::UpdateMouse()
 {
 	std::string mouse_message = "";
@@ -622,12 +746,35 @@ void Framework::UpdateMouse()
 		}
 		else // Framework event
 		{
-			x += XOFFSET; // Reset x to reflect entire screen instead of only the game window
+			x += XOFFSET; // Reset mouse's x position to reflect entire screen 
+						  // instead of only the game window
 			std::string sprite_name = sprites.CheckClicks(mouse.GetPointer());
+			if(button == 1 && state == 1 && strcmp(sprite_name.c_str(), "") != 0) // see if a sprite is clicked
+			{
+				// change Text-to-Speech boolean value
+				if(strcmp(sprite_name.c_str(), "tts_box") == 0)
+				{
+					options.TTS ^= true;
+					if(options.TTS)
+						sprites.SetFrame(sprite_name, 1); // checked
+					else
+						sprites.SetFrame(sprite_name, 0); // unchecked
+				}
+				// adjust volume
+				if(strcmp(sprite_name.c_str(), "vol_bar") == 0
+					|| strcmp(sprite_name.c_str(), "vol_pointer") == 0)
+				{
+
+				}
+			}
 		}
 	}
 }
 
+/******************************************************
+	Handles the sending of keyboard events and to the module 
+	as well as Framework-only events (i.e. side menu interaction).
+******************************************************/
 void Framework::UpdateKeyboard()
 {
 	int key, state;
@@ -645,34 +792,31 @@ void Framework::UpdateKeyboard()
 	}
 }
 
+/******************************************************
+	Returns the state (running or not running) of the Framework.
 
+	@return true if the Framework loop is still running, false otherwise
+******************************************************/
 bool Framework::isActive()
 { 
 	return active;
 }
 
+/******************************************************
+	Returns the state (running or not running) of modules.
+
+	@return true if a module is running, false otherwise
+******************************************************/
 bool Framework::gameIsRunning() 
 { 
 	return gameRunning; 
 }
 
-void Framework::DrawMenu()
-{
-	sprites.AddSprite("exitButton", "exitButton", 10, 10);
-	sprites.AddSprite("volumeStrip", "volumeStrip", 10, 200);
-	sprites.AddSprite("volumeIndicator", "volumeIndicator", 10, 200);
-	textObjects.AddText("volume", "Volume : ", 100, 100, true);
-}
-
-void Framework::CheckErrors()
-{
-	if(errno && errno != 2)
-	{
-		char* message = strerror(errno);
-		allegro_message("Error %d : %s", errno, message);
-	}
-}
-
+/******************************************************
+	Handles the passing of the current desire Text-to-Speech 
+	option and volume states to the objects that need them
+	(text handler and audio handler).
+******************************************************/
 void Framework::UpdateOptions()
 {	
 	if(options.VOLUME < 1) options.VOLUME = 1;
@@ -682,6 +826,16 @@ void Framework::UpdateOptions()
 }
 
  
+/******************************************************
+	Creates a new operating system process to run a game
+	module's program. This is not currently in use but is
+	available if separation between the modules and Framework
+	is desired.
+
+	@param szCmdline The command line string specifying the
+				     module's EXE location and any command line
+					 options.
+******************************************************/
 void Framework::CreateGameProcess(std::wstring szCmdline)
 // Create a child process that uses the previously created pipes for STDIN and STDOUT.
 { 
@@ -744,68 +898,14 @@ void Framework::CreateGameProcess(std::wstring szCmdline)
 	}
 }
 
+/******************************************************
+	Loads the image, audio, and text assets specified in
+	a module's XML files.
 
-void Framework::CreateTextFromRef(char *msg)
-{
-	int x, y;
-	std::string refName, assetName;
-	sscanf(msg, "%*d %s %d %d %s", refName, &x, &y, assetName);
-	textObjects.AddTextByRef(refName, assetName, x, y, true);
-}
-
-void Framework::CreateTextFromString(char *msg)
-{
-	char c;
-	char *currStr = "";
-	int code, x, y, length;
-	std::string refName;
-	//sscanf(msg, "%*d %s %d %d %d", refName, &x, &y);
-	std::stringstream stream;
-	stream << msg; // put msg into stream
-	stream >> code >> refName >> length >> x >> y;	
-
-	// get code
-	stream.get(c);
-	//for(int i = 0; i < 4; i++)
-	//{
-	//	while(c != ' ')
-	//	{
-	//		stream.get(c);
-	//	}
-	//	stream.get(c);
-	//}
-
-	char *string = new char[length+1];
-
-	stream.getline(string, length+1);
-	textObjects.AddText(refName, string, x, y, true);
-}
-
-void Framework::RemoveText(char *msg)
-{
-	std::string refName;
-	sscanf(msg, "%*d %s", refName);
-}
-
-void Framework::ChangeText(char *msg)
-{	
-	char c;
-	char *currStr = "";
-	int code, length;
-	std::string refName;
-	std::stringstream stream;
-	stream << msg; // put msg into stream
-	stream >> code >> refName >> length;	
-
-	stream.get(c); // Get space
-
-	char *string = new char[length+1];
-
-	stream.getline(string, length+1);
-	textObjects.ChangeText(refName, string);
-}
-
-
+	@param gameNum The zero-based index into the games array.
+					This also represents a game's information's
+					relative location in the Games.XML file.
+******************************************************/
 void Framework::LoadGameAssets(int gameIndex)
 {
 	std::string gamePath = "";
@@ -818,7 +918,15 @@ void Framework::LoadGameAssets(int gameIndex)
 	LoadText(textFilePath, gamePath);
 }
 
+/******************************************************
+	Loads the image assets from an XML file at the specified
+	path and file name.
 
+	@param file_name The path to the XML file relative to the
+					 module's EXE location.
+    @param gamePath The path to the module's EXE location relative
+					to the Framework's location.
+******************************************************/
 void Framework::LoadImages(std::string file_name, std::string gamePath)
 {
 	std::string file = gamePath + file_name;
@@ -832,6 +940,15 @@ void Framework::LoadImages(std::string file_name, std::string gamePath)
 	}
 }
 
+/******************************************************
+	Loads the audio assets from an XML file at the specified
+	path and file name.
+
+	@param file_name The path to the XML file relative to the
+					 module's EXE location.
+    @param gamePath The path to the module's EXE location relative
+					to the Framework's location.
+******************************************************/
 void Framework::LoadAudio(std::string file_name, std::string gamePath)
 {
 	std::string file = gamePath + file_name;
@@ -846,6 +963,15 @@ void Framework::LoadAudio(std::string file_name, std::string gamePath)
 	}
 }
 
+/******************************************************
+	Loads the text assets from an XML file at the specified
+	path and file name.
+
+	@param file_name The path to the XML file relative to the
+					 module's EXE location.
+    @param gamePath The path to the module's EXE location relative
+					to the Framework's location.
+******************************************************/
 void Framework::LoadText(std::string file_name, std::string gamePath)
 {
 	std::string file = gamePath + file_name;
@@ -860,7 +986,14 @@ void Framework::LoadText(std::string file_name, std::string gamePath)
 	}
 }
 
+/******************************************************
+	Loads the image asset files that are currently specified
+	in the loaded imgXML variable.
 
+	@param gamePath The path relative to the Framework's EXE
+					needed to concatenate module relative
+					asset paths onto.
+******************************************************/
 void Framework::LoadGameImages(std::string gamePath)
 {
 	imgXML.FindElem();
@@ -893,6 +1026,14 @@ void Framework::LoadGameImages(std::string gamePath)
 	}
 }
 
+/******************************************************
+	Loads the audio asset files that are currently specified
+	in the loaded audXML variable.
+
+	@param gamePath The path relative to the Framework's EXE
+					needed to concatenate module relative
+					asset paths onto.
+******************************************************/
 void Framework::LoadGameAudio(std::string gamePath)
 {
 	SAMPLE *temp = NULL;
@@ -936,6 +1077,14 @@ void Framework::LoadGameAudio(std::string gamePath)
 	destroy_sample(temp);
 }
 
+/******************************************************
+	Loads the text asset files that are currently specified
+	in the loaded txtXML variable.
+
+	@param gamePath The path relative to the Framework's EXE
+					needed to concatenate module relative
+					asset paths onto.
+******************************************************/
 void Framework::LoadGameText(std::string gamePath)
 {
 	txtXML.FindElem();
@@ -977,71 +1126,10 @@ void Framework::LoadGameText(std::string gamePath)
 	}
 }
 
-void Framework::clearBuffer()
-{ memset(incMessage, 0, MAX_MESSAGE_SIZE); }
-
-void Framework::ParseMessage(std::stringstream &msgStream)
-{
-	char message[MAX_MESSAGE_SIZE];
-	int code;
-	//cout << "Inc Message : " <<  msgStream.str() << endl;
-	while(!msgStream.eof())
-	{
-		memset(message, 0, MAX_MESSAGE_SIZE);
-		msgStream.getline(message, MAX_MESSAGE_SIZE);
-		code = 0;
-		sscanf(message, "%d", &code);
-		if(!code)
-		{ 
-			if(strlen(message)) 
-				printf("Debug Message : %s\n", message); 
-			continue; 
-		}
-		//printf("%s\n", message);
-		//switch(code)
-		//{
-		//	// Sprites
-		//case SPRITE_CREATE : CreateSprite(message); break;
-		//case SPRITE_CREATE_FROM_ASSET : CreateSpriteRefDimensions(message); break;
-		//case SPRITE_REMOVE : KillSprite(message); break;
-		//case SPRITE_VISIBILITY_CHANGE : ShowSprite(message); break;
-		//case SPRITE_SET_SIZE : SetSpriteSize(message); break;
-		//case SPRITE_SET_LOCATION : SetSpriteLocation(message); break;
-		//case SPRITE_SET_FRAME_DELAY : SetFrameDelay(message); break;
-		//case SPRITE_SET_ANIMATION : SetAnimation(message); break;
-		//case SPRITE_SET_FRAME : SetFrame(message); break;
-		//case SPRITE_MOVE_TO : MoveSprite(message); break;
-		//case SPRITE_CHANGE_BITMAP : ChangeBitmap(message); break;
-		//	// Text
-		//case TEXT_CREATE_FROM_ASSET	: CreateTextFromRef(message); break;
-		//case TEXT_CREATE_FROM_STRING : CreateTextFromString(message); break; 
-		//case TEXT_REMOVE : RemoveText(message); break;
-		//case TEXT_CHANGE_CONTENT : ChangeText(message); break;
-		//case TEXT_CHANGE_LOCATION : SetTextPosition(message); break;
-		//case TEXT_VISIBILITY_CHANGE : ShowText(message); break;
-		//case TEXT_SIZE_CHANGE : SetTextSize(message); break;
-		//case TEXT_COLOR_CHANGE : SetTextColor(message); break;
-		//case TEXT_BGCOLOR_CHANGE : SetTextBackgroundColor(message); break;
-		//	// Audio
-		//case AUDIO_PLAY	: PlayFile(message); break;		 
-		//case AUDIO_SET_LOOP_COUNT : ResetLoop(message); break;
-		//case AUDIO_STOP	: StopFile(message); break;
-		//	// Score
-		//case SCORE : PostScore(message); break;
-		//default :  printf("Debug Message : %s\n", message); 
-		//	break;
-		//}
-	}
-}
-
-void Framework::ChangeBitmap(char* msg)
-{
-	char refName[5], fileRef[25];
-	sscanf(msg, "%*d %s %s", refName, fileRef);
-	sprites.ChangeBitmap(refName, fileRef);
-}
-
-
+/******************************************************
+	Stops the module's process and closes the anonymous
+	pipes.
+******************************************************/
 void Framework::KillModule()
 {
 	if(gameRunning)
@@ -1066,18 +1154,92 @@ void Framework::KillModule()
 	CloseHandle(hStdOut_Child);
 }
 
-void Framework::SetSpriteVisible(char *msg)
+/******************************************************
+	Clears the incoming/outgoing message buffer by setting
+	the all values in the buffer to zero.
+******************************************************/
+void Framework::clearBuffer()
+{ memset(incMessage, 0, MAX_MESSAGE_SIZE); }
+
+/******************************************************
+	Parses an incoming message stream. Determines the code
+	of the incoming message and calls the related function.
+
+	@param msgStream The incoming message string stream being
+				     parsed for some number of distinct messages.
+******************************************************/
+void Framework::ParseMessage(std::stringstream &msgStream)
 {
-	char refName[5];
-	int visible;
-	sscanf(msg, "%*d %s %d", refName, &visible);
-	sprites.SetVisible(refName, visible);	
+	char message[MAX_MESSAGE_SIZE];
+	int code;
+
+	while(!msgStream.eof())
+	{
+		memset(message, 0, MAX_MESSAGE_SIZE);
+		msgStream.getline(message, MAX_MESSAGE_SIZE);
+		code = 0;
+		sscanf(message, "%d", &code);
+		if(!code)
+		{ 
+			if(strlen(message)) 
+				printf("Debug Message : %s\n", message); 
+			continue; 
+		}
+
+		switch(code)
+		{
+			// Sprites
+		case SPRITE_CREATE : CreateSprite(message); break;
+		case SPRITE_CREATE_FROM_ASSET : CreateSpriteRefDimensions(message); break;
+		case SPRITE_REMOVE : KillSprite(message); break;
+		case SPRITE_VISIBILITY_CHANGE : SetSpriteVisible(message); break;
+		case SPRITE_SET_SIZE : SetSpriteSize(message); break;
+		case SPRITE_SET_LOCATION : SetSpriteLocation(message); break;
+		case SPRITE_SET_FRAME_DELAY : SetFrameDelay(message); break;
+		case SPRITE_SET_ANIMATION : SetAnimation(message); break;
+		case SPRITE_SET_FRAME : SetFrame(message); break;
+		case SPRITE_MOVE_TO : MoveSprite(message); break;
+		case SPRITE_CHANGE_BITMAP : ChangeBitmap(message); break;
+			// Text
+		case TEXT_CREATE_FROM_ASSET	: CreateTextFromRef(message); break;
+		case TEXT_CREATE_FROM_STRING : CreateTextFromString(message); break; 
+		case TEXT_REMOVE : RemoveText(message); break;
+		case TEXT_CHANGE_CONTENT : ChangeText(message); break;
+		case TEXT_CHANGE_LOCATION : SetTextPosition(message); break;
+		case TEXT_VISIBILITY_CHANGE : SetTextVisible(message); break;
+		case TEXT_SIZE_CHANGE : SetTextSize(message); break;
+		case TEXT_COLOR_CHANGE : SetTextColor(message); break;
+		case TEXT_BGCOLOR_CHANGE : SetTextBackgroundColor(message); break;
+			// Audio
+		case AUDIO_PLAY	: PlayFile(message); break;		 
+		case AUDIO_SET_LOOP_COUNT : ResetLoop(message); break;
+		case AUDIO_STOP	: StopFile(message); break;
+			// Score
+		case POST_SCORE : PostScore(message); break;
+		default :  printf("Debug Message : %s\n", message); 
+			break;
+		}
+	}
 }
 
-void Framework::SetTextVisible(char *msg)
+/******************************************************
+	Loads and displays the sprites for the side menu to
+	allow changing the volume and text-to-speech on/off
+	setting.
+******************************************************/
+void Framework::LoadSideMenu()
 {
-	char refName[5];
-	int visible;
-	sscanf(msg, "%*d %s %d", refName, &visible);
-	textObjects.SetVisible(refName, visible);
+	int w = 0, h = 0;
+	// Load the side menu sprite files
+	sprites.AddFile("TTSBox", "data/images/TTSBox.bmp", w, h, 2, 2);
+	sprites.AddFile("VolumeBar", "data/images/VolumeBar.bmp", w, h, 1, 1);
+	sprites.AddFile("VolumePointer", "data/images/VolumePointer.bmp", w, h, 1, 1);
+	// Create the side menu sprites
+	sprites.AddSprite("tts_box", "TTSBox", 0, 0);
+	sprites.AddSprite("vol_bar", "VolumeBar", 0, 0);
+	sprites.AddSprite("vol_pointer", "VolumePointer", 0, 0);
+	// Display them
+	sprites.SetVisible("tts_box", 1);
+	sprites.SetVisible("vol_bar", 1);
+	sprites.SetVisible("vol_pointer", 1);
 }

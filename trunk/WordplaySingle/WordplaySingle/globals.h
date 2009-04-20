@@ -27,6 +27,13 @@
 using namespace std;
 
 
+// The index for the game to launch.
+// This should reflect the game's relative
+// location to other games in the Games.XML
+// file. 0 is the first game.
+#define GAMENUM 0
+
+
 #define MAXSPRITES		500
 #define MAXFILES		100
 #define MAXGAMES		4
