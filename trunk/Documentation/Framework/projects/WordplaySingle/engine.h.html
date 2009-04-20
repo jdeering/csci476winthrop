@@ -67,20 +67,14 @@ engine.h
     <font color="green">/* MESSAGE LOOP FUNCTION */</font>
     <font color="blue">bool</font> MessageLoop<font color="black">(</font><font color="black">)</font>;
 
-    <font color="green">/* GET FILES FOR MENU ASSETS */</font>
-    <font color="blue">void</font> LoadImages<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name<font color="black">)</font>;
-    <font color="blue">void</font> LoadAudio<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name<font color="black">)</font>;
-    <font color="blue">void</font> LoadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name<font color="black">)</font>;
-
     <font color="green">/* GET FILES FOR GAME ASSETS */</font>
     <font color="blue">void</font> LoadImages<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name, std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
     <font color="blue">void</font> LoadAudio<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name, std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
     <font color="blue">void</font> LoadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name, std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
     
-    <font color="blue">void</font> AddSprite<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName, std<font color="black">:</font><font color="black">:</font>string imageRef, <font color="blue">int</font> x, <font color="blue">int</font> y, <font color="blue">int</font> w, <font color="blue">int</font> h<font color="black">)</font>;
     <font color="blue">bool</font> isActive<font color="black">(</font><font color="black">)</font>;
     <font color="blue">bool</font> gameIsRunning<font color="black">(</font><font color="black">)</font>;
-    <font color="blue">void</font> DrawMenu<font color="black">(</font><font color="black">)</font>;
+
 <font color="blue">protected</font><font color="black">:</font>
     <font color="green">/* PROTECTED CONSTRUCTORS */</font>
     Framework<font color="black">(</font><font color="black">)</font>;
@@ -120,11 +114,9 @@ engine.h
     <font color="blue">void</font> KillMainMenu<font color="black">(</font><font color="black">)</font>;
     <font color="blue">void</font> CreateMessagePipes<font color="black">(</font><font color="black">)</font>;
     <font color="blue">void</font> LaunchGame<font color="black">(</font><font color="blue">int</font> gameNum<font color="black">)</font>;
-    <font color="blue">void</font> LaunchGame<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string appPath<font color="black">)</font>;
     <font color="blue">void</font> GetMessages<font color="black">(</font><font color="black">)</font>;
     <font color="blue">void</font> sendMessage<font color="black">(</font><font color="blue">const</font> <font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> ParseMessage<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>stringstream <font color="black">&</font>msgStream<font color="black">)</font>;
-    <font color="blue">void</font> CheckErrors<font color="black">(</font><font color="black">)</font>;
 
     <font color="green">/* OBJECT VARIABLES */</font>
     SpriteHandler sprites;
@@ -148,17 +140,22 @@ engine.h
     <font color="blue">void</font> LoadGameAudio<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
     <font color="blue">void</font> LoadGameText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
 
+    <font color="green">// Loads the side menu sprites</font>
+    <font color="blue">void</font> LoadSideMenu<font color="black">(</font><font color="black">)</font>;
+
     <font color="green">/* KEYBOARD / MOUSE FUNCTIONS */</font>
     <font color="blue">void</font> UpdateMouse<font color="black">(</font><font color="black">)</font>;
     <font color="blue">void</font> UpdateKeyboard<font color="black">(</font><font color="black">)</font>;
 
 <font color="blue">public</font><font color="black">:</font> <font color="green">// Change to private when separating framework from modules</font>
+        <font color="green">// i.e. - implementing the pipe method of running modules</font>
 
     <font color="green">/* FUNCTIONS CALLED VIA MESSAGE */</font>
+    <font color="green">// These are called the same way they would be via a pipe,</font>
+    <font color="green">// but the pipe implementation is not active</font>
     <font color="blue">void</font> CreateSprite<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> CreateSpriteRefDimensions<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> KillSprite<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
-    <font color="blue">void</font> ShowSprite<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> SetSpriteSize<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> SetSpriteLocation<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> SetFrameDelay<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
@@ -169,7 +166,6 @@ engine.h
     <font color="blue">void</font> SetSpriteVisible<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
 
     <font color="blue">void</font> SetTextPosition<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
-    <font color="blue">void</font> ShowText<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;   
     <font color="blue">void</font> CreateTextFromRef<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> CreateTextFromString<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> RemoveText<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
