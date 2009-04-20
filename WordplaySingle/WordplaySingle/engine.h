@@ -59,20 +59,14 @@ public:
 	/* MESSAGE LOOP FUNCTION */
 	bool MessageLoop();
 
-	/* GET FILES FOR MENU ASSETS */
-	void LoadImages(std::string file_name);
-	void LoadAudio(std::string file_name);
-	void LoadText(std::string file_name);
-
 	/* GET FILES FOR GAME ASSETS */
 	void LoadImages(std::string file_name, std::string gamePath);
 	void LoadAudio(std::string file_name, std::string gamePath);
 	void LoadText(std::string file_name, std::string gamePath);
 	
-	void AddSprite(std::string refName, std::string imageRef, int x, int y, int w, int h);
 	bool isActive();
 	bool gameIsRunning();
-	void DrawMenu();
+
 protected:
 	/* PROTECTED CONSTRUCTORS */
 	Framework();
@@ -112,11 +106,9 @@ private:
 	void KillMainMenu();
 	void CreateMessagePipes();
 	void LaunchGame(int gameNum);
-	void LaunchGame(std::string appPath);
 	void GetMessages();
 	void sendMessage(const char *msg);
 	void ParseMessage(std::stringstream &msgStream);
-	void CheckErrors();
 
 	/* OBJECT VARIABLES */
 	SpriteHandler sprites;
@@ -140,17 +132,22 @@ private:
 	void LoadGameAudio(std::string gamePath);
 	void LoadGameText(std::string gamePath);
 
+	// Loads the side menu sprites
+	void LoadSideMenu();
+
 	/* KEYBOARD / MOUSE FUNCTIONS */
 	void UpdateMouse();
 	void UpdateKeyboard();
 
 public: // Change to private when separating framework from modules
+		// i.e. - implementing the pipe method of running modules
 
 	/* FUNCTIONS CALLED VIA MESSAGE */
+	// These are called the same way they would be via a pipe,
+	// but the pipe implementation is not active
 	void CreateSprite(char *msg);
 	void CreateSpriteRefDimensions(char *msg);
 	void KillSprite(char *msg);
-	void ShowSprite(char *msg);
 	void SetSpriteSize(char *msg);
 	void SetSpriteLocation(char *msg);
 	void SetFrameDelay(char *msg);
@@ -161,7 +158,6 @@ public: // Change to private when separating framework from modules
 	void SetSpriteVisible(char *msg);
 
 	void SetTextPosition(char *msg);
-	void ShowText(char *msg);	
 	void CreateTextFromRef(char *msg);
 	void CreateTextFromString(char *msg);
 	void RemoveText(char *msg);
