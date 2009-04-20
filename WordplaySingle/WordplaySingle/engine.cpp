@@ -50,9 +50,9 @@ Framework::Framework(std::string user)
 	gameCount = 0;
 	options.VOLUME = 128;
 	options.TTS = false;
-	if(GAMENUM != -1) // If this is a game and not the main menu
+	//if(GAMENUM != -1) // If this is a game and not the main menu
 					  // load the side menu
-		LoadSideMenu();
+		//LoadSideMenu();
 	LoadGames();
 	menuRunning = true;
 	LaunchGame(GAMENUM);
