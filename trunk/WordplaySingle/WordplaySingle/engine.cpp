@@ -31,7 +31,8 @@ Framework::Framework()
 	username = "Anonymous";
 	active = true;
 	gameCount = 0;
-	options.VOLUME = 128;
+	options.VOLUME = 50;
+	options.MUTE = false;
 	options.TTS = false;
 	menuRunning = true;
 }
@@ -50,9 +51,9 @@ Framework::Framework(std::string user)
 	gameCount = 0;
 	options.VOLUME = 128;
 	options.TTS = false;
-	//if(GAMENUM != -1) // If this is a game and not the main menu
+	if(GAMENUM != -1) // If this is a game and not the main menu
 					  // load the side menu
-		//LoadSideMenu();
+		LoadSideMenu();
 	LoadGames();
 	menuRunning = true;
 	LaunchGame(GAMENUM);
@@ -78,7 +79,7 @@ Framework::~Framework()
 void Framework::UpdateSprites()
 {
 	scare_mouse();
-	clear_to_color(buffer, makecol(0, 0, 0));
+	clear_to_color(buffer, makecol(255, 255, 255));
 	sprites.DrawSprites(buffer);
 	unscare_mouse();
 }
@@ -764,7 +765,11 @@ void Framework::UpdateMouse()
 				if(strcmp(sprite_name.c_str(), "vol_bar") == 0
 					|| strcmp(sprite_name.c_str(), "vol_pointer") == 0)
 				{
-
+					float low = 45, high = 155;
+					float range = high - low;
+					x -= 3;
+					sprites.SetSpriteLocation("vol_pointer", x, 465);
+					options.VOLUME = (x - low) / range;
 				}
 			}
 		}
@@ -819,8 +824,12 @@ bool Framework::gameIsRunning()
 ******************************************************/
 void Framework::UpdateOptions()
 {	
-	if(options.VOLUME < 1) options.VOLUME = 1;
-	if(options.VOLUME > 255) options.VOLUME = 255;
+	if(options.VOLUME < 0) options.VOLUME = 0;
+	if(options.VOLUME > 100) options.VOLUME = 100;
+	if(options.MUTE)
+		audioObjects.Mute();
+	else
+		audioObjects.Unmute();
 	audioObjects.SetVolume(options.VOLUME);
 	textObjects.SetTTS(options.TTS);
 }
@@ -1231,15 +1240,21 @@ void Framework::LoadSideMenu()
 {
 	int w = 0, h = 0;
 	// Load the side menu sprite files
-	sprites.AddFile("TTSBox", "data/images/TTSBox.bmp", w, h, 2, 2);
-	sprites.AddFile("VolumeBar", "data/images/VolumeBar.bmp", w, h, 1, 1);
-	sprites.AddFile("VolumePointer", "data/images/VolumePointer.bmp", w, h, 1, 1);
+	sprites.AddFile("TTSBox", "data/images/TTSBox.bmp", 2, 2, 40, 40);
+	sprites.AddFile("TTSBanner", "data/images/TTSBanner.bmp", 1, 1, 140, 30);
+	sprites.AddFile("VolumeBar", "data/images/VolumeBar.bmp", 1, 1, 110, 30);
+	sprites.AddFile("VolumePointer", "data/images/VolumePointer.bmp", 1, 1, 7, 44);
+	sprites.AddFile("VolumeBanner", "data/images/VolumeBanner.bmp", 1, 1, 110, 30);
 	// Create the side menu sprites
-	sprites.AddSprite("tts_box", "TTSBox", 0, 0);
-	sprites.AddSprite("vol_bar", "VolumeBar", 0, 0);
-	sprites.AddSprite("vol_pointer", "VolumePointer", 0, 0);
+	sprites.AddSprite("tts_box", "TTSBox", 5, 70);
+	sprites.AddSprite("tts_banner", "TTSBanner", 55, 75);
+	sprites.AddSprite("vol_bar", "VolumeBar", 45, 465);
+	sprites.AddSprite("vol_pointer", "VolumePointer", 97, 465);
+	sprites.AddSprite("vol_banner", "VolumeBanner", 45, 520);
 	// Display them
 	sprites.SetVisible("tts_box", 1);
+	sprites.SetVisible("tts_banner", 1);
 	sprites.SetVisible("vol_bar", 1);
 	sprites.SetVisible("vol_pointer", 1);
+	sprites.SetVisible("vol_banner", 1);
 }

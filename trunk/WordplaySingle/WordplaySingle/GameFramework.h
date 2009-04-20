@@ -116,6 +116,9 @@ enum PROTOCOL_OPCODES
 		static GFAudio& createAudio(std::string);
 		static void removeAudio(GFAudio&);
 
+		/* SEND SCORE */
+		static void postScore();
+
 		/* MOUSE POSITION */
 		static int mouseX, mouseY;
 		

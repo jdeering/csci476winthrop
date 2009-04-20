@@ -41,6 +41,7 @@ typedef struct
 typedef struct
 {
 	int VOLUME;
+	bool MUTE;
 	bool TTS;
 }OPTIONS;
 
