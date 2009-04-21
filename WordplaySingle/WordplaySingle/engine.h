@@ -167,6 +167,7 @@ public: // Change to private when separating framework from modules
 	void SetTextColor(char *msg);
 	void SetTextBackgroundColor(char *msg);
 	void SetTextVisible(char *msg);
+	void ReadText(char *msg);
 
 	void PlayFile(char *msg);
 	void ResetLoop(char *msg);

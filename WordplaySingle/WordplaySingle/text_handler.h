@@ -13,9 +13,6 @@ DATA ITEMS
 	int numObjects
 	bool readEnabled
 
-PRIVATE FUNCTIONS
-	void ReadText(std::string refName) - reads the text object at key refName using text-to-speech
-
 PUBLIC FUNCTIONS
 	bool AddText(std::string refName, std::string textstd::string, int x, int y, bool visible) - adds a text object to the container
 					using the textstd::string parameter as the text object's std::string
@@ -46,7 +43,6 @@ class TextHandler
 {
 private:
 	std::map<std::string, Text> text;
-	void ReadText(std::string refName);
 	int numObjects;
 	bool readEnabled;
 public:
