@@ -1,11 +1,12 @@
 #include "text.h"
 
+ISpVoice* Text::pVoice = NULL;
+
 /******************************************************
 	Default Constructor
 ******************************************************/
 Text::Text()
 {
-	pVoice = NULL;
 	x = 0; 
 	y = 0; 
 	visible = false;
@@ -40,16 +41,19 @@ void Text::LoadText(std::string txt, int x_, int y_, bool vis)
 }
 
 /******************************************************
-	Reads the std::string associated with the object using
-	Windows text-to-speech
+	Reads the string parameter using Windows text-to-speech
+
+	@param stringToRead The string to be read via text-to-speech.
+	@param volume Volume value (0-100)
 ******************************************************/
-void Text::ReadText()
-{	
-	const std::wstring str(text.begin(), text.end());
+void Text::ReadText(std::string stringToRead, unsigned short volume)
+{
+	const std::wstring str(stringToRead.begin(), stringToRead.end());
 	HRESULT hr = CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&pVoice);
     if( SUCCEEDED( hr ) )
     {
 		hr = pVoice->SetRate(0);
+		hr = pVoice->SetVolume(volume);
 		hr = pVoice->Speak(str.c_str(), 0, NULL);
         pVoice->Release();
         pVoice = NULL;
@@ -106,9 +110,6 @@ void Text::ShowText(bool read, BITMAP *dest)
 	scare_mouse();
 	destroy_bitmap(tmp);
 	unscare_mouse();
-
-	if(read)
-		ReadText();
 }
 
 /******************************************************

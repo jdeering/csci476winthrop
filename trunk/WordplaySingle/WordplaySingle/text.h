@@ -25,7 +25,8 @@ FUNCTIONS
 															class instance
 	ShowText(bool read, BITMAP* dest) - displays the text onscreen, drawing to the dest BITMAP, and
 											reads the associated std::string if the read parameter is true
-	ReadText() - reads the text using Windows text-to-speech
+	ReadText(std::string stringToRead, unsigned short volume) - reads stringToRead using Windows text-to-speech
+																at the specified volume
 	ChangeText(std::string) - takes a std::string as input to change the text variable associated with the
 						   class instance
 
@@ -41,7 +42,7 @@ FUNCTIONS
 class Text
 {
 private:	
-	ISpVoice *pVoice;
+	static ISpVoice *pVoice;
 	int x, y;
 	int size; // height in pixels
 	int color, bg_color; // Foreground and background colors
@@ -54,11 +55,12 @@ public:
 	void SetVisible(int vis);
 	void LoadText(std::string txt, int x_, int y_, bool visible);
 	void ShowText(bool read, BITMAP *dest);
-	void ReadText();
 	void ChangeText(std::string txt);
 	void SetSize(int);
 	void SetColor(int r, int g, int b);
 	void SetBackgroundColor(int r, int g, int b);
+	
+	static void ReadText(std::string, unsigned short);
 };
 
 

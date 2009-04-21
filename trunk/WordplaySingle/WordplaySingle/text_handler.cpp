@@ -157,8 +157,6 @@ bool TextHandler::ShowText(std::string refName, int setVisible, BITMAP *bmp)
 	{
 		if(setVisible)
 			text[refName].ShowText(readEnabled, bmp);
-		if(readEnabled)
-			ReadText(refName);
 		return true;
 	}
 	else
@@ -193,20 +191,6 @@ void TextHandler::SetTextPosition(std::string refName, int x, int y)
 void TextHandler::SetTTS(bool TTS)
 {
 	readEnabled = TTS;
-}
-
-/******************************************************
-	Reads the std::string of the text object at the specified
-	key value.
-
-	@param refName The key value for the text object.	
-******************************************************/
-void TextHandler::ReadText(std::string refName)
-{
-	if(text.count(refName) > 0)
-		text[refName].ReadText();
-	else
-		allegro_message("The text object \"%s\" does not exist.", refName.c_str());
 }
 
 /******************************************************

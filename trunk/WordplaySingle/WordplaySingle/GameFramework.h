@@ -35,6 +35,7 @@ enum PROTOCOL_OPCODES
 	TEXT_SIZE_CHANGE			= 407,
 	TEXT_COLOR_CHANGE			= 408,
 	TEXT_BGCOLOR_CHANGE			= 409,
+	TEXT_READ					= 410,
 	
 	/* AUDIO OPCODES */
 	AUDIO_CREATE				= 501,
@@ -108,6 +109,7 @@ enum PROTOCOL_OPCODES
 		static GFText& createTextFromAsset(std::string, int, int);
 		static GFText& createTextFromString(std::string, int, int);
 		static void removeText(GFText&);
+		static void readText(std::string);
 		static void setTextSize(GFText&, int);
 		static void setTextColor(GFText&, int, int, int);
 		static void setTextBGColor(GFText&, int, int, int);

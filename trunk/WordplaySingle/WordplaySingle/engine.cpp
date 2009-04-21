@@ -49,7 +49,8 @@ Framework::Framework(std::string user)
 	username = user;
 	active = true;
 	gameCount = 0;
-	options.VOLUME = 128;
+	options.VOLUME = 50;
+	options.MUTE = false;
 	options.TTS = false;
 	if(GAMENUM != -1) // If this is a game and not the main menu
 					  // load the side menu
@@ -644,6 +645,34 @@ void Framework::ChangeText(char *msg)
 }
 
 /******************************************************
+	Reads a string of text without displaying it to the
+	screen. This does not create a text object.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
+void Framework::ReadText(char *msg)
+{	
+	// only do if text-to-speech is enabled
+	// and sound is not muted
+	if(!options.TTS && !options.MUTE) return;
+	
+	char c;
+	int code, length;
+	std::stringstream stream;
+	stream << msg; // put msg into stream
+	stream >> code >> length;	
+
+	stream.get(c); // Get hanging space
+
+	char *string = new char[length+1];
+
+	stream.getline(string, length+1);
+	std::string stringToRead = string;
+		Text::ReadText(stringToRead, options.VOLUME);
+}
+
+/******************************************************
 	Plays a loaded audio file specified by information received 
 	via a message from the module.
 
@@ -761,15 +790,28 @@ void Framework::UpdateMouse()
 					else
 						sprites.SetFrame(sprite_name, 0); // unchecked
 				}
+				// change mute boolean value
+				if(strcmp(sprite_name.c_str(), "mute_box") == 0)
+				{
+					options.MUTE ^= true;
+					if(options.MUTE)
+					{
+						sprites.SetFrame(sprite_name, 1); // checked
+					}
+					else
+					{
+						sprites.SetFrame(sprite_name, 0); // unchecked
+					}
+				}
 				// adjust volume
 				if(strcmp(sprite_name.c_str(), "vol_bar") == 0
 					|| strcmp(sprite_name.c_str(), "vol_pointer") == 0)
 				{
-					float low = 45, high = 155;
-					float range = high - low;
 					x -= 3;
 					sprites.SetSpriteLocation("vol_pointer", x, 465);
-					options.VOLUME = (x - low) / range;
+					int offSet = x - 45;
+					double newVolume  = (offSet * 100) / 110.0;
+					options.VOLUME = (int)newVolume;
 				}
 			}
 		}
@@ -1219,6 +1261,7 @@ void Framework::ParseMessage(std::stringstream &msgStream)
 		case TEXT_SIZE_CHANGE : SetTextSize(message); break;
 		case TEXT_COLOR_CHANGE : SetTextColor(message); break;
 		case TEXT_BGCOLOR_CHANGE : SetTextBackgroundColor(message); break;
+		case TEXT_READ : ReadText(message); break;
 			// Audio
 		case AUDIO_PLAY	: PlayFile(message); break;		 
 		case AUDIO_SET_LOOP_COUNT : ResetLoop(message); break;
@@ -1240,21 +1283,26 @@ void Framework::LoadSideMenu()
 {
 	int w = 0, h = 0;
 	// Load the side menu sprite files
-	sprites.AddFile("TTSBox", "data/images/TTSBox.bmp", 2, 2, 40, 40);
+	sprites.AddFile("CheckBox", "data/images/CheckBox.bmp", 2, 2, 40, 40);
 	sprites.AddFile("TTSBanner", "data/images/TTSBanner.bmp", 1, 1, 140, 30);
 	sprites.AddFile("VolumeBar", "data/images/VolumeBar.bmp", 1, 1, 110, 30);
 	sprites.AddFile("VolumePointer", "data/images/VolumePointer.bmp", 1, 1, 7, 44);
 	sprites.AddFile("VolumeBanner", "data/images/VolumeBanner.bmp", 1, 1, 110, 30);
+	sprites.AddFile("MuteBanner", "data/images/MuteBanner.bmp", 1, 1, 70, 30);
 	// Create the side menu sprites
-	sprites.AddSprite("tts_box", "TTSBox", 5, 70);
+	sprites.AddSprite("tts_box", "CheckBox", 5, 70);
 	sprites.AddSprite("tts_banner", "TTSBanner", 55, 75);
 	sprites.AddSprite("vol_bar", "VolumeBar", 45, 465);
 	sprites.AddSprite("vol_pointer", "VolumePointer", 97, 465);
 	sprites.AddSprite("vol_banner", "VolumeBanner", 45, 520);
+	sprites.AddSprite("mute_banner", "MuteBanner", 75, 253);
+	sprites.AddSprite("mute_box", "CheckBox", 35, 250);
 	// Display them
 	sprites.SetVisible("tts_box", 1);
 	sprites.SetVisible("tts_banner", 1);
 	sprites.SetVisible("vol_bar", 1);
 	sprites.SetVisible("vol_pointer", 1);
 	sprites.SetVisible("vol_banner", 1);
+	sprites.SetVisible("mute_box", 1);
+	sprites.SetVisible("mute_banner", 1);
 }

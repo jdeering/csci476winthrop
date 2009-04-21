@@ -333,6 +333,19 @@ void GameFramework::removeText(GFText &t)
 	/* else WHERE IS YOUR GOD NOW? */
 };
 
+
+void GameFramework::readText(std::string stringToRead)
+{
+		/* INFORM THE FRAMEWORK */
+		sprintf(_msgBuffer, "%d %d %s", TEXT_READ, stringToRead.length(), stringToRead.c_str());
+
+		/* SEND THE MESSAGE TO THE FRAMEWORK */
+		//sendMessage();
+		/* CALL ENGINE FUNCTION */
+		ENGINE->ReadText(_msgBuffer);
+		_clrBuffer();
+}
+
 void GameFramework::setTextSize(GFText &t, int size)
 {
 	/* SOMETHING IS TERRIBLY WRONG IF THIS CHECK FAILS */

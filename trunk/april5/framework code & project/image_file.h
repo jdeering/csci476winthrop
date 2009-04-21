@@ -32,7 +32,7 @@ FUNCTIONS
 #ifndef _IMAGE_FILE_H
 #define _IMAGE_FILE_H
 
-#include "../../Allegro Headers/allegro.h"
+#include "allegro.h"
 #include <string>
 
 class ImageFile
