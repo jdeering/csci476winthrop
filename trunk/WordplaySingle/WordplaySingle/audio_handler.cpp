@@ -38,6 +38,7 @@ bool AudioHandler::AddSample(std::string refName, SAMPLE *sample, bool loop)
 		Audio temp(sample, loop);
 		samples[refName] = temp;
 		numSamples++;
+		return true;
 	}
 	else
 	{
@@ -80,7 +81,7 @@ bool AudioHandler::PlaySample(std::string refName, int volume_)
 {
 	if(muted)
 		volume_ = 0;
-	if(samples[refName].Play(volume_) < 0)
+	if(samples[refMapping[refName]].Play(volume_) < 0)
 	{
 		allegro_message("Sample \"%d\" could not be played.\n(May be out of voice channels)", refName);
 		return false;
@@ -96,7 +97,7 @@ bool AudioHandler::PlaySample(std::string refName, int volume_)
 ******************************************************/
 void AudioHandler::StopSample(std::string refName)
 {
-	samples[refName].Stop();
+	samples[refMapping[refName]].Stop();
 }
 
 /******************************************************
@@ -107,7 +108,6 @@ void AudioHandler::StopSample(std::string refName)
 void AudioHandler::SetVolume(int vol)
 {
 	volume = vol * MAX_VOLUME / 100;
-	ResetVolume(volume);
 }
 
 /******************************************************
@@ -153,4 +153,21 @@ void AudioHandler::ResetVolume(int volume_)
 	}
 	if(volume_) // Only resets volume if not muting
 		volume = volume_;
+}
+
+/******************************************************
+	Maps a loaded Audio sample to a reference name to be used
+	by the API.
+
+	@param ref The string the API will use to reference the sample
+	@param assetName The sample's asset reference name in the Audio handler.
+******************************************************/
+void AudioHandler::MapSample(std::string ref, std::string assetName)
+{
+	if(samples.count(assetName) > 0)
+	{
+		refMapping[ref] = assetName;
+	}
+	else
+		allegro_message("Sample \"%d\" not found.\nAudio object not created.", assetName.c_str());
 }

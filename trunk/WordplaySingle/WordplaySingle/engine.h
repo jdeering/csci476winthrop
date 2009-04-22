@@ -55,10 +55,10 @@ public:
 	static Framework* Instance(std::string);
 	
 	/* MAIN GAME LOOP */
-	bool MainLoop();
+	bool MainLoop(bool);
 
 	/* MESSAGE LOOP FUNCTION */
-	bool MessageLoop();
+	bool MessageLoop(bool);
 
 	/* GET FILES FOR GAME ASSETS */
 	void LoadImages(std::string file_name, std::string gamePath);
@@ -120,10 +120,11 @@ private:
 	void UpdateSprites();
 	void UpdateAudio();
 	void UpdateText();
-	void UpdateOptions();
+	void UpdateOptions(bool);
 
 	/* OBJECT INITIALIZATION / FILE LOADING */
 	void LoadGames();
+	void LoadGameIcons();
 	void LoadImages();
 	void LoadAudio();
 	void LoadText();
@@ -169,6 +170,7 @@ public: // Change to private when separating framework from modules
 	void SetTextVisible(char *msg);
 	void ReadText(char *msg);
 
+	void CreateAudioObject(char *msg);
 	void PlayFile(char *msg);
 	void ResetLoop(char *msg);
 	void StopFile(char *msg);

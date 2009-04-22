@@ -18,6 +18,10 @@ Framework* Framework::Instance(std::string user)
 	if(!inst)
 	{
 		inst = new Framework(user);
+		// Hide console window
+		HWND hWnd = GetConsoleWindow();
+		if(hWnd)
+		  ShowWindow(hWnd, SW_HIDE);
 	}
 	return inst;
 }
@@ -79,10 +83,12 @@ Framework::~Framework()
 ******************************************************/
 void Framework::UpdateSprites()
 {
-	scare_mouse();
 	clear_to_color(buffer, makecol(255, 255, 255));
 	sprites.DrawSprites(buffer);
-	unscare_mouse();
+
+	// Draw mouse pointer
+	if(mouse_x >= 0 && mouse_x <= 800 && mouse_y >= 0 && mouse_y <= 600)
+		draw_sprite(buffer, mouse_sprite, mouse_x, mouse_y);
 }
 
 /******************************************************
@@ -98,7 +104,7 @@ void Framework::UpdateText()
 /******************************************************
 	The Framework's main method calls for each iteration.
 ******************************************************/
-bool Framework::MessageLoop()
+bool Framework::MessageLoop(bool pause)
 {
 	if(key[KEY_ESC] || !active)
 	{
@@ -110,7 +116,7 @@ bool Framework::MessageLoop()
 	UpdateText();
 	UpdateMouse();
 	UpdateKeyboard();
-	UpdateOptions();
+	UpdateOptions(pause);
 	//if(gameRunning)
 	//{
 		//GetMessages();		
@@ -123,13 +129,16 @@ bool Framework::MessageLoop()
 	The Framework's public method to provide iterative
 	calls to its main loop method.
 ******************************************************/
-bool Framework::MainLoop()
-{
-	bool retVal = MessageLoop();	
+bool Framework::MainLoop(bool pause)
+{	
+	if(pause) return true;
+	// Process normally if not paused
+	bool retVal = MessageLoop(pause);	
 	acquire_screen();
 	blit(buffer, screen, 0, 0, 0, 0, 800, 600);
 	release_screen();
 	return retVal;
+	
 }
 
 /******************************************************
@@ -246,18 +255,11 @@ void Framework::LoadGames()
 		games[gameCount].icon.height = atoi(iconHeight.c_str());
 		gameCount++;
 	}
-	for(int i = 0; i < gameCount; i++)
-	{
-		
-		char temp[3];
-		itoa(i, temp, 10);
-		std::string iconName(temp);
-		if(strcmp(games[i].icon.path.c_str(), "") != 0)
-		{
-			iconName = "gameicon." + iconName;
-			sprites.AddFile(iconName, games[i].path + games[i].icon.path, games[gameCount].icon.width, games[gameCount].icon.height, 1, 1);
-		}
-	}
+	// This is needed to load the game icons in the case
+	// that this program is the main menu responsible for
+	// launching the game modules.
+	if(GAMENUM == -1) 
+		LoadGameIcons();
 }
 
 /******************************************************
@@ -673,6 +675,20 @@ void Framework::ReadText(char *msg)
 }
 
 /******************************************************
+	Creates an audio object reference for use by the API to
+	stop and play audio files.
+
+	@param msg The message that has been received from the module
+				containing information needed for the function call.
+******************************************************/
+void Framework::CreateAudioObject(char *msg)
+{
+	char reference[10], assetName[50];
+	sscanf(msg, "%*d %s %s", reference, assetName);
+	audioObjects.MapSample(reference, assetName); // EDIT volume
+}
+
+/******************************************************
 	Plays a loaded audio file specified by information received 
 	via a message from the module.
 
@@ -782,36 +798,28 @@ void Framework::UpdateMouse()
 			if(button == 1 && state == 1 && strcmp(sprite_name.c_str(), "") != 0) // see if a sprite is clicked
 			{
 				// change Text-to-Speech boolean value
-				if(strcmp(sprite_name.c_str(), "tts_box") == 0)
+				if(strcmp(sprite_name.c_str(), "tts_box") == 0
+					|| strcmp(sprite_name.c_str(), "tts_banner") == 0)
 				{
 					options.TTS ^= true;
-					if(options.TTS)
-						sprites.SetFrame(sprite_name, 1); // checked
-					else
-						sprites.SetFrame(sprite_name, 0); // unchecked
+					sprites.SetFrame("tts_box", options.TTS);
 				}
 				// change mute boolean value
-				if(strcmp(sprite_name.c_str(), "mute_box") == 0)
+				if(strcmp(sprite_name.c_str(), "mute_box") == 0
+					|| strcmp(sprite_name.c_str(), "mute_banner") == 0)
 				{
 					options.MUTE ^= true;
-					if(options.MUTE)
-					{
-						sprites.SetFrame(sprite_name, 1); // checked
-					}
-					else
-					{
-						sprites.SetFrame(sprite_name, 0); // unchecked
-					}
+					sprites.SetFrame("mute_box", options.MUTE); // checked
 				}
 				// adjust volume
 				if(strcmp(sprite_name.c_str(), "vol_bar") == 0
 					|| strcmp(sprite_name.c_str(), "vol_pointer") == 0)
 				{
 					x -= 3;
+					if(x < 42) x = 42;
+					if(x > 150) x = 150;
 					sprites.SetSpriteLocation("vol_pointer", x, 465);
-					int offSet = x - 45;
-					double newVolume  = (offSet * 100) / 110.0;
-					options.VOLUME = (int)newVolume;
+					options.VOLUME = ((x - 45) * 100) / 110.0;
 				}
 			}
 		}
@@ -864,11 +872,11 @@ bool Framework::gameIsRunning()
 	option and volume states to the objects that need them
 	(text handler and audio handler).
 ******************************************************/
-void Framework::UpdateOptions()
+void Framework::UpdateOptions(bool pause)
 {	
 	if(options.VOLUME < 0) options.VOLUME = 0;
 	if(options.VOLUME > 100) options.VOLUME = 100;
-	if(options.MUTE)
+	if(options.MUTE || pause)
 		audioObjects.Mute();
 	else
 		audioObjects.Unmute();
@@ -1125,7 +1133,6 @@ void Framework::LoadGameAudio(std::string gamePath)
 		else
 			audioObjects.AddSample(ref, temp, loopVal);
 	}
-	destroy_sample(temp);
 }
 
 /******************************************************
@@ -1263,6 +1270,7 @@ void Framework::ParseMessage(std::stringstream &msgStream)
 		case TEXT_BGCOLOR_CHANGE : SetTextBackgroundColor(message); break;
 		case TEXT_READ : ReadText(message); break;
 			// Audio
+		case AUDIO_CREATE : CreateAudioObject(message);
 		case AUDIO_PLAY	: PlayFile(message); break;		 
 		case AUDIO_SET_LOOP_COUNT : ResetLoop(message); break;
 		case AUDIO_STOP	: StopFile(message); break;
@@ -1305,4 +1313,20 @@ void Framework::LoadSideMenu()
 	sprites.SetVisible("vol_banner", 1);
 	sprites.SetVisible("mute_box", 1);
 	sprites.SetVisible("mute_banner", 1);
+}
+
+
+void Framework::LoadGameIcons()
+{
+	for(int i = 0; i < gameCount; i++)
+	{		
+		char temp[3];
+		itoa(i, temp, 10);
+		std::string iconName(temp);
+		if(strcmp(games[i].icon.path.c_str(), "") != 0)
+		{
+			iconName = "gameicon." + iconName;
+			sprites.AddFile(iconName, games[i].path + games[i].icon.path, games[gameCount].icon.width, games[gameCount].icon.height, 1, 1);
+		}
+	}
 }

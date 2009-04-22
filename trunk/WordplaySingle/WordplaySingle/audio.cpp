@@ -17,7 +17,6 @@ Audio::~Audio()
 {
 	playing = false;
 	loop = false;
-	destroy_sample(sample);
 }
 
 /******************************************************

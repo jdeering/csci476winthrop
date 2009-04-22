@@ -7,6 +7,11 @@
 
 #define FULLSCREEN 0
 
+void pause()
+{
+	GameFramework::pause ^= true;
+}
+
 void LaunchLogin();
 
 int main(int argc, char argv[]){
@@ -34,6 +39,10 @@ int main(int argc, char argv[]){
 
    install_keyboard(); 
    install_mouse();
+   if(install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, NULL))
+   {
+	   allegro_message("Error initializing sound. Exiting the program.");
+   }
 
 	/* set a graphics mode sized 800x600 */  
 	int mode;
@@ -48,20 +57,27 @@ int main(int argc, char argv[]){
 		return 1;
 	} 
 
-	show_mouse(screen);
+	set_display_switch_mode(SWITCH_BACKAMNESIA);
+	set_display_switch_callback(SWITCH_OUT, pause);
+	set_display_switch_callback(SWITCH_IN, pause);
+
+	show_mouse(NULL);
 
 	GameFramework::CreateEngineInstance(user);
 
 	//Wordplay
 	WordplayControl::start();
 
+	GameFramework::readText("Goodbye");
+	GameFramework::readText("Play again later.");
 
+    remove_sound();
 	remove_mouse();
 	remove_keyboard();
 	remove_timer();
     ::CoUninitialize();
 
-	LaunchLogin();
+	//LaunchLogin();
 
 	return 0;	
 }
