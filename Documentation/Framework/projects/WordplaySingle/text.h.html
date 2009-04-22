@@ -33,7 +33,8 @@ FUNCTIONS
                                                             class instance
     ShowText(bool read, BITMAP* dest) - displays the text onscreen, drawing to the dest BITMAP, and
                                             reads the associated std::string if the read parameter is true
-    ReadText() - reads the text using Windows text-to-speech
+    ReadText(std::string stringToRead, unsigned short volume) - reads stringToRead using Windows text-to-speech
+                                                                at the specified volume
     ChangeText(std::string) - takes a std::string as input to change the text variable associated with the
                            class instance
 
@@ -49,7 +50,7 @@ FUNCTIONS
 <font color="blue">class</font> Text
 <font color="black">{</font>
 <font color="blue">private</font><font color="black">:</font>    
-    ISpVoice <font color="black">*</font>pVoice;
+    <font color="blue">static</font> ISpVoice <font color="black">*</font>pVoice;
     <font color="blue">int</font> x, y;
     <font color="blue">int</font> size; <font color="green">// height in pixels</font>
     <font color="blue">int</font> color, bg_color; <font color="green">// Foreground and background colors</font>
@@ -62,11 +63,12 @@ FUNCTIONS
     <font color="blue">void</font> SetVisible<font color="black">(</font><font color="blue">int</font> vis<font color="black">)</font>;
     <font color="blue">void</font> LoadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string txt, <font color="blue">int</font> x_, <font color="blue">int</font> y_, <font color="blue">bool</font> visible<font color="black">)</font>;
     <font color="blue">void</font> ShowText<font color="black">(</font><font color="blue">bool</font> read, BITMAP <font color="black">*</font>dest<font color="black">)</font>;
-    <font color="blue">void</font> ReadText<font color="black">(</font><font color="black">)</font>;
     <font color="blue">void</font> ChangeText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string txt<font color="black">)</font>;
     <font color="blue">void</font> SetSize<font color="black">(</font><font color="blue">int</font><font color="black">)</font>;
     <font color="blue">void</font> SetColor<font color="black">(</font><font color="blue">int</font> r, <font color="blue">int</font> g, <font color="blue">int</font> b<font color="black">)</font>;
     <font color="blue">void</font> SetBackgroundColor<font color="black">(</font><font color="blue">int</font> r, <font color="blue">int</font> g, <font color="blue">int</font> b<font color="black">)</font>;
+    
+    <font color="blue">static</font> <font color="blue">void</font> ReadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string, <font color="blue">unsigned</font> <font color="blue">short</font><font color="black">)</font>;
 <font color="black">}</font>;
 
 

@@ -21,9 +21,6 @@ DATA ITEMS
     int numObjects
     bool readEnabled
 
-PRIVATE FUNCTIONS
-    void ReadText(std::string refName) - reads the text object at key refName using text-to-speech
-
 PUBLIC FUNCTIONS
     bool AddText(std::string refName, std::string textstd::string, int x, int y, bool visible) - adds a text object to the container
                     using the textstd::string parameter as the text object's std::string
@@ -54,7 +51,6 @@ PUBLIC FUNCTIONS
 <font color="black">{</font>
 <font color="blue">private</font><font color="black">:</font>
     std<font color="black">:</font><font color="black">:</font>map<font color="black">&#60;</font>std<font color="black">:</font><font color="black">:</font>string, Text<font color="black">&#62;</font> text;
-    <font color="blue">void</font> ReadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName<font color="black">)</font>;
     <font color="blue">int</font> numObjects;
     <font color="blue">bool</font> readEnabled;
 <font color="blue">public</font><font color="black">:</font>

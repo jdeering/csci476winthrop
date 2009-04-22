@@ -165,8 +165,6 @@ TextHandler<font color="black">:</font><font color="black">:</font>~TextHandler<
     <font color="black">{</font>
         <font color="blue">if</font><font color="black">(</font>setVisible<font color="black">)</font>
             text<font color="black">[</font>refName<font color="black">]</font>.ShowText<font color="black">(</font>readEnabled, bmp<font color="black">)</font>;
-        <font color="blue">if</font><font color="black">(</font>readEnabled<font color="black">)</font>
-            ReadText<font color="black">(</font>refName<font color="black">)</font>;
         <font color="blue">return</font> <font color="blue">true</font>;
     <font color="black">}</font>
     <font color="blue">else</font>
@@ -201,20 +199,6 @@ TextHandler<font color="black">:</font><font color="black">:</font>~TextHandler<
 <font color="blue">void</font> TextHandler<font color="black">:</font><font color="black">:</font>SetTTS<font color="black">(</font><font color="blue">bool</font> TTS<font color="black">)</font>
 <font color="black">{</font>
     readEnabled <font color="black">=</font> TTS;
-<font color="black">}</font>
-
-<font color="green">/******************************************************
-    Reads the std::string of the text object at the specified
-    key value.
-
-    @param refName The key value for the text object.   
-******************************************************/</font>
-<font color="blue">void</font> TextHandler<font color="black">:</font><font color="black">:</font>ReadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string refName<font color="black">)</font>
-<font color="black">{</font>
-    <font color="blue">if</font><font color="black">(</font>text.count<font color="black">(</font>refName<font color="black">)</font> <font color="black">&#62;</font> <font color="maroon">0</font><font color="black">)</font>
-        text<font color="black">[</font>refName<font color="black">]</font>.ReadText<font color="black">(</font><font color="black">)</font>;
-    <font color="blue">else</font>
-        allegro_message<font color="black">(</font><font color="maroon">"The text object \"%s\" does not exist."</font>, refName.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
 <font color="black">}</font>
 
 <font color="green">/******************************************************
