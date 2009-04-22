@@ -23,7 +23,7 @@ void GameFramework::gameFunc(bool (*f)())
 
 void GameFramework::gameLoop()
 //{ if (cb_GL) do { _getMessages();} while(cb_GL()); }
-{ if (cb_GL) do {  } while( cb_GL() && ENGINE->MainLoop() ); postScore(); }
+{ if (cb_GL) do {  } while( cb_GL() && ENGINE->MainLoop(pause) ); postScore(); }
 
 void GameFramework::sendMessage()
 { std::cout << _msgBuffer << '\0' << std::endl; };
@@ -413,6 +413,8 @@ GFAudio& GameFramework::createAudio(std::string aname)
 
 	/* SEND THE MESSAGE TO THE FRAMEWORK */
 	//sendMessage();
+	/* CALL ENGINE FUNCTION */
+	ENGINE->CreateAudioObject(_msgBuffer);
 
 	/* FIND THE NEXT AVAILABLE INDEX */
 	while (_index_table[gfai] == INDEX_TAKEN)
@@ -498,6 +500,8 @@ void GameFramework::postScore()
 
 /* SCORE VARIABLE */
 unsigned long long int GameFramework::score = 0;
+/* PAUSE VARIABLE */
+bool GameFramework::pause = false;
 
 /* FUNCTION POINTERS */
 void (*GameFramework::cb_KH)(int, int) = NULL;

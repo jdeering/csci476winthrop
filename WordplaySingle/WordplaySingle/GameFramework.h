@@ -74,6 +74,7 @@ enum PROTOCOL_OPCODES
 		
 		/* SCORE */
 		static unsigned long long int score;
+		static bool pause;
 		
 		/* SEND A MESSAGE (FROM OTHER CLASSES) */
 		static char _msgBuffer[GFW_BUFFER_SIZE];

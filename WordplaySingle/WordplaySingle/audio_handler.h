@@ -28,6 +28,8 @@ FUNCTIONS
 	void StopSample(std::string refName) - stops the playing of the sample at key refName
 	void ResetLoopFlag(std::string refName, int loop) - sets the loop value for the sample at key refName
 	void ResetVolume(int volume) - resets the volume to the parameter's value for all samples that are currently playing
+	void MapSample(std::string ref, std::string assetName) - maps an API reference name to an audio asset name
+	void PauseAll(bool) - pauses all playing samples if the parameter is true
 
 */
 
@@ -42,6 +44,7 @@ class AudioHandler
 {
 private:
 	std::map<std::string, Audio> samples;
+	std::map<std::string, std::string> refMapping;
 	int volume;
 	bool muted;
 	int numSamples;
@@ -57,6 +60,8 @@ public:
 	void StopSample(std::string refName);
 	void ResetLoopFlag(std::string refName, int loop);
 	void ResetVolume(int volume);
+	void MapSample(std::string ref, std::string assetName);
+	void PauseAll(bool pause);
 };
 
 
