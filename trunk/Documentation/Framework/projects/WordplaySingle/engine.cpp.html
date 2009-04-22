@@ -26,6 +26,10 @@ Framework<font color="black">*</font> Framework<font color="black">:</font><font
     <font color="blue">if</font><font color="black">(</font><font color="black">!</font>inst<font color="black">)</font>
     <font color="black">{</font>
         inst <font color="black">=</font> <font color="blue">new</font> Framework<font color="black">(</font>user<font color="black">)</font>;
+        <font color="green">// Hide console window</font>
+        HWND hWnd <font color="black">=</font> GetConsoleWindow<font color="black">(</font><font color="black">)</font>;
+        <font color="blue">if</font><font color="black">(</font>hWnd<font color="black">)</font>
+          ShowWindow<font color="black">(</font>hWnd, SW_HIDE<font color="black">)</font>;
     <font color="black">}</font>
     <font color="blue">return</font> inst;
 <font color="black">}</font>
@@ -39,7 +43,8 @@ Framework<font color="black">:</font><font color="black">:</font>Framework<font 
     username <font color="black">=</font> <font color="maroon">"Anonymous"</font>;
     active <font color="black">=</font> <font color="blue">true</font>;
     gameCount <font color="black">=</font> <font color="maroon">0</font>;
-    options.VOLUME <font color="black">=</font> <font color="maroon">128</font>;
+    options.VOLUME <font color="black">=</font> <font color="maroon">50</font>;
+    options.MUTE <font color="black">=</font> <font color="blue">false</font>;
     options.TTS <font color="black">=</font> <font color="blue">false</font>;
     menuRunning <font color="black">=</font> <font color="blue">true</font>;
 <font color="black">}</font>
@@ -56,7 +61,8 @@ Framework<font color="black">:</font><font color="black">:</font>Framework<font 
     username <font color="black">=</font> user;
     active <font color="black">=</font> <font color="blue">true</font>;
     gameCount <font color="black">=</font> <font color="maroon">0</font>;
-    options.VOLUME <font color="black">=</font> <font color="maroon">128</font>;
+    options.VOLUME <font color="black">=</font> <font color="maroon">50</font>;
+    options.MUTE <font color="black">=</font> <font color="blue">false</font>;
     options.TTS <font color="black">=</font> <font color="blue">false</font>;
     <font color="blue">if</font><font color="black">(</font>GAMENUM <font color="black">!</font><font color="black">=</font> <font color="maroon">-1</font><font color="black">)</font> <font color="green">// If this is a game and not the main menu</font>
                       <font color="green">// load the side menu</font>
@@ -85,10 +91,12 @@ Framework<font color="black">:</font><font color="black">:</font>~Framework<font
 ******************************************************/</font>
 <font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>UpdateSprites<font color="black">(</font><font color="black">)</font>
 <font color="black">{</font>
-    scare_mouse<font color="black">(</font><font color="black">)</font>;
-    clear_to_color<font color="black">(</font>buffer, makecol<font color="black">(</font><font color="maroon">0</font>, <font color="maroon">0</font>, <font color="maroon">0</font><font color="black">)</font><font color="black">)</font>;
+    clear_to_color<font color="black">(</font>buffer, makecol<font color="black">(</font><font color="maroon">255</font>, <font color="maroon">255</font>, <font color="maroon">255</font><font color="black">)</font><font color="black">)</font>;
     sprites.DrawSprites<font color="black">(</font>buffer<font color="black">)</font>;
-    unscare_mouse<font color="black">(</font><font color="black">)</font>;
+
+    <font color="green">// Draw mouse pointer</font>
+    <font color="blue">if</font><font color="black">(</font>mouse_x <font color="black">&#62;</font><font color="black">=</font> <font color="maroon">0</font> <font color="black">&</font><font color="black">&</font> mouse_x <font color="black">&#60;</font><font color="black">=</font> <font color="maroon">800</font> <font color="black">&</font><font color="black">&</font> mouse_y <font color="black">&#62;</font><font color="black">=</font> <font color="maroon">0</font> <font color="black">&</font><font color="black">&</font> mouse_y <font color="black">&#60;</font><font color="black">=</font> <font color="maroon">600</font><font color="black">)</font>
+        draw_sprite<font color="black">(</font>buffer, mouse_sprite, mouse_x, mouse_y<font color="black">)</font>;
 <font color="black">}</font>
 
 <font color="green">/******************************************************
@@ -104,7 +112,7 @@ Framework<font color="black">:</font><font color="black">:</font>~Framework<font
 <font color="green">/******************************************************
     The Framework's main method calls for each iteration.
 ******************************************************/</font>
-<font color="blue">bool</font> Framework<font color="black">:</font><font color="black">:</font>MessageLoop<font color="black">(</font><font color="black">)</font>
+<font color="blue">bool</font> Framework<font color="black">:</font><font color="black">:</font>MessageLoop<font color="black">(</font><font color="blue">bool</font> pause<font color="black">)</font>
 <font color="black">{</font>
     <font color="blue">if</font><font color="black">(</font>key<font color="black">[</font>KEY_ESC<font color="black">]</font> <font color="black">|</font><font color="black">|</font> <font color="black">!</font>active<font color="black">)</font>
     <font color="black">{</font>
@@ -116,7 +124,7 @@ Framework<font color="black">:</font><font color="black">:</font>~Framework<font
     UpdateText<font color="black">(</font><font color="black">)</font>;
     UpdateMouse<font color="black">(</font><font color="black">)</font>;
     UpdateKeyboard<font color="black">(</font><font color="black">)</font>;
-    UpdateOptions<font color="black">(</font><font color="black">)</font>;
+    UpdateOptions<font color="black">(</font>pause<font color="black">)</font>;
     <font color="green">//if(gameRunning)</font>
     <font color="green">//{</font>
         <font color="green">//GetMessages();        </font>
@@ -129,13 +137,16 @@ Framework<font color="black">:</font><font color="black">:</font>~Framework<font
     The Framework's public method to provide iterative
     calls to its main loop method.
 ******************************************************/</font>
-<font color="blue">bool</font> Framework<font color="black">:</font><font color="black">:</font>MainLoop<font color="black">(</font><font color="black">)</font>
-<font color="black">{</font>
-    <font color="blue">bool</font> retVal <font color="black">=</font> MessageLoop<font color="black">(</font><font color="black">)</font>;    
+<font color="blue">bool</font> Framework<font color="black">:</font><font color="black">:</font>MainLoop<font color="black">(</font><font color="blue">bool</font> pause<font color="black">)</font>
+<font color="black">{</font>   
+    <font color="blue">if</font><font color="black">(</font>pause<font color="black">)</font> <font color="blue">return</font> <font color="blue">true</font>;
+    <font color="green">// Process normally if not paused</font>
+    <font color="blue">bool</font> retVal <font color="black">=</font> MessageLoop<font color="black">(</font>pause<font color="black">)</font>;   
     acquire_screen<font color="black">(</font><font color="black">)</font>;
     blit<font color="black">(</font>buffer, screen, <font color="maroon">0</font>, <font color="maroon">0</font>, <font color="maroon">0</font>, <font color="maroon">0</font>, <font color="maroon">800</font>, <font color="maroon">600</font><font color="black">)</font>;
     release_screen<font color="black">(</font><font color="black">)</font>;
     <font color="blue">return</font> retVal;
+    
 <font color="black">}</font>
 
 <font color="green">/******************************************************
@@ -252,18 +263,11 @@ Framework<font color="black">:</font><font color="black">:</font>~Framework<font
         games<font color="black">[</font>gameCount<font color="black">]</font>.icon.height <font color="black">=</font> atoi<font color="black">(</font>iconHeight.c_str<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
         gameCount<font color="black">+</font><font color="black">+</font>;
     <font color="black">}</font>
-    <font color="blue">for</font><font color="black">(</font><font color="blue">int</font> i <font color="black">=</font> <font color="maroon">0</font>; i <font color="black">&#60;</font> gameCount; i<font color="black">+</font><font color="black">+</font><font color="black">)</font>
-    <font color="black">{</font>
-        
-        <font color="blue">char</font> temp<font color="black">[</font><font color="maroon">3</font><font color="black">]</font>;
-        itoa<font color="black">(</font>i, temp, <font color="maroon">10</font><font color="black">)</font>;
-        std<font color="black">:</font><font color="black">:</font>string iconName<font color="black">(</font>temp<font color="black">)</font>;
-        <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>games<font color="black">[</font>i<font color="black">]</font>.icon.path.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">""</font><font color="black">)</font> <font color="black">!</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
-        <font color="black">{</font>
-            iconName <font color="black">=</font> <font color="maroon">"gameicon."</font> <font color="black">+</font> iconName;
-            sprites.AddFile<font color="black">(</font>iconName, games<font color="black">[</font>i<font color="black">]</font>.path <font color="black">+</font> games<font color="black">[</font>i<font color="black">]</font>.icon.path, games<font color="black">[</font>gameCount<font color="black">]</font>.icon.width, games<font color="black">[</font>gameCount<font color="black">]</font>.icon.height, <font color="maroon">1</font>, <font color="maroon">1</font><font color="black">)</font>;
-        <font color="black">}</font>
-    <font color="black">}</font>
+    <font color="green">// This is needed to load the game icons in the case</font>
+    <font color="green">// that this program is the main menu responsible for</font>
+    <font color="green">// launching the game modules.</font>
+    <font color="blue">if</font><font color="black">(</font>GAMENUM <font color="black">=</font><font color="black">=</font> <font color="maroon">-1</font><font color="black">)</font> 
+        LoadGameIcons<font color="black">(</font><font color="black">)</font>;
 <font color="black">}</font>
 
 <font color="green">/******************************************************
@@ -651,6 +655,48 @@ Framework<font color="black">:</font><font color="black">:</font>~Framework<font
 <font color="black">}</font>
 
 <font color="green">/******************************************************
+    Reads a string of text without displaying it to the
+    screen. This does not create a text object.
+
+    @param msg The message that has been received from the module
+                containing information needed for the function call.
+******************************************************/</font>
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>ReadText<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>   
+    <font color="green">// only do if text-to-speech is enabled</font>
+    <font color="green">// and sound is not muted</font>
+    <font color="blue">if</font><font color="black">(</font><font color="black">!</font>options.TTS <font color="black">&</font><font color="black">&</font> <font color="black">!</font>options.MUTE<font color="black">)</font> <font color="blue">return</font>;
+    
+    <font color="blue">char</font> c;
+    <font color="blue">int</font> code, length;
+    std<font color="black">:</font><font color="black">:</font>stringstream stream;
+    stream <font color="black">&#60;</font><font color="black">&#60;</font> msg; <font color="green">// put msg into stream</font>
+    stream <font color="black">&#62;</font><font color="black">&#62;</font> code <font color="black">&#62;</font><font color="black">&#62;</font> length;   
+
+    stream.get<font color="black">(</font>c<font color="black">)</font>; <font color="green">// Get hanging space</font>
+
+    <font color="blue">char</font> <font color="black">*</font>string <font color="black">=</font> <font color="blue">new</font> <font color="blue">char</font><font color="black">[</font>length<font color="black">+</font><font color="maroon">1</font><font color="black">]</font>;
+
+    stream.getline<font color="black">(</font>string, length<font color="black">+</font><font color="maroon">1</font><font color="black">)</font>;
+    std<font color="black">:</font><font color="black">:</font>string stringToRead <font color="black">=</font> string;
+        Text<font color="black">:</font><font color="black">:</font>ReadText<font color="black">(</font>stringToRead, options.VOLUME<font color="black">)</font>;
+<font color="black">}</font>
+
+<font color="green">/******************************************************
+    Creates an audio object reference for use by the API to
+    stop and play audio files.
+
+    @param msg The message that has been received from the module
+                containing information needed for the function call.
+******************************************************/</font>
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>CreateAudioObject<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">char</font> reference<font color="black">[</font><font color="maroon">10</font><font color="black">]</font>, assetName<font color="black">[</font><font color="maroon">50</font><font color="black">]</font>;
+    sscanf<font color="black">(</font>msg, <font color="maroon">"%*d %s %s"</font>, reference, assetName<font color="black">)</font>;
+    audioObjects.MapSample<font color="black">(</font>reference, assetName<font color="black">)</font>; <font color="green">// EDIT volume</font>
+<font color="black">}</font>
+
+<font color="green">/******************************************************
     Plays a loaded audio file specified by information received 
     via a message from the module.
 
@@ -760,19 +806,28 @@ Framework<font color="black">:</font><font color="black">:</font>~Framework<font
             <font color="blue">if</font><font color="black">(</font>button <font color="black">=</font><font color="black">=</font> <font color="maroon">1</font> <font color="black">&</font><font color="black">&</font> state <font color="black">=</font><font color="black">=</font> <font color="maroon">1</font> <font color="black">&</font><font color="black">&</font> strcmp<font color="black">(</font>sprite_name.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">""</font><font color="black">)</font> <font color="black">!</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font> <font color="green">// see if a sprite is clicked</font>
             <font color="black">{</font>
                 <font color="green">// change Text-to-Speech boolean value</font>
-                <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>sprite_name.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"tts_box"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+                <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>sprite_name.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"tts_box"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font>
+                    <font color="black">|</font><font color="black">|</font> strcmp<font color="black">(</font>sprite_name.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"tts_banner"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
                 <font color="black">{</font>
                     options.TTS ^<font color="black">=</font> <font color="blue">true</font>;
-                    <font color="blue">if</font><font color="black">(</font>options.TTS<font color="black">)</font>
-                        sprites.SetFrame<font color="black">(</font>sprite_name, <font color="maroon">1</font><font color="black">)</font>; <font color="green">// checked</font>
-                    <font color="blue">else</font>
-                        sprites.SetFrame<font color="black">(</font>sprite_name, <font color="maroon">0</font><font color="black">)</font>; <font color="green">// unchecked</font>
+                    sprites.SetFrame<font color="black">(</font><font color="maroon">"tts_box"</font>, options.TTS<font color="black">)</font>;
+                <font color="black">}</font>
+                <font color="green">// change mute boolean value</font>
+                <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>sprite_name.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"mute_box"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font>
+                    <font color="black">|</font><font color="black">|</font> strcmp<font color="black">(</font>sprite_name.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"mute_banner"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+                <font color="black">{</font>
+                    options.MUTE ^<font color="black">=</font> <font color="blue">true</font>;
+                    sprites.SetFrame<font color="black">(</font><font color="maroon">"mute_box"</font>, options.MUTE<font color="black">)</font>; <font color="green">// checked</font>
                 <font color="black">}</font>
                 <font color="green">// adjust volume</font>
                 <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>sprite_name.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"vol_bar"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font>
                     <font color="black">|</font><font color="black">|</font> strcmp<font color="black">(</font>sprite_name.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">"vol_pointer"</font><font color="black">)</font> <font color="black">=</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
                 <font color="black">{</font>
-
+                    x <font color="black">-</font><font color="black">=</font> <font color="maroon">3</font>;
+                    <font color="blue">if</font><font color="black">(</font>x <font color="black">&#60;</font> <font color="maroon">42</font><font color="black">)</font> x <font color="black">=</font> <font color="maroon">42</font>;
+                    <font color="blue">if</font><font color="black">(</font>x <font color="black">&#62;</font> <font color="maroon">150</font><font color="black">)</font> x <font color="black">=</font> <font color="maroon">150</font>;
+                    sprites.SetSpriteLocation<font color="black">(</font><font color="maroon">"vol_pointer"</font>, x, <font color="maroon">465</font><font color="black">)</font>;
+                    options.VOLUME <font color="black">=</font> <font color="black">(</font><font color="black">(</font>x <font color="maroon">-45</font><font color="black">)</font> <font color="black">*</font> <font color="maroon">100</font><font color="black">)</font> <font color="black">/</font> <font color="maroon">110</font>.<font color="maroon">0</font>;
                 <font color="black">}</font>
             <font color="black">}</font>
         <font color="black">}</font>
@@ -825,10 +880,14 @@ Framework<font color="black">:</font><font color="black">:</font>~Framework<font
     option and volume states to the objects that need them
     (text handler and audio handler).
 ******************************************************/</font>
-<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>UpdateOptions<font color="black">(</font><font color="black">)</font>
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>UpdateOptions<font color="black">(</font><font color="blue">bool</font> pause<font color="black">)</font>
 <font color="black">{</font>   
-    <font color="blue">if</font><font color="black">(</font>options.VOLUME <font color="black">&#60;</font> <font color="maroon">1</font><font color="black">)</font> options.VOLUME <font color="black">=</font> <font color="maroon">1</font>;
-    <font color="blue">if</font><font color="black">(</font>options.VOLUME <font color="black">&#62;</font> <font color="maroon">255</font><font color="black">)</font> options.VOLUME <font color="black">=</font> <font color="maroon">255</font>;
+    <font color="blue">if</font><font color="black">(</font>options.VOLUME <font color="black">&#60;</font> <font color="maroon">0</font><font color="black">)</font> options.VOLUME <font color="black">=</font> <font color="maroon">0</font>;
+    <font color="blue">if</font><font color="black">(</font>options.VOLUME <font color="black">&#62;</font> <font color="maroon">100</font><font color="black">)</font> options.VOLUME <font color="black">=</font> <font color="maroon">100</font>;
+    <font color="blue">if</font><font color="black">(</font>options.MUTE <font color="black">|</font><font color="black">|</font> pause<font color="black">)</font>
+        audioObjects.Mute<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">else</font>
+        audioObjects.Unmute<font color="black">(</font><font color="black">)</font>;
     audioObjects.SetVolume<font color="black">(</font>options.VOLUME<font color="black">)</font>;
     textObjects.SetTTS<font color="black">(</font>options.TTS<font color="black">)</font>;
 <font color="black">}</font>
@@ -1082,7 +1141,6 @@ Framework<font color="black">:</font><font color="black">:</font>~Framework<font
         <font color="blue">else</font>
             audioObjects.AddSample<font color="black">(</font>ref, temp, loopVal<font color="black">)</font>;
     <font color="black">}</font>
-    destroy_sample<font color="black">(</font>temp<font color="black">)</font>;
 <font color="black">}</font>
 
 <font color="green">/******************************************************
@@ -1218,7 +1276,9 @@ Framework<font color="black">:</font><font color="black">:</font>~Framework<font
         <font color="blue">case</font> TEXT_SIZE_CHANGE <font color="black">:</font> SetTextSize<font color="black">(</font>message<font color="black">)</font>; <font color="blue">break</font>;
         <font color="blue">case</font> TEXT_COLOR_CHANGE <font color="black">:</font> SetTextColor<font color="black">(</font>message<font color="black">)</font>; <font color="blue">break</font>;
         <font color="blue">case</font> TEXT_BGCOLOR_CHANGE <font color="black">:</font> SetTextBackgroundColor<font color="black">(</font>message<font color="black">)</font>; <font color="blue">break</font>;
+        <font color="blue">case</font> TEXT_READ <font color="black">:</font> ReadText<font color="black">(</font>message<font color="black">)</font>; <font color="blue">break</font>;
             <font color="green">// Audio</font>
+        <font color="blue">case</font> AUDIO_CREATE <font color="black">:</font> CreateAudioObject<font color="black">(</font>message<font color="black">)</font>;
         <font color="blue">case</font> AUDIO_PLAY <font color="black">:</font> PlayFile<font color="black">(</font>message<font color="black">)</font>; <font color="blue">break</font>;      
         <font color="blue">case</font> AUDIO_SET_LOOP_COUNT <font color="black">:</font> ResetLoop<font color="black">(</font>message<font color="black">)</font>; <font color="blue">break</font>;
         <font color="blue">case</font> AUDIO_STOP <font color="black">:</font> StopFile<font color="black">(</font>message<font color="black">)</font>; <font color="blue">break</font>;
@@ -1239,17 +1299,44 @@ Framework<font color="black">:</font><font color="black">:</font>~Framework<font
 <font color="black">{</font>
     <font color="blue">int</font> w <font color="black">=</font> <font color="maroon">0</font>, h <font color="black">=</font> <font color="maroon">0</font>;
     <font color="green">// Load the side menu sprite files</font>
-    sprites.AddFile<font color="black">(</font><font color="maroon">"TTSBox"</font>, <font color="maroon">"data/images/TTSBox.bmp"</font>, w, h, <font color="maroon">2</font>, <font color="maroon">2</font><font color="black">)</font>;
-    sprites.AddFile<font color="black">(</font><font color="maroon">"VolumeBar"</font>, <font color="maroon">"data/images/VolumeBar.bmp"</font>, w, h, <font color="maroon">1</font>, <font color="maroon">1</font><font color="black">)</font>;
-    sprites.AddFile<font color="black">(</font><font color="maroon">"VolumePointer"</font>, <font color="maroon">"data/images/VolumePointer.bmp"</font>, w, h, <font color="maroon">1</font>, <font color="maroon">1</font><font color="black">)</font>;
+    sprites.AddFile<font color="black">(</font><font color="maroon">"CheckBox"</font>, <font color="maroon">"data/images/CheckBox.bmp"</font>, <font color="maroon">2</font>, <font color="maroon">2</font>, <font color="maroon">40</font>, <font color="maroon">40</font><font color="black">)</font>;
+    sprites.AddFile<font color="black">(</font><font color="maroon">"TTSBanner"</font>, <font color="maroon">"data/images/TTSBanner.bmp"</font>, <font color="maroon">1</font>, <font color="maroon">1</font>, <font color="maroon">140</font>, <font color="maroon">30</font><font color="black">)</font>;
+    sprites.AddFile<font color="black">(</font><font color="maroon">"VolumeBar"</font>, <font color="maroon">"data/images/VolumeBar.bmp"</font>, <font color="maroon">1</font>, <font color="maroon">1</font>, <font color="maroon">110</font>, <font color="maroon">30</font><font color="black">)</font>;
+    sprites.AddFile<font color="black">(</font><font color="maroon">"VolumePointer"</font>, <font color="maroon">"data/images/VolumePointer.bmp"</font>, <font color="maroon">1</font>, <font color="maroon">1</font>, <font color="maroon">7</font>, <font color="maroon">44</font><font color="black">)</font>;
+    sprites.AddFile<font color="black">(</font><font color="maroon">"VolumeBanner"</font>, <font color="maroon">"data/images/VolumeBanner.bmp"</font>, <font color="maroon">1</font>, <font color="maroon">1</font>, <font color="maroon">110</font>, <font color="maroon">30</font><font color="black">)</font>;
+    sprites.AddFile<font color="black">(</font><font color="maroon">"MuteBanner"</font>, <font color="maroon">"data/images/MuteBanner.bmp"</font>, <font color="maroon">1</font>, <font color="maroon">1</font>, <font color="maroon">70</font>, <font color="maroon">30</font><font color="black">)</font>;
     <font color="green">// Create the side menu sprites</font>
-    sprites.AddSprite<font color="black">(</font><font color="maroon">"tts_box"</font>, <font color="maroon">"TTSBox"</font>, <font color="maroon">0</font>, <font color="maroon">0</font><font color="black">)</font>;
-    sprites.AddSprite<font color="black">(</font><font color="maroon">"vol_bar"</font>, <font color="maroon">"VolumeBar"</font>, <font color="maroon">0</font>, <font color="maroon">0</font><font color="black">)</font>;
-    sprites.AddSprite<font color="black">(</font><font color="maroon">"vol_pointer"</font>, <font color="maroon">"VolumePointer"</font>, <font color="maroon">0</font>, <font color="maroon">0</font><font color="black">)</font>;
+    sprites.AddSprite<font color="black">(</font><font color="maroon">"tts_box"</font>, <font color="maroon">"CheckBox"</font>, <font color="maroon">5</font>, <font color="maroon">70</font><font color="black">)</font>;
+    sprites.AddSprite<font color="black">(</font><font color="maroon">"tts_banner"</font>, <font color="maroon">"TTSBanner"</font>, <font color="maroon">55</font>, <font color="maroon">75</font><font color="black">)</font>;
+    sprites.AddSprite<font color="black">(</font><font color="maroon">"vol_bar"</font>, <font color="maroon">"VolumeBar"</font>, <font color="maroon">45</font>, <font color="maroon">465</font><font color="black">)</font>;
+    sprites.AddSprite<font color="black">(</font><font color="maroon">"vol_pointer"</font>, <font color="maroon">"VolumePointer"</font>, <font color="maroon">97</font>, <font color="maroon">465</font><font color="black">)</font>;
+    sprites.AddSprite<font color="black">(</font><font color="maroon">"vol_banner"</font>, <font color="maroon">"VolumeBanner"</font>, <font color="maroon">45</font>, <font color="maroon">520</font><font color="black">)</font>;
+    sprites.AddSprite<font color="black">(</font><font color="maroon">"mute_banner"</font>, <font color="maroon">"MuteBanner"</font>, <font color="maroon">75</font>, <font color="maroon">253</font><font color="black">)</font>;
+    sprites.AddSprite<font color="black">(</font><font color="maroon">"mute_box"</font>, <font color="maroon">"CheckBox"</font>, <font color="maroon">35</font>, <font color="maroon">250</font><font color="black">)</font>;
     <font color="green">// Display them</font>
     sprites.SetVisible<font color="black">(</font><font color="maroon">"tts_box"</font>, <font color="maroon">1</font><font color="black">)</font>;
+    sprites.SetVisible<font color="black">(</font><font color="maroon">"tts_banner"</font>, <font color="maroon">1</font><font color="black">)</font>;
     sprites.SetVisible<font color="black">(</font><font color="maroon">"vol_bar"</font>, <font color="maroon">1</font><font color="black">)</font>;
     sprites.SetVisible<font color="black">(</font><font color="maroon">"vol_pointer"</font>, <font color="maroon">1</font><font color="black">)</font>;
+    sprites.SetVisible<font color="black">(</font><font color="maroon">"vol_banner"</font>, <font color="maroon">1</font><font color="black">)</font>;
+    sprites.SetVisible<font color="black">(</font><font color="maroon">"mute_box"</font>, <font color="maroon">1</font><font color="black">)</font>;
+    sprites.SetVisible<font color="black">(</font><font color="maroon">"mute_banner"</font>, <font color="maroon">1</font><font color="black">)</font>;
+<font color="black">}</font>
+
+
+<font color="blue">void</font> Framework<font color="black">:</font><font color="black">:</font>LoadGameIcons<font color="black">(</font><font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">for</font><font color="black">(</font><font color="blue">int</font> i <font color="black">=</font> <font color="maroon">0</font>; i <font color="black">&#60;</font> gameCount; i<font color="black">+</font><font color="black">+</font><font color="black">)</font>
+    <font color="black">{</font>       
+        <font color="blue">char</font> temp<font color="black">[</font><font color="maroon">3</font><font color="black">]</font>;
+        itoa<font color="black">(</font>i, temp, <font color="maroon">10</font><font color="black">)</font>;
+        std<font color="black">:</font><font color="black">:</font>string iconName<font color="black">(</font>temp<font color="black">)</font>;
+        <font color="blue">if</font><font color="black">(</font>strcmp<font color="black">(</font>games<font color="black">[</font>i<font color="black">]</font>.icon.path.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">""</font><font color="black">)</font> <font color="black">!</font><font color="black">=</font> <font color="maroon">0</font><font color="black">)</font>
+        <font color="black">{</font>
+            iconName <font color="black">=</font> <font color="maroon">"gameicon."</font> <font color="black">+</font> iconName;
+            sprites.AddFile<font color="black">(</font>iconName, games<font color="black">[</font>i<font color="black">]</font>.path <font color="black">+</font> games<font color="black">[</font>i<font color="black">]</font>.icon.path, games<font color="black">[</font>gameCount<font color="black">]</font>.icon.width, games<font color="black">[</font>gameCount<font color="black">]</font>.icon.height, <font color="maroon">1</font>, <font color="maroon">1</font><font color="black">)</font>;
+        <font color="black">}</font>
+    <font color="black">}</font>
 <font color="black">}</font>
 </PRE>
 </BODY>

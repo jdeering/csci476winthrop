@@ -8,12 +8,13 @@ text.cpp
 <PRE>
 <font color="blue">#include</font> <font color="maroon">"text.h"</font>
 
+ISpVoice<font color="black">*</font> Text<font color="black">:</font><font color="black">:</font>pVoice <font color="black">=</font> NULL;
+
 <font color="green">/******************************************************
     Default Constructor
 ******************************************************/</font>
 Text<font color="black">:</font><font color="black">:</font>Text<font color="black">(</font><font color="black">)</font>
 <font color="black">{</font>
-    pVoice <font color="black">=</font> NULL;
     x <font color="black">=</font> <font color="maroon">0</font>; 
     y <font color="black">=</font> <font color="maroon">0</font>; 
     visible <font color="black">=</font> <font color="blue">false</font>;
@@ -48,16 +49,19 @@ Text<font color="black">:</font><font color="black">:</font>~Text<font color="bl
 <font color="black">}</font>
 
 <font color="green">/******************************************************
-    Reads the std::string associated with the object using
-    Windows text-to-speech
+    Reads the string parameter using Windows text-to-speech
+
+    @param stringToRead The string to be read via text-to-speech.
+    @param volume Volume value (0-100)
 ******************************************************/</font>
-<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>ReadText<font color="black">(</font><font color="black">)</font>
-<font color="black">{</font>   
-    <font color="blue">const</font> std<font color="black">:</font><font color="black">:</font>wstring str<font color="black">(</font>text.begin<font color="black">(</font><font color="black">)</font>, text.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
+<font color="blue">void</font> Text<font color="black">:</font><font color="black">:</font>ReadText<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string stringToRead, <font color="blue">unsigned</font> <font color="blue">short</font> volume<font color="black">)</font>
+<font color="black">{</font>
+    <font color="blue">const</font> std<font color="black">:</font><font color="black">:</font>wstring str<font color="black">(</font>stringToRead.begin<font color="black">(</font><font color="black">)</font>, stringToRead.end<font color="black">(</font><font color="black">)</font><font color="black">)</font>;
     HRESULT hr <font color="black">=</font> CoCreateInstance<font color="black">(</font>CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, <font color="black">(</font><font color="blue">void</font> <font color="black">*</font><font color="black">*</font><font color="black">)</font><font color="black">&</font>pVoice<font color="black">)</font>;
     <font color="blue">if</font><font color="black">(</font> SUCCEEDED<font color="black">(</font> hr <font color="black">)</font> <font color="black">)</font>
     <font color="black">{</font>
         hr <font color="black">=</font> pVoice<font color="black">-</font><font color="black">&#62;</font>SetRate<font color="black">(</font><font color="maroon">0</font><font color="black">)</font>;
+        hr <font color="black">=</font> pVoice<font color="black">-</font><font color="black">&#62;</font>SetVolume<font color="black">(</font>volume<font color="black">)</font>;
         hr <font color="black">=</font> pVoice<font color="black">-</font><font color="black">&#62;</font>Speak<font color="black">(</font>str.c_str<font color="black">(</font><font color="black">)</font>, <font color="maroon">0</font>, NULL<font color="black">)</font>;
         pVoice<font color="black">-</font><font color="black">&#62;</font>Release<font color="black">(</font><font color="black">)</font>;
         pVoice <font color="black">=</font> NULL;
@@ -114,9 +118,6 @@ Text<font color="black">:</font><font color="black">:</font>~Text<font color="bl
     scare_mouse<font color="black">(</font><font color="black">)</font>;
     destroy_bitmap<font color="black">(</font>tmp<font color="black">)</font>;
     unscare_mouse<font color="black">(</font><font color="black">)</font>;
-
-    <font color="blue">if</font><font color="black">(</font>read<font color="black">)</font>
-        ReadText<font color="black">(</font><font color="black">)</font>;
 <font color="black">}</font>
 
 <font color="green">/******************************************************

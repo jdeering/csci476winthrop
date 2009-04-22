@@ -49,6 +49,7 @@ engine.h
 <font color="blue">typedef</font> <font color="blue">struct</font>
 <font color="black">{</font>
     <font color="blue">int</font> VOLUME;
+    <font color="blue">bool</font> MUTE;
     <font color="blue">bool</font> TTS;
 <font color="black">}</font>OPTIONS;
 
@@ -62,10 +63,10 @@ engine.h
     <font color="blue">static</font> Framework<font color="black">*</font> Instance<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string<font color="black">)</font>;
     
     <font color="green">/* MAIN GAME LOOP */</font>
-    <font color="blue">bool</font> MainLoop<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">bool</font> MainLoop<font color="black">(</font><font color="blue">bool</font><font color="black">)</font>;
 
     <font color="green">/* MESSAGE LOOP FUNCTION */</font>
-    <font color="blue">bool</font> MessageLoop<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">bool</font> MessageLoop<font color="black">(</font><font color="blue">bool</font><font color="black">)</font>;
 
     <font color="green">/* GET FILES FOR GAME ASSETS */</font>
     <font color="blue">void</font> LoadImages<font color="black">(</font>std<font color="black">:</font><font color="black">:</font>string file_name, std<font color="black">:</font><font color="black">:</font>string gamePath<font color="black">)</font>;
@@ -127,10 +128,11 @@ engine.h
     <font color="blue">void</font> UpdateSprites<font color="black">(</font><font color="black">)</font>;
     <font color="blue">void</font> UpdateAudio<font color="black">(</font><font color="black">)</font>;
     <font color="blue">void</font> UpdateText<font color="black">(</font><font color="black">)</font>;
-    <font color="blue">void</font> UpdateOptions<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> UpdateOptions<font color="black">(</font><font color="blue">bool</font><font color="black">)</font>;
 
     <font color="green">/* OBJECT INITIALIZATION / FILE LOADING */</font>
     <font color="blue">void</font> LoadGames<font color="black">(</font><font color="black">)</font>;
+    <font color="blue">void</font> LoadGameIcons<font color="black">(</font><font color="black">)</font>;
     <font color="blue">void</font> LoadImages<font color="black">(</font><font color="black">)</font>;
     <font color="blue">void</font> LoadAudio<font color="black">(</font><font color="black">)</font>;
     <font color="blue">void</font> LoadText<font color="black">(</font><font color="black">)</font>;
@@ -174,7 +176,9 @@ engine.h
     <font color="blue">void</font> SetTextColor<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> SetTextBackgroundColor<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> SetTextVisible<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
+    <font color="blue">void</font> ReadText<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
 
+    <font color="blue">void</font> CreateAudioObject<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> PlayFile<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> ResetLoop<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
     <font color="blue">void</font> StopFile<font color="black">(</font><font color="blue">char</font> <font color="black">*</font>msg<font color="black">)</font>;
