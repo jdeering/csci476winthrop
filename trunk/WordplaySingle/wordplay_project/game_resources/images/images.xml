@@ -1,0 +1,47 @@
+<IMAGES>
+<image ref="letter_a" file="../game_resources/images/a.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_b" file="../game_resources/images/b.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_c" file="../game_resources/images/c.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_d" file="../game_resources/images/d.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_e" file="../game_resources/images/e.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_f" file="../game_resources/images/f.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_g" file="../game_resources/images/g.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_h" file="../game_resources/images/h.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_i" file="../game_resources/images/i.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_j" file="../game_resources/images/j.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_k" file="../game_resources/images/k.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_l" file="../game_resources/images/l.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_m" file="../game_resources/images/m.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_n" file="../game_resources/images/n.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_o" file="../game_resources/images/o.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_p" file="../game_resources/images/p.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_q" file="../game_resources/images/q.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_r" file="../game_resources/images/r.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_s" file="../game_resources/images/s.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_t" file="../game_resources/images/t.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_u" file="../game_resources/images/u.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_v" file="../game_resources/images/v.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_w" file="../game_resources/images/w.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_x" file="../game_resources/images/x.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image>
+<image ref="letter_y" file="../game_resources/images/y.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image> 
+<image ref="letter_z" file="../game_resources/images/z.bmp" numFrames="3" numFrameCol="3" spriteWidth="50" spriteHeight="50"></image> 
+
+
+<image ref="intro" file="../game_resources/images/chooselevel.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="loading" file="../game_resources/images/loading.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="end" file="../game_resources/images/endgame.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="reset" file="../game_resources/images/reset.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="background" file="../game_resources/images/background.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+
+
+<image ref="easy_1" file="../game_resources/images/easy_1.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="medium_1" file="../game_resources/images/medium_1.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="hard_1" file="../game_resources/images/hard_1.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="challenge_1" file="../game_resources/images/challenge_1.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="easy_2" file="../game_resources/images/easy_2.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="medium_2" file="../game_resources/images/medium_2.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="hard_2" file="../game_resources/images/hard_2.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+<image ref="challenge_2" file="../game_resources/images/challenge_2.bmp" numFrames="1" numFrameCol="1" spriteWidth="600" spriteHeight="600"></image>
+
+</IMAGES>
+
