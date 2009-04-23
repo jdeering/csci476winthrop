@@ -1,0 +1,351 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LoginGUI</name>
+    </assembly>
+    <members>
+        <member name="T:LoginGUI.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:LoginGUI.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:LoginGUI.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:LoginGUI.Login">
+            <remarks>
+            Login contains methods for storing and looking up usernames and passwords, as well as an MD5 encryption method.
+            </remarks>
+            <summary>
+            Login contains methods for storing and looking up usernames and passwords, as well as an MD5 encryption method.
+            </summary>
+        </member>
+        <member name="M:LoginGUI.Login.MD5Encrypt(System.String)">
+            <summary>
+            MD5Encrypt performs an MD5 hash on <paramref>valueString</paramref>
+            </summary>
+            <param name="valueString">String to be encrypted.</param>
+            <returns>MD5 encrypted string.</returns>
+        </member>
+        <member name="M:LoginGUI.Login.CreateUser(System.String,System.String,System.String)">
+            <summary>
+            CreateUser creates and stores a user if the username and password are valid.
+            </summary>
+            <param name="username">Username to be created.</param>
+            <param name="password">Password for new user.</param>
+            <param name="verpass">Verified (matching) password for new user.</param>
+            <returns>-1 if user exists; 0 if password and verified password do not match; 1 if successful.</returns>
+        </member>
+        <member name="M:LoginGUI.Login.UserLogin(System.String,System.String)">
+            <summary>
+            UserLogin checks the <paramref>username</paramref> and <paramref>password</paramref>
+            to see if they exist and match.
+            </summary>
+            <param name="username">Entered username.</param>
+            <param name="password">Entered password.</param>
+            <returns>1 if login success; 0 if failed.</returns>
+        </member>
+        <member name="T:LoginGUI.LoginForm">
+            <remarks>
+            LoginForm contains a user interface for logging in and create user functions.
+            </remarks>
+            <summary>
+            LoginForm contains a user interface for logging in and create user functions.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.LoginForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:LoginGUI.LoginForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:LoginGUI.LoginForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:LoginGUI.LoginForm.#ctor">
+            <summary>
+            Constructor initializes and displays the form.
+            </summary>
+        </member>
+        <member name="M:LoginGUI.LoginForm.UserNameValidate(System.String)">
+            <summary>
+            Validates a username to ensure no illegal characters are entered.
+            </summary>
+            <param name="username">Username being validated.</param>
+            <returns>1 if username is valid, 0 if username is invalid.</returns>
+        </member>
+        <member name="T:LoginGUI.UserStats">
+            <remarks>
+            UserStats contains methods to parse user and module score XML files,
+            as well as the structures to contain the data of these files.
+            </remarks>
+            <summary>
+            UserStats contains methods to parse user and module score XML files,
+            as well as the structures to contain the data of these files.
+            </summary>
+        </member>
+        <member name="M:LoginGUI.UserStats.parseUserScore(System.String,System.String)">
+            <summary>
+            parseUserScore parses a user's XML score file to extract significant data and store in a UserScoreNode structure.
+            </summary>
+            <param name="username">Defines the name of the user whose file to parse.</param>
+            <param name="module">Defines the name of the game being parsed.</param>
+            <returns>A UserScoreData structure that contains all the significant data from <paramref>username</paramref> in <paramref>module</paramref>.</returns>
+        </member>
+        <member name="M:LoginGUI.UserStats.parseModuleScore(System.String)">
+            <summary>
+            parseModuleScore parses a module's XML file to extract scores and their corresponding users.
+            </summary>
+            <param name="module">Defines the name of the module to be parsed.</param>
+            <returns>A ModuleScoreData structure that contains all the significant data from <paramref>module</paramref>.</returns>
+        </member>
+        <member name="T:LoginGUI.UserStats.UserScoreNode">
+            <summary>
+            UserScoreNodes hold the date, time and score of a single user score.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.UserScoreNode.date">
+            <summary>
+            date stores the date of a single user score.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.UserScoreNode.time">
+            <summary>
+            time stores the time of a single user score.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.UserScoreNode.score">
+            <summary>
+            score stores a single user score.
+            </summary>
+        </member>
+        <member name="T:LoginGUI.UserStats.UserScoreData">
+            <summary>
+            UserScoreData holds the username, module, last score, best score, first score, average score, list of UserScoreNodes, and the list size of the recent scores.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.UserScoreData.username">
+            <summary>
+            username stores the username.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.UserScoreData.module">
+            <summary>
+            module stores the name of the module.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.UserScoreData.last">
+            <summary>
+            last stores the user's last score.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.UserScoreData.best">
+            <summary>
+            best stores the user's best score.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.UserScoreData.first">
+            <summary>
+            first stores the user's first score.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.UserScoreData.average">
+            <summary>
+            average stores the user's average score.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.UserScoreData.listsize">
+            <summary>
+            listsize stores the number of scores stored in <paramref>recent</paramref>.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.UserScoreData.recent">
+            <summary>
+            recent stores a list of UserScoreNodes representing all the scores of this user.
+            </summary>
+        </member>
+        <member name="T:LoginGUI.UserStats.ModuleScoreNode">
+            <summary>
+            ModuleScoreNodes hold the username and score of an individual score.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.ModuleScoreNode.username">
+            <summary>
+            username stores the username.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.ModuleScoreNode.score">
+            <summary>
+            score stores a single user score.
+            </summary>
+        </member>
+        <member name="T:LoginGUI.UserStats.ModuleScoreData">
+            <summary>
+            ModuleScoreData holds the module name, a list of ModuleScoreNodes, and the size of this list.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.ModuleScoreData.module">
+            <summary>
+            module stores the name of the module.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.ModuleScoreData.listsize">
+            <summary>
+            listsize stores the number of scores in <paramref>allData</paramref>.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.UserStats.ModuleScoreData.allData">
+            <summary>
+            allData is a list of ModuleScoreNodes representing all the scores for the module.
+            </summary>
+        </member>
+        <member name="T:LoginGUI.Program">
+            <summary>
+            .NET created entry point class (DO NOT MODIFY)
+            </summary>
+            <remarks>
+            .NET created entry point class (DO NOT MODIFY)
+            </remarks>
+        </member>
+        <member name="M:LoginGUI.Program.Main">
+            <summary>
+            The main entry point for the application.
+            </summary>
+        </member>
+        <member name="T:LoginGUI.AdminForm">
+            <remarks>
+            AdminForm contains the user interface for the Administration Panel, which includes
+            password reset and report generation functions.
+            </remarks>
+            <summary>
+            AdminForm contains the user interface for the Administration Panel, which includes
+            password reset and report generation functions.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.AdminForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:LoginGUI.AdminForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:LoginGUI.AdminForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.AdminForm.parentForm">
+            <summary>
+            parentForm stores the calling form (<paramref>LoginForm</paramref>) so it may be hidden and accessed from this form.
+            </summary>
+        </member>
+        <member name="M:LoginGUI.AdminForm.#ctor(System.Windows.Forms.Form)">
+            <summary>
+            Constructor that initializes the <paramref>AdminForm</paramref> and hides the calling parent form.
+            </summary>
+            <param name="pf">Calling form that is hidden</param>
+        </member>
+        <member name="M:LoginGUI.AdminForm.Admin_Load(System.Object,System.EventArgs)">
+            <summary>
+            Preload user and module information for generating reports.
+            </summary>
+            <param name="sender">.NET GUI parameter</param>
+            <param name="e">.NET GUI parameter</param>
+        </member>
+        <member name="T:LoginGUI.ChartForm">
+            <remarks>
+            ChartForm contains the user interface for displaying reports generated in the AdminForm.
+            </remarks>
+            <summary>
+            ChartForm contains the user interface for displaying reports generated in the AdminForm.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.ChartForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:LoginGUI.ChartForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:LoginGUI.ChartForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:LoginGUI.ChartForm.memoryImage">
+            <summary>
+            memoryImage stores a bitmap of the chart to be printed.
+            </summary>
+        </member>
+        <member name="M:LoginGUI.ChartForm.CaptureScreen">
+            <summary>
+            CaptureScreen takes a screenshot of the ChartForm, so it can be printed.
+            [1] Code taken from MSDN.com
+            </summary>
+        </member>
+        <member name="M:LoginGUI.ChartForm.#ctor(LoginGUI.UserStats.UserScoreData)">
+            <summary>
+            Constructor initializes the ChartForm and creates a user report chart specified by <paramref>usd</paramref>.
+            </summary>
+            <param name="usd">UserScoreData structure that holds user score information.</param>
+        </member>
+        <member name="M:LoginGUI.ChartForm.#ctor(LoginGUI.UserStats.ModuleScoreData)">
+            <summary>
+            Constructor initializes the ChartForm and creates a game report chart specified by <paramref>msd</paramref>.
+            </summary>
+            <param name="msd">ModuleScoreData structure that holds game score information.</param>
+        </member>
+        <member name="M:LoginGUI.ChartForm.SetSize">
+            <summary>
+            SetSize sets the size of the chart area in the form.
+            </summary>
+        </member>
+        <member name="M:LoginGUI.ChartForm.CreateGraph(ZedGraph.ZedGraphControl,LoginGUI.UserStats.UserScoreData)">
+            <summary>
+            CreateGraph creates a graph from the user score data <paramref>usd</paramref>.
+            </summary>
+            <param name="zgc">Chart where user data is displayed.</param>
+            <param name="usd">Contains user score information.</param>
+        </member>
+        <member name="M:LoginGUI.ChartForm.CreateGraph(ZedGraph.ZedGraphControl,LoginGUI.UserStats.ModuleScoreData)">
+            <summary>
+            CreateGraph creates a graph from the user score data <paramref>usd</paramref>.
+            </summary>
+            <param name="zgc">Chart where user data is displayed.</param>
+            <param name="msd">Contains game score information.</param>
+        </member>
+        <member name="M:LoginGUI.ChartForm.printDocument1_PrintPage(System.Object,System.Drawing.Printing.PrintPageEventArgs)">
+            <summary>
+            printDocument1_PrintPage adds the <paramref>memoryImage</paramref> to the print buffer.
+            </summary>
+            <param name="sender">.NET GUI parameter</param>
+            <param name="e">.NET printer parameter</param>
+        </member>
+    </members>
+</doc>
