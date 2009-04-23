@@ -377,6 +377,7 @@ void GameFramework::setTextColor(GFText &t, int r, int g, int b)
 		ENGINE->SetTextColor(_msgBuffer);
 		_clrBuffer();
 	}
+	/* else WHERE IS YOUR GOD NOW? */
 };
 
 void GameFramework::setTextBGColor(GFText &t, int r, int g, int b)

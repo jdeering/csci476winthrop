@@ -1,3 +1,8 @@
+/**
+ *		@file GFObject.h
+ *		@brief A template for any Framework object (GFSprite, GFAudio, GFText)
+ */
+ 
 #pragma once
 #include "GameFramework.h"
 class GFObject
@@ -12,6 +17,7 @@ class GFObject
 			where a function return value is checked against null. for that reason, this
 			operator serves only to service the needs of error checking.
 		*/
+		
 		bool operator==(const GFObject& o)
 		{ return _ref == o._ref; };
 
