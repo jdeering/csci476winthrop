@@ -60,6 +60,10 @@ public:
 	/* MESSAGE LOOP FUNCTION */
 	bool MessageLoop(bool);
 
+	/* GAMES THAT CAN BE LAUNCHED */
+	static Game games[MAXGAMES];
+	static int gameCount;
+
 	/* GET FILES FOR GAME ASSETS */
 	void LoadImages(std::string file_name, std::string gamePath);
 	void LoadAudio(std::string file_name, std::string gamePath);
@@ -85,8 +89,6 @@ private:
 	CMarkup imgXML, audXML, txtXML;
 	BITMAP *buffer;
 	bool gameRunning, menuRunning, active;
-	int gameCount;
-	Game games[MAXGAMES];
 	OPTIONS options;
 	std::string username;
 
@@ -124,7 +126,7 @@ private:
 
 	/* OBJECT INITIALIZATION / FILE LOADING */
 	void LoadGames();
-	void LoadGameIcons();
+	void LoadMenuImages();
 	void LoadImages();
 	void LoadAudio();
 	void LoadText();
