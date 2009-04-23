@@ -1,8 +1,10 @@
 #include "engine.h"
-#include "../api_code/GameFramework.h"
+#include "GameFramework.h"
 
 // Set inst to NULL to begin
 Framework* Framework::inst = NULL;
+Game Framework::games[MAXGAMES];
+int Framework::gameCount = 0;
 
 /******************************************************
 	Provides a pointer to the Singleton instance of the
@@ -61,7 +63,8 @@ Framework::Framework(std::string user)
 		LoadSideMenu();
 	LoadGames();
 	menuRunning = true;
-	LaunchGame(GAMENUM);
+	if(GAMENUM != -1)
+		LaunchGame(GAMENUM);
 	buffer = create_bitmap(800, 600);
 }
 
@@ -214,7 +217,7 @@ void Framework::LaunchGame(int gameNum)
 ******************************************************/
 void Framework::LoadGames()
 {	
-	gameList.Load(TEXT("../data/Games.xml"));
+	gameList.Load(TEXT("data/Games.xml"));
 	gameList.FindElem();
 
 	while(gameList.FindChildElem(TEXT("game")) && gameCount < 4)
@@ -250,16 +253,25 @@ void Framework::LoadGames()
 		games[gameCount].imageFile = image;
 		games[gameCount].audioFile = audio;
 		games[gameCount].textFile = text;
-		games[gameCount].icon.path = iconPath;
-		games[gameCount].icon.width = atoi(iconWidth.c_str());
-		games[gameCount].icon.height = atoi(iconHeight.c_str());
+		if(strcmp(iconPath.c_str(), "Default") != 0)
+		{
+			games[gameCount].icon.path = iconPath;
+			games[gameCount].icon.width = atoi(iconWidth.c_str());
+			games[gameCount].icon.height = atoi(iconHeight.c_str());
+		}
+		else
+		{
+			games[gameCount].icon.path = "data/images/default_icon.bmp";
+			games[gameCount].icon.width = 100;
+			games[gameCount].icon.height = 100;
+		}
 		gameCount++;
 	}
 	// This is needed to load the game icons in the case
 	// that this program is the main menu responsible for
 	// launching the game modules.
 	if(GAMENUM == -1) 
-		LoadGameIcons();
+		LoadMenuImages();
 }
 
 /******************************************************
@@ -377,6 +389,7 @@ void Framework::SetSpriteVisible(char *msg)
 	int visible;
 	sscanf(msg, "%*d %s %d", refName, &visible);
 	sprites.SetVisible(refName, visible);	
+	UpdateSprites();
 }
 
 /******************************************************
@@ -1291,12 +1304,12 @@ void Framework::LoadSideMenu()
 {
 	int w = 0, h = 0;
 	// Load the side menu sprite files
-	sprites.AddFile("CheckBox", "../data/images/CheckBox.bmp", 2, 2, 40, 40);
-	sprites.AddFile("TTSBanner", "../data/images/TTSBanner.bmp", 1, 1, 140, 30);
-	sprites.AddFile("VolumeBar", "../data/images/VolumeBar.bmp", 1, 1, 110, 30);
-	sprites.AddFile("VolumePointer", "../data/images/VolumePointer.bmp", 1, 1, 7, 44);
-	sprites.AddFile("VolumeBanner", "../data/images/VolumeBanner.bmp", 1, 1, 110, 30);
-	sprites.AddFile("MuteBanner", "../data/images/MuteBanner.bmp", 1, 1, 70, 30);
+	sprites.AddFile("CheckBox", "data/images/CheckBox.bmp", 2, 2, 40, 40);
+	sprites.AddFile("TTSBanner", "data/images/TTSBanner.bmp", 1, 1, 140, 30);
+	sprites.AddFile("VolumeBar", "data/images/VolumeBar.bmp", 1, 1, 110, 30);
+	sprites.AddFile("VolumePointer", "data/images/VolumePointer.bmp", 1, 1, 7, 44);
+	sprites.AddFile("VolumeBanner", "data/images/VolumeBanner.bmp", 1, 1, 110, 30);
+	sprites.AddFile("MuteBanner", "data/images/MuteBanner.bmp", 1, 1, 70, 30);
 	// Create the side menu sprites
 	sprites.AddSprite("tts_box", "CheckBox", 5, 70);
 	sprites.AddSprite("tts_banner", "TTSBanner", 55, 75);
@@ -1316,8 +1329,12 @@ void Framework::LoadSideMenu()
 }
 
 
-void Framework::LoadGameIcons()
-{
+void Framework::LoadMenuImages()
+{	
+	sprites.AddFile("mainmenu_bkg", "data/images/mainmenu_bkg.bmp", 1, 1, 600, 600);
+	sprites.AddFile("leftarrow", "data/images/leftarrow.bmp", 1, 1, 100, 100);
+	sprites.AddFile("rightarrow", "data/images/rightarrow.bmp", 1, 1, 100, 100);
+
 	for(int i = 0; i < gameCount; i++)
 	{		
 		char temp[3];
@@ -1326,7 +1343,10 @@ void Framework::LoadGameIcons()
 		if(strcmp(games[i].icon.path.c_str(), "") != 0)
 		{
 			iconName = "gameicon." + iconName;
-			sprites.AddFile(iconName, games[i].path + games[i].icon.path, games[gameCount].icon.width, games[gameCount].icon.height, 1, 1);
+			if(strcmp(games[i].icon.path.c_str(), "data/images/default_icon.bmp") != 0)
+				sprites.AddFile(iconName, games[i].path + games[i].icon.path, 1, 1, games[gameCount].icon.width, games[gameCount].icon.height);
+			else
+				sprites.AddFile(iconName, games[i].icon.path, 1, 1, games[gameCount].icon.width, games[gameCount].icon.height);
 		}
 	}
 }
