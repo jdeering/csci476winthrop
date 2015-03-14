@@ -1,0 +1,1 @@
+CSCI476 Senior Software Engineering Project @ Winthrop University
